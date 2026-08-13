@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
-import { buildShipResearchPrompt } from "@/lib/prompts";
-import { parseResearchFindings } from "@/lib/research-schema";
+import { researchAndSaveShip } from "@/lib/ship-research";
 import { getSupabaseServerClient } from "@/lib/supabase";
 
 export const runtime = "nodejs";
@@ -42,79 +40,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const response = await anthropic.messages.create({
-      model: RESEARCH_MODEL,
-      // Thinking-Blöcke und Tool-Aufrufe/Suchergebnisse zählen selbst schon
-      // gegen dieses Budget, bevor das eigentliche JSON geschrieben wird -
-      // bei mehreren Suchrunden reichten 4000 nicht aus (Antwort wurde
-      // mitten im JSON abgeschnitten).
-      max_tokens: 16000,
-      system: buildShipResearchPrompt(trip.ship_name),
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 6 }],
-      messages: [
-        {
-          role: "user",
-          content: `Recherchiere Informationen zum Kreuzfahrtschiff "${trip.ship_name}".`,
-        },
-      ],
-    });
-
-    // "" statt "\n" als Trenner: ein rohes Zeilenumbruchzeichen mitten in
-    // einem JSON-String-Wert wäre ungültiges JSON, falls ein Text-Fragment
-    // (bei Websuche mit vielen Zitationen) mitten in einem Feldwert endet.
-    const rawText = response.content
-      .filter((block) => block.type === "text")
-      .map((block) => block.text)
-      .join("");
-
-    if (response.stop_reason === "max_tokens") {
-      console.error("Schiffsrecherche: Antwort durch max_tokens abgeschnitten.\nRohtext:\n", rawText);
+    const result = await researchAndSaveShip(supabase, trip.ship_name);
+    if (!result.ok) {
       return NextResponse.json(
-        { error: "Die Recherche wurde wegen des Token-Limits abgeschnitten. Bitte erneut versuchen." },
+        { error: `Recherche fehlgeschlagen: ${result.error}` },
         { status: 500 }
       );
     }
 
-    const findings = parseResearchFindings(rawText);
-    if (findings.length === 0) {
-      // Zum Debuggen: alle Content-Block-Typen (zeigt, ob web_search überhaupt
-      // aufgerufen wurde) und der volle Text, aus dem das JSON-Array fehlte.
-      console.error(
-        "Schiffsrecherche: keine Findings geparst. Block-Typen:",
-        response.content.map((b) => b.type),
-        "\nRohtext:\n", rawText
-      );
-      return NextResponse.json({ findings: [] });
-    }
-
-    // Vor dem Einfügen alte Schiffsinfos für dieses Schiff entfernen, statt sie
-    // anzuhäufen - sonst bleiben z. B. Treffer zu einem verwechselten
-    // Schwesterschiff aus einem früheren Lauf dauerhaft in der Datenbank.
-    const { error: deleteError } = await supabase
-      .from("ship_research")
-      .delete()
-      .eq("ship_name", trip.ship_name);
-    if (deleteError) throw deleteError;
-
-    const rows = findings.map((f, i) => ({
-      ship_name: trip.ship_name,
-      category: f.category,
-      title: f.title,
-      content: f.content,
-      source_tier: f.source_tier,
-      source_name: f.source_name,
-      source_url: f.source_url,
-      staleness: f.staleness,
-      sort_order: i,
-    }));
-
-    const { data: inserted, error: insertError } = await supabase
-      .from("ship_research")
-      .insert(rows)
-      .select();
-    if (insertError) throw insertError;
-
-    return NextResponse.json({ findings: inserted ?? [], cached: false });
+    return NextResponse.json({ findings: result.findings, cached: false });
   } catch (err) {
     console.error("Schiffsrecherche fehlgeschlagen:", err);
     const message =

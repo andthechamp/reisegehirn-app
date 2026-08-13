@@ -9,7 +9,18 @@ function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
+// Cron-Endpunkte laufen ohne Nutzer-Session (Vercel Cron ruft sie direkt
+// auf) - die Auth-Prüfung übernimmt dort stattdessen CRON_SECRET, siehe
+// src/app/api/cron/*/route.ts.
+function isCronPath(pathname: string) {
+  return pathname.startsWith("/api/cron/");
+}
+
 export async function middleware(request: NextRequest) {
+  if (isCronPath(request.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
