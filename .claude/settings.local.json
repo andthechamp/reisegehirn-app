@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"/Users/marc-andrefaber/Downloads/reisegehirn-app\" 2>&1 | head -50; echo \"---\"; ls -la \"/Users/marc-andrefaber/Downloads/reisegehirn-app.zip\" 2>&1)",
+      "Bash(npm -v)",
+      "WebSearch",
+      "Bash(./node_modules/.bin/tsc --noEmit -p tsconfig.json)",
+      "Bash(npm run *)",
+      "Bash(mkdir -p \"/Users/marc-andrefaber/Downloads/reisegehirn-app/src/app/api/research/[id]\")",
+      "Bash(mkdir -p \"/Users/marc-andrefaber/Downloads/reisegehirn-app/src/app/api/research/ship/[id]\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
