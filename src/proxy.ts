@@ -16,7 +16,7 @@ function isCronPath(pathname: string) {
   return pathname.startsWith("/api/cron/");
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   if (isCronPath(request.nextUrl.pathname)) {
     return NextResponse.next();
   }
