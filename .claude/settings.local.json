@@ -10,7 +10,8 @@
       "Bash(mkdir -p \"/Users/marc-andrefaber/Downloads/reisegehirn-app/src/app/api/research/ship/[id]\")",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(npx @next/codemod@latest upgrade latest)"
     ]
   }
 }
