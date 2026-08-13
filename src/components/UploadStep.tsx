@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { findOversizedFile, oversizedFileMessage } from "@/lib/document-upload";
 
 interface UploadStepProps {
   onExtracted: (result: unknown) => void;
@@ -14,7 +15,16 @@ export default function UploadStep({ onExtracted }: UploadStepProps) {
 
   function handleFileSelect(selected: FileList | null) {
     if (!selected) return;
-    setFiles(Array.from(selected));
+    const selectedFiles = Array.from(selected);
+
+    const oversized = findOversizedFile(selectedFiles);
+    if (oversized) {
+      setError(oversizedFileMessage(oversized));
+      setFiles([]);
+      return;
+    }
+
+    setFiles(selectedFiles);
     setError(null);
   }
 

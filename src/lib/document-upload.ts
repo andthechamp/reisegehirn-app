@@ -28,6 +28,25 @@ export function unsupportedFileTypeMessage(file: File): string {
   return `Dateiformat "${file.type || "unbekannt"}" wird nicht unterstützt (Datei: ${file.name}). Bitte als JPG, PNG oder PDF hochladen - HEIC-Fotos vorher umwandeln, z. B. über die "Teilen"-Funktion des iPhones.`;
 }
 
+// Von der Claude API vorgegebene Obergrenzen pro Datei (Stand SDK 0.32.0):
+// Bilder max. 5 MB, PDFs max. 32 MB.
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+export const MAX_PDF_SIZE_BYTES = 32 * 1024 * 1024;
+
+function maxSizeForFile(file: File): number {
+  return file.type === PDF_TYPE ? MAX_PDF_SIZE_BYTES : MAX_IMAGE_SIZE_BYTES;
+}
+
+export function findOversizedFile(files: File[]): File | null {
+  return files.find((file) => file.size > maxSizeForFile(file)) ?? null;
+}
+
+export function oversizedFileMessage(file: File): string {
+  const limitMb = maxSizeForFile(file) / (1024 * 1024);
+  const actualMb = (file.size / (1024 * 1024)).toFixed(1);
+  return `Datei "${file.name}" ist mit ${actualMb} MB zu groß (Limit: ${limitMb} MB). Bitte verkleinern oder als anderes Format hochladen.`;
+}
+
 // Bilder/PDFs in Base64 umwandeln - so verlangt es die Claude API.
 // PDFs laufen technisch als "document"-Block statt "image"-Block.
 export async function filesToContentBlocks(files: File[]) {

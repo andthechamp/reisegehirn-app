@@ -85,5 +85,5 @@ supabase/
 ## Bekannte Lücken dieser ersten Version
 
 - Kein Auth — für einen einzelnen Testnutzer bewusst weggelassen (siehe Konzeptdokument, offene Punkte).
-- Kein Upload-Größenlimit-Handling — bei sehr großen Fotos ggf. auf der Hosting-Plattform Body-Size-Limits prüfen.
+- Upload-Größenlimit wird client- und serverseitig geprüft (Bilder 5 MB, PDFs 32 MB gemäß Claude-API-Limits) — bei Überschreitung erscheint eine klare Fehlermeldung statt eines kryptischen API-Fehlers. Auf der Hosting-Plattform können zusätzlich eigene Body-Size-Limits greifen, die unabhängig davon zu prüfen sind.
 - HEIC-Fotos (iPhone-Standardformat) werden von Claude Vision nicht unterstützt — der Upload-Schritt akzeptiert nur JPG/PNG/WEBP/GIF und weist bei anderen Formaten mit einer klaren Fehlermeldung darauf hin, statt einen kryptischen API-Fehler durchzureichen.

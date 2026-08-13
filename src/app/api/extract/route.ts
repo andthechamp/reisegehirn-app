@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { anthropic, EXTRACTION_MODEL } from "@/lib/anthropic";
 import { EXTRACTION_SYSTEM_PROMPT } from "@/lib/prompts";
 import { parseExtractionResult } from "@/lib/extraction-schema";
-import { findUnsupportedFile, unsupportedFileTypeMessage, filesToContentBlocks } from "@/lib/document-upload";
+import {
+  findUnsupportedFile,
+  unsupportedFileTypeMessage,
+  findOversizedFile,
+  oversizedFileMessage,
+  filesToContentBlocks,
+} from "@/lib/document-upload";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -19,6 +25,11 @@ export async function POST(req: NextRequest) {
     const unsupported = findUnsupportedFile(files);
     if (unsupported) {
       return NextResponse.json({ error: unsupportedFileTypeMessage(unsupported) }, { status: 400 });
+    }
+
+    const oversized = findOversizedFile(files);
+    if (oversized) {
+      return NextResponse.json({ error: oversizedFileMessage(oversized) }, { status: 400 });
     }
 
     const contentBlocks = await filesToContentBlocks(files);
