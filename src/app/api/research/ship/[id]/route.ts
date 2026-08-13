@@ -4,7 +4,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     const { error } = await supabase.from("ship_research").delete().eq("id", params.id);
     if (error) throw error;
 

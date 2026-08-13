@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "trip_id und content sind erforderlich." }, { status: 400 });
     }
 
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     const { data: inserted, error } = await supabase
       .from("user_memory")
       .insert({ trip_id, content, source_type: "marked_answer" })

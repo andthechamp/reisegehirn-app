@@ -19,7 +19,15 @@
       "Bash(curl -s http://localhost:3000/api/trips)",
       "Bash(curl -s http://localhost:3000/trips/a029125b-3d82-412d-9286-e9b0e8020c9d/edit -o /dev/null -w \"%{http_code}\\\\n\")",
       "Bash(curl -s http://localhost:3000/api/trips/a029125b-3d82-412d-9286-e9b0e8020c9d -w \"\\\\nHTTP:%{http_code}\\\\n\")",
-      "Bash(npm audit *)"
+      "Bash(npm audit *)",
+      "Bash(npx tsc *)",
+      "Bash(npm ls *)",
+      "Bash(npm install *)",
+      "Bash(cp .env.local /tmp/env.local.bak)",
+      "Bash(sed -i '' 's/^NEXT_PUBLIC_SUPABASE_ANON_KEY=$/NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-build-check-value/' .env.local)",
+      "Bash(cp /tmp/env.local.bak .env.local)",
+      "Bash(rm /tmp/env.local.bak)",
+      "Bash(find ~ -iname \"schema.sql\" -not -path \"*/node_modules/*\" 2>/dev/null)"
     ]
   }
 }

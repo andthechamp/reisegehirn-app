@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     const { data: trips, error } = await supabase
       .from("trips")
       .select("id, ship_name, route_name, start_date, end_date")

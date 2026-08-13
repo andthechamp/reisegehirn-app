@@ -5,7 +5,7 @@ import type { ExtractionResult } from "@/lib/extraction-schema";
 export async function POST(req: NextRequest) {
   try {
     const data = (await req.json()) as ExtractionResult;
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
 
     // 1. Reise anlegen (Ebene "Harte Fakten")
     const { data: trip, error: tripError } = await supabase

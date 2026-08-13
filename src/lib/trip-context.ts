@@ -1,6 +1,6 @@
 import type { getSupabaseServerClient } from "@/lib/supabase";
 
-type SupabaseServerClient = ReturnType<typeof getSupabaseServerClient>;
+type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServerClient>>;
 
 export interface TripContext {
   trip: {
@@ -12,6 +12,7 @@ export interface TripContext {
     start_port: string | null;
     end_port: string | null;
     status: string;
+    owner_id: string | null;
   };
   bookings: Array<{
     id: string;
@@ -135,6 +136,7 @@ export async function fetchTripContext(
       start_port: trip.start_port,
       end_port: trip.end_port,
       status: trip.status,
+      owner_id: trip.owner_id,
     },
     bookings: (bookings ?? []).map((b) => ({
       id: b.id,

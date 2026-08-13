@@ -11,6 +11,7 @@ import PortResearch from "@/components/PortResearch";
 import ExcursionForm from "@/components/ExcursionForm";
 import ExcursionCard from "@/components/ExcursionCard";
 import MarkdownText from "@/components/MarkdownText";
+import ShareTrip from "@/components/ShareTrip";
 import type { TripContext } from "@/lib/trip-context";
 
 export default function TripPage() {
@@ -21,6 +22,7 @@ export default function TripPage() {
   const [excursions, setExcursions] = useState<TripContext["excursions"]>([]);
   const [memory, setMemory] = useState<TripContext["memory"]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +36,7 @@ export default function TripPage() {
         setExcursions(json.context.excursions);
         setMemory(json.context.memory);
         setMessages(json.messages);
+        setIsOwner(json.isOwner);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
       } finally {
@@ -176,6 +179,8 @@ export default function TripPage() {
       )}
 
       <ChatWidget tripId={tripId} initialMessages={messages} initialMemory={memory} />
+
+      {isOwner && <ShareTrip tripId={tripId} />}
     </main>
   );
 }

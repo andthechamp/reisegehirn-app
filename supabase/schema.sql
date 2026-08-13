@@ -199,3 +199,188 @@ create index idx_memory_trip           on user_memory(trip_id);
 create index idx_messages_trip         on messages(trip_id, created_at);
 create index idx_excursions_port_call  on port_excursions(port_call_id);
 create index idx_excursions_trip       on port_excursions(trip_id);
+
+-- ============================================================
+-- NUTZERKONTEN, ROLLEN & FREIGABEN
+--
+-- Auth selbst übernimmt Supabase (auth.users). Diese Migration ergänzt:
+--   - profiles       : öffentlich lesbares Nutzerprofil inkl. Rolle
+--   - trips.owner_id : jede Reise gehört genau einem Konto
+--   - trip_members   : zusätzliche Konten, mit denen eine Reise geteilt wurde
+--   - RLS-Policies auf allen Tabellen, damit Postgres selbst durchsetzt,
+--     wer welche Zeilen sehen/ändern darf (statt das in jeder Route manuell
+--     nachzubauen)
+-- ============================================================
+
+-- ------------------------------------------------------------
+-- PROFILE & ROLLEN
+-- ------------------------------------------------------------
+
+create table profiles (
+  id          uuid primary key references auth.users(id) on delete cascade,
+  email       text not null,
+  role        text not null default 'user' check (role in ('user', 'admin')),
+  created_at  timestamptz not null default now()
+);
+
+-- Legt bei jeder Neuregistrierung automatisch die passende profiles-Zeile an,
+-- damit die App nie mit einem auth.users-Eintrag ohne Profil umgehen muss.
+create function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (id, email) values (new.id, new.email);
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+
+-- security definer, damit der Aufruf nicht an der eigenen RLS-Policy von
+-- profiles scheitert (sonst bräuchte man eine Policy, die wiederum diese
+-- Funktion braucht - Zirkelbezug).
+create function public.is_admin()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles where id = auth.uid() and role = 'admin'
+  );
+$$;
+
+-- ------------------------------------------------------------
+-- REISEN-BESITZ & FREIGABE
+-- ------------------------------------------------------------
+
+alter table trips add column owner_id uuid references auth.users(id) on delete cascade;
+alter table trips alter column owner_id set default auth.uid();
+
+-- Konten, mit denen eine Reise zusätzlich zum Besitzer geteilt wurde (z. B.
+-- Partner/Familie). Der Besitzer selbst braucht keine Zeile hier - das wird
+-- direkt über trips.owner_id geprüft.
+create table trip_members (
+  trip_id     uuid not null references trips(id) on delete cascade,
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  created_at  timestamptz not null default now(),
+  primary key (trip_id, user_id)
+);
+
+-- Zentrale Zugriffsprüfung: Besitzer ODER Mitglied. security definer, damit
+-- die Funktion trotz RLS auf trips/trip_members selbst auswerten kann, ohne
+-- dass die aufrufende Policy Zugriff auf diese Tabellen bräuchte.
+create function public.has_trip_access(check_trip_id uuid)
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.trips t
+    where t.id = check_trip_id and t.owner_id = auth.uid()
+  ) or exists (
+    select 1 from public.trip_members tm
+    where tm.trip_id = check_trip_id and tm.user_id = auth.uid()
+  );
+$$;
+
+-- Für die "Reise teilen"-Funktion: Konto per E-Mail finden, ohne dass die
+-- aufrufende Person direkten Lesezugriff auf fremde profiles-Zeilen braucht.
+-- Gibt bewusst nur die id zurück, keine weiteren Profildaten.
+create function public.find_user_id_by_email(lookup_email text)
+returns uuid
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select id from public.profiles where email = lookup_email limit 1;
+$$;
+
+-- ------------------------------------------------------------
+-- ROW LEVEL SECURITY
+-- ------------------------------------------------------------
+
+alter table profiles         enable row level security;
+alter table trips            enable row level security;
+alter table trip_members     enable row level security;
+alter table bookings         enable row level security;
+alter table travelers        enable row level security;
+alter table port_calls       enable row level security;
+alter table port_excursions  enable row level security;
+alter table research_findings enable row level security;
+alter table ship_research    enable row level security;
+alter table user_memory      enable row level security;
+alter table messages         enable row level security;
+
+-- profiles: jede*r sieht das eigene Profil, Admins sehen alle. Änderungen
+-- (insb. role) laufen bewusst nur über den Service-Role-Key im Admin-Bereich,
+-- daher keine update/insert-Policy für normale Nutzer.
+create policy "profiles: select own or admin" on profiles
+  for select using (id = auth.uid() or public.is_admin());
+
+-- trips: sichtbar/änderbar für Besitzer und Mitglieder; löschen nur Besitzer.
+create policy "trips: select if owner or member" on trips
+  for select using (owner_id = auth.uid() or public.has_trip_access(id));
+create policy "trips: insert own" on trips
+  for insert with check (owner_id = auth.uid());
+create policy "trips: update if owner or member" on trips
+  for update using (owner_id = auth.uid() or public.has_trip_access(id));
+create policy "trips: delete if owner" on trips
+  for delete using (owner_id = auth.uid());
+
+-- trip_members: nur der Besitzer der Reise verwaltet Freigaben; Mitglieder
+-- dürfen sehen, mit wem die Reise geteilt ist.
+create policy "trip_members: select if owner or member" on trip_members
+  for select using (
+    user_id = auth.uid()
+    or exists (select 1 from trips t where t.id = trip_id and t.owner_id = auth.uid())
+  );
+create policy "trip_members: insert if owner" on trip_members
+  for insert with check (
+    exists (select 1 from trips t where t.id = trip_id and t.owner_id = auth.uid())
+  );
+create policy "trip_members: delete if owner" on trip_members
+  for delete using (
+    exists (select 1 from trips t where t.id = trip_id and t.owner_id = auth.uid())
+  );
+
+-- Alle reisegebundenen Tabellen teilen dasselbe Muster: voller Zugriff für
+-- jeden mit has_trip_access() auf die jeweilige trip_id.
+create policy "bookings: access via trip" on bookings
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+create policy "travelers: access via trip" on travelers
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+create policy "port_calls: access via trip" on port_calls
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+create policy "port_excursions: access via trip" on port_excursions
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+create policy "research_findings: access via trip" on research_findings
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+create policy "user_memory: access via trip" on user_memory
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+create policy "messages: access via trip" on messages
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+
+-- ship_research ist nicht reisespezifisch (Cache pro Schiffsname, siehe oben)
+-- und enthält keine personenbezogenen Daten - für jedes eingeloggte Konto
+-- lesbar und schreibbar.
+create policy "ship_research: any authenticated user" on ship_research
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+create index idx_trip_members_user on trip_members(user_id);
+create index idx_trips_owner       on trips(owner_id);
+
+-- ------------------------------------------------------------
+-- ERSTEN ADMIN FREISCHALTEN
+-- Nach der ersten Registrierung einmalig in der Supabase SQL-Konsole:
+--   update public.profiles set role = 'admin' where email = 'deine@mail.de';
+-- ------------------------------------------------------------

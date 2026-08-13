@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     const { data: inserted, error } = await supabase
       .from("port_excursions")
       .insert({

@@ -3,7 +3,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import { fetchTripContext } from "@/lib/trip-context";
 import type { ExtractionResult } from "@/lib/extraction-schema";
 
-type SupabaseServerClient = ReturnType<typeof getSupabaseServerClient>;
+type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServerClient>>;
 
 /**
  * Gleicht eine Sammlung (Kabinen/Hafenanläufe/Reisende) mit der DB ab, statt
@@ -64,7 +64,7 @@ async function syncCollection<T extends { id?: string }>(
 export async function GET(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
 
     const context = await fetchTripContext(supabase, params.id);
     if (!context) {
@@ -78,7 +78,12 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
       .order("created_at", { ascending: true });
     if (error) throw error;
 
-    return NextResponse.json({ context, messages: messages ?? [] });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const isOwner = context.trip.owner_id === user?.id;
+
+    return NextResponse.json({ context, messages: messages ?? [], isOwner });
   } catch (err) {
     console.error("Laden der Reise fehlgeschlagen:", err);
     const message =
@@ -96,7 +101,7 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
   try {
     const data = (await req.json()) as ExtractionResult;
     const tripId = params.id;
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
 
     // 1. Reise selbst aktualisieren
     const { data: trip, error: tripError } = await supabase

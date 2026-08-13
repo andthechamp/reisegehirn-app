@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "trip_id und port_call_id sind erforderlich." }, { status: 400 });
     }
 
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
 
     const [{ data: trip, error: tripError }, { data: portCall, error: portCallError }] = await Promise.all([
       supabase.from("trips").select("id, ship_name").eq("id", trip_id).single(),

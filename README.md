@@ -22,8 +22,10 @@ npm install
 ### 2. Supabase-Projekt anlegen
 
 1. Kostenloses Projekt auf [supabase.com](https://supabase.com) erstellen, **EU-Region** wählen (siehe Konzeptdokument, DSGVO).
-2. Im SQL-Editor den Inhalt von `supabase/schema.sql` ausführen — legt alle sieben Tabellen an.
-3. Unter *Project Settings → API* die `Project URL` und den `service_role`-Key kopieren (nicht den `anon`-Key — der Server-Code braucht vollen Schreibzugriff).
+2. Im SQL-Editor den Inhalt von `supabase/schema.sql` ausführen — legt alle Tabellen inkl. Nutzerkonten/Rollen/Freigaben und die zugehörigen Row-Level-Security-Policies an.
+3. Unter *Project Settings → API* sowohl den `service_role`-Key als auch den `anon`/`public`-Key kopieren (beide werden jetzt gebraucht, siehe Schritt 4).
+4. Unter *Authentication → URL Configuration* die *Site URL* auf deine Domain setzen (lokal `http://localhost:3000`) — sonst zeigt der Bestätigungslink aus der Signup-E-Mail ins Leere.
+5. Unter *Authentication → Providers → Email* prüfen, ob "Confirm email" aktiviert sein soll. Für schnelles lokales Testen kannst du es deaktivieren, dann ist ein Konto sofort nach dem Signup einsatzbereit.
 
 ### 3. Anthropic API-Key besorgen
 
@@ -35,7 +37,9 @@ Auf [console.anthropic.com](https://console.anthropic.com) unter *API Keys* eine
 cp .env.local.example .env.local
 ```
 
-Dann `ANTHROPIC_API_KEY`, `SUPABASE_URL` und `SUPABASE_SERVICE_ROLE_KEY` eintragen.
+Dann `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
+`NEXT_PUBLIC_SUPABASE_URL` (gleiche URL wie `SUPABASE_URL`) und
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` eintragen.
 
 ### 5. Starten
 
@@ -43,7 +47,18 @@ Dann `ANTHROPIC_API_KEY`, `SUPABASE_URL` und `SUPABASE_SERVICE_ROLE_KEY` eintrag
 npm run dev
 ```
 
-Öffne [http://localhost:3000](http://localhost:3000), lade ein Foto einer Buchungsbestätigung hoch.
+Öffne [http://localhost:3000](http://localhost:3000) — du landest zuerst auf `/signup`, weil die ganze App jetzt einen Login verlangt.
+
+### 6. Ersten Admin freischalten
+
+Registrierung schaltet standardmäßig ein normales Konto ohne Admin-Rechte frei.
+Nach der ersten Registrierung einmalig im Supabase SQL-Editor:
+
+```sql
+update public.profiles set role = 'admin' where email = 'deine@mail.de';
+```
+
+Danach erscheint im Header ein "Admin"-Link zu `/admin`, wo weitere Konten zu Admins gemacht werden können.
 
 ## Ersten Test machen
 
@@ -82,8 +97,14 @@ supabase/
   schema.sql               Identisch zur separat gelieferten Datei
 ```
 
+## Nutzerkonten, Rollen & Freigaben
+
+- Login/Registrierung läuft über Supabase Auth (E-Mail/Passwort). `middleware.ts` verlangt für alle Routen außer `/login`, `/signup` und `/auth/callback` eine gültige Session.
+- Jede Reise gehört einem Konto (`trips.owner_id`). Der Besitzer kann sie über den "Reise teilen"-Abschnitt auf der Reiseseite mit weiteren Konten (per E-Mail) teilen; geteilte Konten sehen und bearbeiten die Reise vollständig, können sie aber nicht löschen oder weitere Konten hinzufügen.
+- Zugriff wird über Postgres Row-Level-Security erzwungen (`supabase/schema.sql`), nicht nur im Anwendungscode — selbst ein Bug in einer Route kann fremde Reisen nicht offenlegen.
+- Rollen (`user`/`admin`) liegen in `public.profiles`. Admins sehen `/admin` und können dort Rollen anderer Konten umschalten.
+
 ## Bekannte Lücken dieser ersten Version
 
-- Kein Auth — für einen einzelnen Testnutzer bewusst weggelassen (siehe Konzeptdokument, offene Punkte).
 - Upload-Größenlimit wird client- und serverseitig geprüft (Bilder 5 MB, PDFs 32 MB gemäß Claude-API-Limits) — bei Überschreitung erscheint eine klare Fehlermeldung statt eines kryptischen API-Fehlers. Auf der Hosting-Plattform können zusätzlich eigene Body-Size-Limits greifen, die unabhängig davon zu prüfen sind.
 - HEIC-Fotos (iPhone-Standardformat) werden von Claude Vision nicht unterstützt — der Upload-Schritt akzeptiert nur JPG/PNG/WEBP/GIF und weist bei anderen Formaten mit einer klaren Fehlermeldung darauf hin, statt einen kryptischen API-Fehler durchzureichen.
