@@ -42,7 +42,7 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
     const supabaseAdmin = getSupabaseAdminClient();
     const { data: profiles, error: profilesError } = await supabaseAdmin
       .from("profiles")
-      .select("id, email")
+      .select("id, email, full_name")
       .in("id", userIds);
     if (profilesError) throw profilesError;
 

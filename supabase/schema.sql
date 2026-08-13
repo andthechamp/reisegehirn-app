@@ -379,6 +379,13 @@ create policy "ship_research: any authenticated user" on ship_research
 create index idx_trip_members_user on trip_members(user_id);
 create index idx_trips_owner       on trips(owner_id);
 
+-- Anzeigename, den Nutzer*innen selbst über /account pflegen (statt nur die
+-- rohe E-Mail-Adresse im Header/bei Freigaben anzuzeigen). Änderungen laufen
+-- über /api/profile mit dem Service-Role-Key, nicht über eine RLS-Policy -
+-- gleicher Grund wie bei role: eine Update-Policy auf profiles müsste sonst
+-- die role-Spalte vor Selbst-Änderung schützen.
+alter table profiles add column full_name text;
+
 -- ------------------------------------------------------------
 -- ERSTEN ADMIN FREISCHALTEN
 -- Nach der ersten Registrierung einmalig in der Supabase SQL-Konsole:

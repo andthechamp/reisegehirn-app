@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 interface ProfileRow {
   id: string;
   email: string;
+  full_name: string | null;
   role: "user" | "admin";
   created_at: string;
 }
@@ -67,10 +68,11 @@ export default function UserTable({ currentUserId }: UserTableProps) {
           <li key={u.id} className="flex items-center justify-between gap-3 px-4 py-3">
             <div>
               <p className="text-sm font-medium text-ink">
-                {u.email}
+                {u.full_name || u.email}
                 {u.id === currentUserId && <span className="ml-2 text-xs text-ink/40">(du)</span>}
               </p>
               <p className="text-xs text-ink/50">
+                {u.full_name && `${u.email} · `}
                 {u.role === "admin" ? "Admin" : "Nutzer"} · seit{" "}
                 {new Date(u.created_at).toLocaleDateString("de-DE")}
               </p>

@@ -9,13 +9,15 @@ export default async function SiteHeader() {
   } = await supabase.auth.getUser();
 
   let isAdmin = false;
+  let displayName = user?.email ?? "";
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, full_name")
       .eq("id", user.id)
       .single();
     isAdmin = profile?.role === "admin";
+    displayName = profile?.full_name || user.email || "";
   }
 
   return (
@@ -31,7 +33,9 @@ export default async function SiteHeader() {
                 Admin
               </Link>
             )}
-            <span className="text-sm text-ink/40">{user.email}</span>
+            <Link href="/account" className="text-sm text-ink/40 hover:text-ink">
+              {displayName}
+            </Link>
             <LogoutButton />
           </div>
         )}

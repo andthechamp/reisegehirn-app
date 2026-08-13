@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 interface Member {
   id: string;
   email: string;
+  full_name: string | null;
 }
 
 interface ShareTripProps {
@@ -75,7 +76,7 @@ export default function ShareTrip({ tripId }: ShareTripProps) {
               key={m.id}
               className="flex items-center justify-between gap-3 rounded-lg border border-ink/10 px-3 py-2 text-sm"
             >
-              <span className="text-ink/80">{m.email}</span>
+              <span className="text-ink/80">{m.full_name || m.email}</span>
               <button onClick={() => handleRemove(m.id)} className="text-xs text-ink/40 hover:text-red-700">
                 Entfernen
               </button>
