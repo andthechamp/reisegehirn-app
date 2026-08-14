@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import type { ExtractionResult, ExtractedPortCall, ExtractedTraveler, ExtractedBooking } from "@/lib/extraction-schema";
 import type { ExtractedItineraryDay } from "@/lib/itinerary-schema";
 import { formatTimeInput } from "@/lib/format-time";
+import { SpinnerIcon } from "@/components/icons";
 
 function portNameMatches(a: string, b: string): boolean {
   const x = a.trim().toLowerCase();
@@ -290,8 +291,9 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
             <button
               onClick={() => timesFileInputRef.current?.click()}
               disabled={extractingTimes}
-              className="text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
             >
+              {extractingTimes && <SpinnerIcon className="h-3.5 w-3.5" />}
               {extractingTimes ? "Liest Dokument …" : "Zeiten aus Foto/PDF übernehmen"}
             </button>
           </div>
@@ -359,8 +361,9 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
         <button
           onClick={handleConfirm}
           disabled={saving}
-          className="flex-1 rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
         >
+          {saving && <SpinnerIcon className="h-4 w-4" />}
           {saving ? "Wird gespeichert …" : mode === "edit" ? "Änderungen speichern" : "Bestätigen und speichern"}
         </button>
       </div>

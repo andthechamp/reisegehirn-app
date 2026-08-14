@@ -96,6 +96,37 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
   }
 }
 
+export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  try {
+    const supabase = await getSupabaseServerClient();
+    // RLS ("trips: delete if owner") lässt das Löschen ohnehin nur durch den
+    // Besitzer zu; Buchungen/Reisende/Hafenanläufe/Recherche-Funde/Ausflüge
+    // hängen per "on delete cascade" an trips und werden automatisch mit
+    // entfernt. Geteiltes Wissen (ship_research/port_research) ist bewusst
+    // NICHT an trip_id gebunden und bleibt für andere Reisen erhalten.
+    const { error, count } = await supabase.from("trips").delete({ count: "exact" }).eq("id", params.id);
+    if (error) throw error;
+    if (count === 0) {
+      return NextResponse.json(
+        { error: "Reise nicht gefunden oder keine Berechtigung zum Löschen." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Reise löschen fehlgeschlagen:", err);
+    const message =
+      err instanceof Error
+        ? err.message
+        : typeof err === "object" && err !== null && "message" in err
+          ? String((err as { message: unknown }).message)
+          : "Unbekannter Fehler.";
+    return NextResponse.json({ error: `Löschen fehlgeschlagen: ${message}` }, { status: 500 });
+  }
+}
+
 export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {

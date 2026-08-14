@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import { formatTimeInput } from "@/lib/format-time";
+import { SpinnerIcon } from "@/components/icons";
 
 type Excursion = TripContext["excursions"][number];
 type PortCall = TripContext["port_calls"][number];
@@ -145,8 +146,9 @@ export default function ExcursionForm({ tripId, portCalls, onAdded }: ExcursionF
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={extracting}
-            className="text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
+            {extracting && <SpinnerIcon className="h-3.5 w-3.5" />}
             {extracting ? "Liest Dokument …" : "Foto/PDF auslesen"}
           </button>
           <button
@@ -252,8 +254,9 @@ export default function ExcursionForm({ tripId, portCalls, onAdded }: ExcursionF
           <button
             onClick={handleAdd}
             disabled={saving}
-            className="rounded-lg bg-fjord px-4 py-2 text-sm font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-1.5 rounded-lg bg-fjord px-4 py-2 text-sm font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
+            {saving && <SpinnerIcon className="h-3.5 w-3.5" />}
             {saving ? "Speichert …" : "Ausflug speichern"}
           </button>
         </div>

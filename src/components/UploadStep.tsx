@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { findOversizedFile, oversizedFileMessage } from "@/lib/document-upload";
+import { SpinnerIcon } from "@/components/icons";
 
 interface UploadStepProps {
   onExtracted: (result: unknown) => void;
@@ -106,8 +107,9 @@ export default function UploadStep({ onExtracted }: UploadStepProps) {
       <button
         onClick={handleSubmit}
         disabled={loading || files.length === 0}
-        className="w-full rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
       >
+        {loading && <SpinnerIcon className="h-4 w-4" />}
         {loading ? "Dokument wird gelesen …" : "Daten extrahieren"}
       </button>
     </div>

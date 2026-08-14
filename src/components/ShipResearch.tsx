@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ResearchCard from "@/components/ResearchCard";
+import { SpinnerIcon } from "@/components/icons";
 
 type Finding = TripContext["research"][number];
 
@@ -56,8 +57,9 @@ export default function ShipResearch({ tripId, initialFindings }: ShipResearchPr
         <button
           onClick={handleResearch}
           disabled={loading}
-          className="text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
         >
+          {loading && <SpinnerIcon className="h-3.5 w-3.5" />}
           {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Jetzt recherchieren"}
         </button>
       </div>

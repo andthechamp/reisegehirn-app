@@ -73,13 +73,35 @@ function isResearchFinding(item: unknown): item is ResearchFinding {
 }
 
 /**
- * Bei mehrabsätzigen content-Feldern setzt das Modell trotz Anweisung
- * gelegentlich einen echten Zeilenumbruch statt "\n" innerhalb eines
- * JSON-Strings - das lässt JSON.parse mit "Bad control character" scheitern,
- * obwohl der Inhalt inhaltlich vollständig und korrekt ist. Escaped daher
- * rohe Steuerzeichen (Zeilenumbruch, Tab, Wagenrücklauf), die INNERHALB
- * eines JSON-Strings auftreten - außerhalb von Strings (Einrückung
- * zwischen den Objekten) bleiben sie unverändert, da dort erlaubt.
+ * Findet ab Position `i` (direkt nach einer `"` innerhalb eines Strings) das
+ * nächste Nicht-Leerzeichen-Zeichen und meldet, ob es zu den Zeichen gehört,
+ * die nach einem echten JSON-String-Ende folgen können (",", "}", "]", ":").
+ * Dient dazu, eine echte schließende Anführung von einer Zitat-Anführung
+ * MITTEN im Content zu unterscheiden (siehe escapeControlCharsInStrings).
+ */
+function looksLikeRealStringEnd(text: string, i: number): boolean {
+  let j = i;
+  while (j < text.length && /\s/.test(text[j])) j += 1;
+  return j >= text.length || ",}]:".includes(text[j]);
+}
+
+/**
+ * Reparaturschritt für zwei bekannte Arten, wie Claudes Websuche-Antworten
+ * gültiges JSON knapp verfehlen können, obwohl der Inhalt vollständig und
+ * korrekt ist:
+ *
+ * 1. Ein echter Zeilenumbruch statt "\n" innerhalb eines JSON-Strings -
+ *    lässt JSON.parse mit "Bad control character" scheitern.
+ * 2. Ein wörtliches Zitat im content-Feld, bei dem das Modell eine deutsche
+ *    öffnende Anführung („) mit einer geraden ASCII-Anführung (") statt der
+ *    passenden schließenden schließt (z. B. „Insel der Seeräuber" statt
+ *    „Insel der Seeräuber") - diese unescapte " mitten im String beendet
+ *    für JSON.parse den String vorzeitig. Erkannt über einen Blick auf das
+ *    nächste Nicht-Leerzeichen-Zeichen: folgt kein JSON-Strukturzeichen
+ *    (",", "}", "]", ":"), war es keine echte schließende Anführung.
+ *
+ * Außerhalb von Strings (Einrückung zwischen den Objekten) bleibt der Text
+ * unverändert, da dort erlaubt/irrelevant.
  */
 function escapeControlCharsInStrings(text: string): string {
   let result = "";
@@ -93,8 +115,12 @@ function escapeControlCharsInStrings(text: string): string {
         continue;
       }
       if (ch === '"') {
-        inString = false;
-        result += ch;
+        if (looksLikeRealStringEnd(text, i + 1)) {
+          inString = false;
+          result += ch;
+        } else {
+          result += '\\"';
+        }
         continue;
       }
       if (ch === "\n") {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ResearchCard from "@/components/ResearchCard";
 import { SHARED_PORT_CATEGORIES } from "@/lib/research-schema";
+import { SpinnerIcon } from "@/components/icons";
 
 type Finding = TripContext["research"][number];
 
@@ -74,8 +75,9 @@ export default function PortResearch({ tripId, portCallId, initialFindings }: Po
         <button
           onClick={handleResearch}
           disabled={loading}
-          className="text-xs font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex items-center gap-1.5 text-xs font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
         >
+          {loading && <SpinnerIcon className="h-3 w-3" />}
           {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Hafen recherchieren"}
         </button>
       </div>

@@ -9,13 +9,26 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const supabase = await getSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     const { data: trips, error } = await supabase
       .from("trips")
-      .select("id, ship_name, route_name, start_date, end_date")
+      .select("id, ship_name, route_name, start_date, end_date, owner_id")
       .order("created_at", { ascending: false });
     if (error) throw error;
 
-    return NextResponse.json({ trips: trips ?? [] });
+    const tripsWithOwnership = (trips ?? []).map((t) => ({
+      id: t.id,
+      ship_name: t.ship_name,
+      route_name: t.route_name,
+      start_date: t.start_date,
+      end_date: t.end_date,
+      is_owner: t.owner_id === user?.id,
+    }));
+
+    return NextResponse.json({ trips: tripsWithOwnership });
   } catch (err) {
     console.error("Laden der Reiseliste fehlgeschlagen:", err);
     const message =
