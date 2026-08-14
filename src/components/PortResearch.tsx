@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ResearchCard from "@/components/ResearchCard";
+import { SHARED_PORT_CATEGORIES } from "@/lib/research-schema";
 
 type Finding = TripContext["research"][number];
 
@@ -43,11 +44,15 @@ export default function PortResearch({ tripId, portCallId, initialFindings }: Po
   async function handleResearch() {
     setLoading(true);
     setError(null);
+    // "Erneut recherchieren" (Ergebnisse bereits vorhanden) erzwingt eine neue
+    // Websuche; der erste Klick nutzt zuerst den Cache, falls eine andere
+    // Reise diesen Hafen bereits recherchiert hat.
+    const force = findings.length > 0;
     try {
       const res = await fetch("/api/research/port", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trip_id: tripId, port_call_id: portCallId }),
+        body: JSON.stringify({ trip_id: tripId, port_call_id: portCallId, force }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Recherche fehlgeschlagen.");
@@ -85,7 +90,11 @@ export default function PortResearch({ tripId, portCallId, initialFindings }: Po
               finding={f}
               categoryLabel={CATEGORY_LABEL[f.category] ?? f.category}
               categoryTone="fjord"
-              onDelete={handleDelete}
+              // Geteiltes Hafenwissen (port_research) ist nicht pro Reise
+              // löschbar, da das alle Reisen beträfe, die denselben Hafen
+              // nutzen - analog zu Schiffsinfos in ShipResearch. Nur
+              // trip-spezifische Ausflüge lassen sich entfernen.
+              onDelete={(SHARED_PORT_CATEGORIES as string[]).includes(f.category) ? undefined : handleDelete}
             />
           ))}
         </div>

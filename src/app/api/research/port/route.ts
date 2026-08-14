@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
-import { buildPortResearchPrompt } from "@/lib/prompts";
-import { parseResearchFindings } from "@/lib/research-schema";
+import { researchAndSavePort } from "@/lib/port-research";
 import { getSupabaseServerClient } from "@/lib/supabase";
 
 export const runtime = "nodejs";
@@ -9,11 +7,14 @@ export const runtime = "nodejs";
 // großzügiger bemessen als die einfache Extraktion.
 export const maxDuration = 120;
 
+const CACHE_MAX_AGE_DAYS = 7;
+
 export async function POST(req: NextRequest) {
   try {
-    const { trip_id, port_call_id } = (await req.json()) as {
+    const { trip_id, port_call_id, force } = (await req.json()) as {
       trip_id?: string;
       port_call_id?: string;
+      force?: boolean;
     };
     if (!trip_id || !port_call_id) {
       return NextResponse.json({ error: "trip_id und port_call_id sind erforderlich." }, { status: 400 });
@@ -35,74 +36,54 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "An einem Seetag gibt es keinen Hafen zu recherchieren." }, { status: 400 });
     }
 
-    const response = await anthropic.messages.create({
-      model: RESEARCH_MODEL,
-      // Thinking-Blöcke und Tool-Aufrufe/Suchergebnisse zählen selbst schon
-      // gegen dieses Budget, bevor das eigentliche JSON geschrieben wird -
-      // siehe gleiches Problem bei /api/research/ship.
-      max_tokens: 16000,
-      system: buildPortResearchPrompt(trip.ship_name, portCall.port_name, portCall.call_date),
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 6 }],
-      messages: [
-        {
-          role: "user",
-          content: `Recherchiere Informationen zum Hafenanlauf in "${portCall.port_name}" am ${portCall.call_date}.`,
-        },
-      ],
+    // Hafenunabhängiges Wissen (port_research) ist über alle Reisen hinweg
+    // geteilt - vor einer neuen Recherche erst prüfen, ob eine andere Reise
+    // denselben Hafen innerhalb der letzten 7 Tage schon recherchiert hat.
+    // Nur bei explizitem "Erneut recherchieren" (force) wird das übersprungen.
+    if (!force) {
+      const cutoff = new Date(Date.now() - CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+      const { data: cachedPort, error: cachedPortError } = await supabase
+        .from("port_research")
+        .select("*")
+        .eq("port_name", portCall.port_name)
+        .gte("retrieved_at", cutoff)
+        .order("sort_order", { ascending: true });
+      if (cachedPortError) throw cachedPortError;
+
+      if (cachedPort && cachedPort.length > 0) {
+        // Reederei-/private Ausflüge sind trip-spezifisch (research_findings) -
+        // die gibt's nur, wenn genau diese Reise diesen Hafen schon einmal
+        // recherchiert hat. Ein Cache-Treffer bei port_research liefert daher
+        // zunächst nur das geteilte Hafenwissen; für Ausflüge hilft "Erneut
+        // recherchieren".
+        const { data: cachedTrip, error: cachedTripError } = await supabase
+          .from("research_findings")
+          .select("*")
+          .eq("trip_id", trip_id)
+          .eq("port_call_id", port_call_id)
+          .order("sort_order", { ascending: true });
+        if (cachedTripError) throw cachedTripError;
+
+        const merged = [
+          ...cachedPort.map((r) => ({ ...r, port_call_id })),
+          ...(cachedTrip ?? []),
+        ];
+        return NextResponse.json({ findings: merged, cached: true });
+      }
+    }
+
+    const result = await researchAndSavePort(supabase, {
+      tripId: trip_id,
+      portCallId: port_call_id,
+      shipName: trip.ship_name,
+      portName: portCall.port_name,
+      callDate: portCall.call_date,
     });
-
-    const rawText = response.content
-      .filter((block) => block.type === "text")
-      .map((block) => block.text)
-      .join("");
-
-    if (response.stop_reason === "max_tokens") {
-      console.error("Hafenrecherche: Antwort durch max_tokens abgeschnitten.\nRohtext:\n", rawText);
-      return NextResponse.json(
-        { error: "Die Recherche wurde wegen des Token-Limits abgeschnitten. Bitte erneut versuchen." },
-        { status: 500 }
-      );
+    if (!result.ok) {
+      return NextResponse.json({ error: `Recherche fehlgeschlagen: ${result.error}` }, { status: 500 });
     }
 
-    const findings = parseResearchFindings(rawText);
-    if (findings.length === 0) {
-      console.error(
-        "Hafenrecherche: keine Findings geparst. Block-Typen:",
-        response.content.map((b) => b.type),
-        "\nRohtext:\n", rawText
-      );
-      return NextResponse.json({ findings: [] });
-    }
-
-    // Vor dem Einfügen alte Recherche zu diesem Hafenanlauf entfernen, statt
-    // sie anzuhäufen - gleiches Muster wie bei der Schiffsrecherche.
-    const { error: deleteError } = await supabase
-      .from("research_findings")
-      .delete()
-      .eq("trip_id", trip_id)
-      .eq("port_call_id", port_call_id);
-    if (deleteError) throw deleteError;
-
-    const rows = findings.map((f, i) => ({
-      trip_id,
-      port_call_id,
-      category: f.category,
-      title: f.title,
-      content: f.content,
-      source_tier: f.source_tier,
-      source_name: f.source_name,
-      source_url: f.source_url,
-      staleness: f.staleness,
-      sort_order: i,
-    }));
-
-    const { data: inserted, error: insertError } = await supabase
-      .from("research_findings")
-      .insert(rows)
-      .select();
-    if (insertError) throw insertError;
-
-    return NextResponse.json({ findings: inserted ?? [] });
+    return NextResponse.json({ findings: result.findings, cached: false });
   } catch (err) {
     console.error("Hafenrecherche fehlgeschlagen:", err);
     const message =

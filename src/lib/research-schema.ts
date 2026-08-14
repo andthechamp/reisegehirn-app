@@ -27,6 +27,21 @@ export interface ResearchFinding {
   staleness: Staleness;
 }
 
+// Kategorien der Hafenrecherche, die NICHT an ein bestimmtes Schiff/Reise
+// gebunden sind (Anleger, Sehenswürdigkeiten, Fußweg, Essen, Praktisches,
+// Wetter) - diese landen geteilt über alle Reisen hinweg in port_research.
+// ausflug_offiziell/ausflug_privat bleiben trip-spezifisch in
+// research_findings, da sich Reederei-Ausflugsangebote unterscheiden können.
+export const SHARED_PORT_CATEGORIES: ResearchCategory[] = [
+  "anleger",
+  "zu_fuss",
+  "essen",
+  "praktisches",
+  "sehenswuerdigkeiten",
+  "wetter_packen",
+  "sonstiges",
+];
+
 const VALID_CATEGORIES: ResearchCategory[] = [
   "anleger",
   "ausflug_offiziell",

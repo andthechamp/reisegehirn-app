@@ -126,6 +126,44 @@ export async function fetchTripContext(
     bookingIdToCabinNumber.set(b.id as string, (b.cabin_number as string | null) ?? null);
   }
 
+  // Hafenunabhängiges Wissen (port_research) hängt am Hafennamen, nicht an
+  // dieser Reise - siehe port-research.ts. Ein Hafen kann in derselben Reise
+  // mehrfach angelaufen werden (z. B. Übernachtung), daher pro passendem
+  // port_call einen eigenen Eintrag erzeugen statt nur einen pro Hafenname.
+  const portNameToCallIds = new Map<string, string[]>();
+  for (const pc of portCalls ?? []) {
+    if (pc.is_sea_day) continue;
+    const list = portNameToCallIds.get(pc.port_name as string) ?? [];
+    list.push(pc.id as string);
+    portNameToCallIds.set(pc.port_name as string, list);
+  }
+  const portNames = [...portNameToCallIds.keys()];
+
+  const { data: portResearch, error: portResearchError } =
+    portNames.length > 0
+      ? await supabase
+          .from("port_research")
+          .select("*")
+          .in("port_name", portNames)
+          .order("sort_order", { ascending: true })
+      : { data: [] as Record<string, unknown>[], error: null };
+  if (portResearchError) throw portResearchError;
+
+  const portResearchExpanded = (portResearch ?? []).flatMap((r) => {
+    const callIds = portNameToCallIds.get(r.port_name as string) ?? [];
+    return callIds.map((callId) => ({
+      id: r.id as string,
+      port_call_id: callId,
+      category: r.category,
+      title: r.title,
+      content: r.content,
+      source_tier: r.source_tier,
+      source_name: r.source_name,
+      source_url: r.source_url,
+      staleness: r.staleness,
+    }));
+  });
+
   return {
     trip: {
       id: trip.id,
@@ -186,6 +224,7 @@ export async function fetchTripContext(
         source_url: r.source_url,
         staleness: r.staleness,
       })),
+      ...portResearchExpanded,
     ],
     memory: (memory ?? []).map((m) => ({
       id: m.id,

@@ -156,6 +156,35 @@ create table ship_research (
 
 create index idx_ship_research_name on ship_research(ship_name);
 
+-- Hafeninfos, die NICHT vom Schiff/der Reise abhängen (Anleger, zu Fuß, Essen,
+-- Praktisches, Sehenswürdigkeiten, Wetter/Packen), sind ebenfalls nicht
+-- reisespezifisch - geschlüsselt über port_name statt trip_id, analog
+-- ship_research. Reederei-/private Ausflüge (category 'ausflug_offiziell'/
+-- 'ausflug_privat') bleiben bewusst in research_findings, trip-gebunden, da
+-- sich das Angebot je Schiff/Reederei unterscheiden kann - siehe
+-- SHARED_PORT_CATEGORIES in src/lib/research-schema.ts. Frische wird lazy
+-- beim Abruf geprüft (7 Tage), nicht per Cron wie bei ship_research, da die
+-- Zahl möglicher Häfen die Flottengröße deutlich übersteigt.
+create table port_research (
+  id           uuid primary key default gen_random_uuid(),
+  port_name    text not null,
+  category     text not null check (category in (
+                 'anleger', 'zu_fuss', 'essen', 'praktisches',
+                 'sehenswuerdigkeiten', 'wetter_packen', 'sonstiges'
+               )),
+  title        text not null,
+  content      text not null,
+  source_tier  text not null check (source_tier in ('A', 'B', 'C')),
+  source_name  text,
+  source_url   text,
+  staleness    text not null default 'saisonal'
+                 check (staleness in ('zeitlos', 'saisonal', 'verfällt')),
+  sort_order   int not null default 0,
+  retrieved_at timestamptz not null default now()
+);
+
+create index idx_port_research_name on port_research(port_name);
+
 -- ------------------------------------------------------------
 -- EBENE 3: NUTZERGEDÄCHTNIS
 -- Wächst über die Zeit, überschreibt Vorschläge.
@@ -318,6 +347,7 @@ alter table port_calls       enable row level security;
 alter table port_excursions  enable row level security;
 alter table research_findings enable row level security;
 alter table ship_research    enable row level security;
+alter table port_research    enable row level security;
 alter table user_memory      enable row level security;
 alter table messages         enable row level security;
 
@@ -374,6 +404,11 @@ create policy "messages: access via trip" on messages
 -- und enthält keine personenbezogenen Daten - für jedes eingeloggte Konto
 -- lesbar und schreibbar.
 create policy "ship_research: any authenticated user" on ship_research
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- port_research: gleiches Muster wie ship_research (nicht reisespezifisch,
+-- keine personenbezogenen Daten).
+create policy "port_research: any authenticated user" on port_research
   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 create index idx_trip_members_user on trip_members(user_id);
