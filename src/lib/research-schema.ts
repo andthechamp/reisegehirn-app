@@ -145,6 +145,18 @@ function escapeControlCharsInStrings(text: string): string {
 }
 
 /**
+ * Bei Websuche-Tool-Nutzung markiert Claude wörtliche Übernahmen aus
+ * Suchergebnissen gelegentlich mit <cite index="12-3,12-4">...</cite> direkt
+ * im content-Feld. Das ist reines Zitat-Markup, kein für Nutzer:innen
+ * relevanter Inhalt - wir entfernen die Tags und behalten den zitierten Text.
+ * Läuft VOR dem JSON-Parsing, weil die Anführung im index-Attribut sonst ein
+ * JSON-String vorzeitig beenden kann (siehe escapeControlCharsInStrings).
+ */
+function stripCitationTags(text: string): string {
+  return text.replace(/<\/?cite(?:[^<>]*)>/g, "");
+}
+
+/**
  * Claudes Antwort mischt bei Websuche-Tool-Nutzung Freitext/Zitationen mit dem
  * am Ende angeforderten JSON-Array. Wir extrahieren das erste vollständige
  * JSON-Array aus dem Text, statt den ganzen Text als JSON zu parsen.
@@ -152,7 +164,8 @@ function escapeControlCharsInStrings(text: string): string {
  * unterstützendes Feature, kein kritischer Pfad wie die Extraktion.
  */
 export function parseResearchFindings(raw: string): ResearchFinding[] {
-  const match = raw.match(/\[[\s\S]*\]/);
+  const cleaned = stripCitationTags(raw);
+  const match = cleaned.match(/\[[\s\S]*\]/);
   if (!match) return [];
 
   let parsed: unknown;
