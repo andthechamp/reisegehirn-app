@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase";
+import { getCurrentUser, getSupabaseAdminClient } from "@/lib/supabase";
 
 export async function GET() {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Nicht eingeloggt." }, { status: 401 });
 
   const { data: profile, error } = await supabase
@@ -22,10 +19,7 @@ export async function GET() {
 // profiles - eine Update-Policy für "eigene Zeile" würde sonst auch die
 // role-Spalte für Selbst-Änderung öffnen (siehe Kommentar in schema.sql).
 export async function PATCH(req: NextRequest) {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user } = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Nicht eingeloggt." }, { status: 401 });
 
   const { full_name } = (await req.json()) as { full_name?: string };

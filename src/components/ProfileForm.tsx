@@ -1,29 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ProfileForm() {
+interface ProfileFormProps {
+  initialEmail: string;
+  initialFullName: string;
+}
+
+export default function ProfileForm({ initialEmail, initialFullName }: ProfileFormProps) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [email] = useState(initialEmail);
+  const [fullName, setFullName] = useState(initialFullName);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      const res = await fetch("/api/profile");
-      const json = await res.json();
-      if (res.ok) {
-        setEmail(json.profile.email);
-        setFullName(json.profile.full_name ?? "");
-      }
-      setLoading(false);
-    }
-    load();
-  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,8 +37,6 @@ export default function ProfileForm() {
       setSaving(false);
     }
   }
-
-  if (loading) return <p className="text-ink/60">Lädt …</p>;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

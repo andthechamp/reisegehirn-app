@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 
 interface ProfileRow {
   id: string;
@@ -58,7 +59,7 @@ export default function UserTable({ currentUserId }: UserTableProps) {
     }
   }
 
-  if (loading) return <p className="text-ink/60">Lädt …</p>;
+  if (loading) return <Spinner />;
 
   return (
     <div className="space-y-3">
@@ -67,7 +68,7 @@ export default function UserTable({ currentUserId }: UserTableProps) {
         {users.map((u) => (
           <li key={u.id} className="flex items-center justify-between gap-3 px-4 py-3">
             <div>
-              <p className="text-sm font-medium text-ink">
+              <p className="text-sm font-medium text-ink" title={u.email}>
                 {u.full_name || u.email}
                 {u.id === currentUserId && <span className="ml-2 text-xs text-ink/40">(du)</span>}
               </p>

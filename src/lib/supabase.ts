@@ -44,6 +44,20 @@ export async function getSupabaseServerClient() {
 }
 
 /**
+ * Liest die eingeloggte Person aus der Session (RLS-Client). Zentraler
+ * Helfer für alle app/api/.../route.ts-Handler, die zuerst prüfen müssen,
+ * ob überhaupt jemand eingeloggt ist, bevor sie eigene Berechtigungslogik
+ * (z.B. Admin- oder Besitzer-Check) darauf aufbauen.
+ */
+export async function getCurrentUser() {
+  const supabase = await getSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return { supabase, user };
+}
+
+/**
  * Service-Role-Client, der Row-Level-Security umgeht. NUR für echte
  * Admin-Operationen verwenden (Nutzerverwaltung über die Supabase Auth
  * Admin-API) - darf niemals im Browser-Bundle landen und niemals für

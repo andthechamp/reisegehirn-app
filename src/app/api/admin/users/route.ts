@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase";
+import { getCurrentUser, getSupabaseAdminClient } from "@/lib/supabase";
 
 // Bestätigt anhand der Session (RLS-Client, kein Vertrauen in Client-Input),
 // dass die aufrufende Person Admin ist, bevor irgendetwas über den
 // Service-Role-Client (der RLS umgeht) gemacht wird.
 async function requireAdmin() {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await getCurrentUser();
   if (!user) return null;
 
   const { data: profile } = await supabase

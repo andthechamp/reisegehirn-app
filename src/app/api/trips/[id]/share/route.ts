@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase";
+import { getCurrentUser, getSupabaseAdminClient } from "@/lib/supabase";
 
 function errorMessage(err: unknown) {
   return err instanceof Error
@@ -13,10 +13,7 @@ function errorMessage(err: unknown) {
 // trip_members erzwingt das für insert/delete zusätzlich auf DB-Ebene, diese
 // Prüfung liefert nur die passende Fehlermeldung statt eines rohen RLS-Fehlers.
 async function requireOwner(tripId: string) {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { supabase, user } = await getCurrentUser();
   if (!user) return { supabase, user: null, isOwner: false };
 
   const { data: trip } = await supabase.from("trips").select("owner_id").eq("id", tripId).single();
