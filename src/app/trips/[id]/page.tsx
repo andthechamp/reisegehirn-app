@@ -9,9 +9,10 @@ import type { ChatMessage } from "@/components/ChatPanel";
 import ShipResearch from "@/components/ShipResearch";
 import PortResearch from "@/components/PortResearch";
 import ExcursionForm from "@/components/ExcursionForm";
-import ExcursionCard from "@/components/ExcursionCard";
-import MarkdownText from "@/components/MarkdownText";
+import PortDaySwiper from "@/components/PortDaySwiper";
+import MemoryItem from "@/components/MemoryItem";
 import ShareTrip from "@/components/ShareTrip";
+import Spinner from "@/components/Spinner";
 import type { TripContext } from "@/lib/trip-context";
 
 export default function TripPage() {
@@ -70,8 +71,8 @@ export default function TripPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto min-h-screen max-w-2xl px-6 py-12">
-        <p className="text-ink/60">Lädt …</p>
+      <main className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-6 py-12">
+        <Spinner />
       </main>
     );
   }
@@ -87,7 +88,7 @@ export default function TripPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-2xl space-y-8 px-6 py-12">
+    <main className="mx-auto min-h-screen max-w-2xl space-y-8 px-6 pb-28 pt-12">
       <TripHero tripId={tripId} trip={context.trip} portCalls={context.port_calls} />
 
       {/* Reiseinfos, zusammengefasst: Eckdaten + Kabinen/Reisende in einem Block */}
@@ -108,7 +109,7 @@ export default function TripPage() {
               travelers={context.travelers.filter((t) => t.cabin_number === b.cabin_number)}
             />
           ))}
-          {context.bookings.length === 0 && <p className="text-sm text-ink/50">Keine Kabinen erfasst.</p>}
+          {context.bookings.length === 0 && <p className="text-sm text-ink/50">Noch keine Kabinen hinterlegt.</p>}
         </div>
       </section>
 
@@ -122,38 +123,13 @@ export default function TripPage() {
           portCalls={context.port_calls}
           onAdded={(e) => setExcursions((prev) => [...prev, e])}
         />
-        <div className="space-y-2">
-          {context.port_calls.map((pc) => (
-            <div key={pc.id} className="rounded-lg border border-ink/10 p-3 text-sm text-ink/80">
-              <p>
-                Tag {pc.day_number} ({pc.call_date}): {pc.is_sea_day ? "Seetag" : pc.port_name}
-                {!pc.is_sea_day && (
-                  <>
-                    {" — "}
-                    An: {pc.arrival_time ?? "unbekannt"}, Ab: {pc.departure_time ?? "unbekannt"}
-                  </>
-                )}
-              </p>
-              {!pc.is_sea_day && (
-                <>
-                  <ul className="mt-2 space-y-2">
-                    {excursions
-                      .filter((e) => e.port_call_id === pc.id)
-                      .map((e) => (
-                        <ExcursionCard key={e.id} excursion={e} onDelete={handleDeleteExcursion} />
-                      ))}
-                  </ul>
-                  <PortResearch
-                    tripId={tripId}
-                    portCallId={pc.id}
-                    initialFindings={context.research.filter((r) => r.port_call_id === pc.id)}
-                  />
-                </>
-              )}
-            </div>
-          ))}
-          {context.port_calls.length === 0 && <p className="text-sm text-ink/50">Kein Reiseverlauf erfasst.</p>}
-        </div>
+        <PortDaySwiper
+          tripId={tripId}
+          portCalls={context.port_calls}
+          excursions={excursions}
+          research={context.research}
+          onDeleteExcursion={handleDeleteExcursion}
+        />
       </section>
 
       {memory.length > 0 && (
@@ -161,18 +137,7 @@ export default function TripPage() {
           <h2 className="font-display text-xl font-medium text-ink">Gemerkt</h2>
           <ul className="space-y-2">
             {memory.map((m) => (
-              <li
-                key={m.id}
-                className="flex items-start justify-between gap-3 rounded-lg border border-fjord/20 bg-fjord-light/30 p-3 text-sm text-ink/80"
-              >
-                <MarkdownText text={m.content} />
-                <button
-                  onClick={() => handleUnmark(m.id)}
-                  className="shrink-0 text-xs text-ink/40 hover:text-red-700"
-                >
-                  Entfernen
-                </button>
-              </li>
+              <MemoryItem key={m.id} content={m.content} onDelete={() => handleUnmark(m.id)} />
             ))}
           </ul>
         </section>

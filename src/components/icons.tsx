@@ -102,6 +102,22 @@ export function DotIcon({ className }: IconProps) {
   );
 }
 
+export function ChevronDownIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  );
+}
+
 const CATEGORY_ICON: Record<string, (props: IconProps) => React.ReactElement> = {
   schiffswissen: AnchorIcon,
   insider_tipps: ChatIcon,

@@ -20,17 +20,6 @@ export default function ShipResearch({ tripId, initialFindings }: ShipResearchPr
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleDelete(id: string) {
-    try {
-      const res = await fetch(`/api/research/ship/${id}`, { method: "DELETE" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Löschen fehlgeschlagen.");
-      setFindings((prev) => prev.filter((f) => f.id !== id));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
-    }
-  }
-
   async function handleResearch() {
     setLoading(true);
     setError(null);
@@ -89,7 +78,6 @@ export default function ShipResearch({ tripId, initialFindings }: ShipResearchPr
             finding={f}
             categoryLabel={CATEGORY_LABEL[f.category] ?? null}
             categoryTone="amber"
-            onDelete={handleDelete}
           />
         ))}
       </div>

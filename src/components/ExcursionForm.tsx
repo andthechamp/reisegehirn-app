@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
+import { formatTimeInput } from "@/lib/format-time";
 
 type Excursion = TripContext["excursions"][number];
 type PortCall = TripContext["port_calls"][number];
@@ -215,7 +216,7 @@ export default function ExcursionForm({ tripId, portCalls, onAdded }: ExcursionF
               <input
                 type="text"
                 value={form.meeting_time}
-                onChange={(e) => setForm((f) => ({ ...f, meeting_time: e.target.value }))}
+                onChange={(e) => setForm((f) => ({ ...f, meeting_time: formatTimeInput(e.target.value) }))}
                 placeholder="z. B. 09:30"
                 className="mt-1 w-full rounded-lg border border-ink/15 px-3 py-2 text-sm focus:border-fjord focus:outline-none focus:ring-1 focus:ring-fjord"
               />

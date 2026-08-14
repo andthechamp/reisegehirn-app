@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ReviewStep from "@/components/ReviewStep";
+import Spinner from "@/components/Spinner";
 import type { ExtractionResult } from "@/lib/extraction-schema";
 import type { TripContext } from "@/lib/trip-context";
 
@@ -71,8 +72,8 @@ export default function EditTripPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto min-h-screen max-w-2xl px-6 py-12">
-        <p className="text-ink/60">Lädt …</p>
+      <main className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-6 py-12">
+        <Spinner />
       </main>
     );
   }

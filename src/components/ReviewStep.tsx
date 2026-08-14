@@ -1,7 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { ExtractionResult, ExtractedPortCall, ExtractedTraveler, ExtractedBooking } from "@/lib/extraction-schema";
+import type { ExtractedItineraryDay } from "@/lib/itinerary-schema";
+import { formatTimeInput } from "@/lib/format-time";
+
+function portNameMatches(a: string, b: string): boolean {
+  const x = a.trim().toLowerCase();
+  const y = b.trim().toLowerCase();
+  return x.includes(y) || y.includes(x);
+}
+
+// Ordnet einen extrahierten Reiseverlauf-Tag dem passenden, bereits
+// vorhandenen Hafentag zu. Datum ist der verlässlichste Abgleich, da manche
+// Reederei-Apps den ersten Tag "Anreise" statt "Tag 1" nennen und dadurch
+// beim Modell trotz Anweisung gelegentlich eine Tagesnummer-Verschiebung
+// entstehen kann - das Kalenderdatum ist davon nicht betroffen. Liegen an
+// einem Tag mehrere Häfen (z. B. zwei Fjord-Stopps am selben Kalendertag),
+// reicht Datum/Tagesnummer allein nicht zur Unterscheidung - dann MUSS der
+// Hafenname übereinstimmen, sonst lieber gar nicht zuordnen als raten.
+function matchItineraryDay(portCalls: ExtractedPortCall[], day: ExtractedItineraryDay): ExtractedPortCall | null {
+  const byDate = day.call_date ? portCalls.filter((pc) => pc.call_date === day.call_date) : [];
+  const byDay = byDate.length > 0 ? byDate : portCalls.filter((pc) => pc.day_number === day.day_number);
+
+  if (byDay.length === 1) return byDay[0];
+  if (byDay.length > 1) {
+    return day.port_name ? byDay.find((pc) => portNameMatches(pc.port_name, day.port_name!)) ?? null : null;
+  }
+
+  if (day.port_name) {
+    return portCalls.find((pc) => portNameMatches(pc.port_name, day.port_name!)) ?? null;
+  }
+  return null;
+}
 
 interface ReviewStepProps {
   initial: ExtractionResult;
@@ -44,6 +75,9 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
   const [data, setData] = useState<ExtractionResult>(initial);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [extractingTimes, setExtractingTimes] = useState(false);
+  const [timesNote, setTimesNote] = useState<string | null>(null);
+  const timesFileInputRef = useRef<HTMLInputElement>(null);
 
   function updatePortCall(index: number, patch: Partial<ExtractedPortCall>) {
     setData((prev) => {
@@ -69,6 +103,58 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
     });
   }
 
+  // Lädt ein Foto/PDF des Reiseverlaufs (z. B. Screenshot der Kreuzfahrt-App)
+  // und übernimmt daraus nur die An-/Abfahrtszeiten in die schon vorhandenen
+  // Hafentage - per Tagesnummer zugeordnet, damit Hafenname/Datum/Reihenfolge
+  // aus der ursprünglichen Extraktion erhalten bleiben.
+  async function handleTimesFile(file: File | undefined) {
+    if (!file) return;
+    setExtractingTimes(true);
+    setTimesNote(null);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("images", file);
+      const res = await fetch("/api/extract/itinerary", { method: "POST", body: formData });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Extraktion fehlgeschlagen.");
+
+      const extracted = json.port_calls as ExtractedItineraryDay[];
+      let matched = 0;
+      const unmatched: string[] = [];
+      setData((prev) => {
+        const port_calls = [...prev.port_calls];
+        for (const day of extracted) {
+          if (!day.arrival_time && !day.departure_time) continue;
+          const target = matchItineraryDay(port_calls, day);
+          if (!target) {
+            unmatched.push(`${day.port_name ?? "Hafen unbekannt"} (${day.call_date ?? "Datum unbekannt"})`);
+            continue;
+          }
+          const i = port_calls.indexOf(target);
+          port_calls[i] = {
+            ...target,
+            arrival_time: day.arrival_time ?? target.arrival_time,
+            departure_time: day.departure_time ?? target.departure_time,
+          };
+          matched += 1;
+        }
+        return { ...prev, port_calls };
+      });
+      const matchedText =
+        matched > 0
+          ? `Zeiten für ${matched} Tag${matched === 1 ? "" : "e"} übernommen - bitte unten gegenprüfen.`
+          : "Keine der im Dokument erkannten Zeiten konnte einem vorhandenen Reisetag zugeordnet werden.";
+      const unmatchedText = unmatched.length > 0 ? ` Nicht zugeordnet: ${unmatched.join(", ")}.` : "";
+      setTimesNote(matchedText + unmatchedText);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
+    } finally {
+      setExtractingTimes(false);
+      if (timesFileInputRef.current) timesFileInputRef.current.value = "";
+    }
+  }
+
   function addBooking() {
     setData((prev) => ({
       ...prev,
@@ -90,6 +176,13 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
     setData((prev) => ({
       ...prev,
       bookings: prev.bookings.filter((_, i) => i !== index),
+    }));
+  }
+
+  function removeTraveler(index: number) {
+    setData((prev) => ({
+      ...prev,
+      travelers: prev.travelers.filter((_, i) => i !== index),
     }));
   }
 
@@ -184,7 +277,26 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-lg font-medium text-ink">Reiseverlauf</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-lg font-medium text-ink">Reiseverlauf</h2>
+          <div className="flex items-center gap-3">
+            <input
+              ref={timesFileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
+              className="hidden"
+              onChange={(e) => handleTimesFile(e.target.files?.[0])}
+            />
+            <button
+              onClick={() => timesFileInputRef.current?.click()}
+              disabled={extractingTimes}
+              className="text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {extractingTimes ? "Liest Dokument …" : "Zeiten aus Foto/PDF übernehmen"}
+            </button>
+          </div>
+        </div>
+        {timesNote && <p className="text-xs text-fjord-dark">{timesNote}</p>}
         <div className="space-y-2">
           {data.port_calls.map((pc, i) => (
             <div key={i} className="grid grid-cols-5 gap-2 rounded-lg border border-ink/10 p-3">
@@ -195,13 +307,13 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
                 label="Ankunft"
                 value={pc.arrival_time}
                 placeholder="unbekannt – nicht raten"
-                onChange={(v) => updatePortCall(i, { arrival_time: v || null })}
+                onChange={(v) => updatePortCall(i, { arrival_time: formatTimeInput(v) || null })}
               />
               <Field
                 label="Abfahrt"
                 value={pc.departure_time}
                 placeholder="unbekannt – nicht raten"
-                onChange={(v) => updatePortCall(i, { departure_time: v || null })}
+                onChange={(v) => updatePortCall(i, { departure_time: formatTimeInput(v) || null })}
               />
             </div>
           ))}
@@ -215,10 +327,18 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
         <h2 className="font-display text-lg font-medium text-ink">Mitreisende</h2>
         <div className="space-y-2">
           {data.travelers.map((t, i) => (
-            <div key={i} className="grid grid-cols-3 gap-2">
-              <Field label="Name" value={t.name} onChange={(v) => updateTraveler(i, { name: v })} />
-              <Field label="Alter zur Reisezeit" value={t.age_at_trip} onChange={(v) => updateTraveler(i, { age_at_trip: v ? Number(v) : null })} />
-              <Field label="Kabine" value={t.cabin_number} onChange={(v) => updateTraveler(i, { cabin_number: v || null })} />
+            <div key={i} className="rounded-lg border border-ink/10 p-3">
+              <div className="grid grid-cols-3 gap-2">
+                <Field label="Name" value={t.name} onChange={(v) => updateTraveler(i, { name: v })} />
+                <Field label="Alter zur Reisezeit" value={t.age_at_trip} onChange={(v) => updateTraveler(i, { age_at_trip: v ? Number(v) : null })} />
+                <Field label="Kabine" value={t.cabin_number} onChange={(v) => updateTraveler(i, { cabin_number: v || null })} />
+              </div>
+              <button
+                onClick={() => removeTraveler(i)}
+                className="mt-2 text-xs font-medium text-ink/40 hover:text-red-700"
+              >
+                Mitreisenden entfernen
+              </button>
             </div>
           ))}
           {data.travelers.length === 0 && (

@@ -26,7 +26,7 @@ export default function CabinCard({ booking, travelers }: { booking: Booking; tr
             {initialsFor(t.name)}
           </span>
         ))}
-        {travelers.length === 0 && <span className="text-xs text-ink/40">Keine Reisenden zugeordnet</span>}
+        {travelers.length === 0 && <span className="text-xs text-ink/40">Noch keine Reisenden zugeordnet.</span>}
       </div>
     </div>
   );

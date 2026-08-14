@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ChatPanel, { type ChatMessage, type MemoryEntry } from "@/components/ChatPanel";
+import { ChatIcon, CloseIcon } from "@/components/icons";
 
 interface ChatWidgetProps {
   tripId: string;
@@ -23,7 +24,7 @@ export default function ChatWidget({ tripId, initialMessages, initialMemory }: C
               aria-label="Chat schließen"
               className="text-fjord-light/70 hover:text-white"
             >
-              ✕
+              <CloseIcon className="h-5 w-5" />
             </button>
           </div>
           <ChatPanel tripId={tripId} initialMessages={initialMessages} initialMemory={initialMemory} />
@@ -35,11 +36,7 @@ export default function ChatWidget({ tripId, initialMessages, initialMemory }: C
         className="flex h-14 w-14 items-center justify-center rounded-full bg-fjord text-white shadow-lg transition hover:bg-fjord-dark"
         aria-label={open ? "Chat einklappen" : "Chat öffnen"}
       >
-        {open ? (
-          <span className="text-xl">✕</span>
-        ) : (
-          <span className="text-2xl">💬</span>
-        )}
+        {open ? <CloseIcon className="h-6 w-6" /> : <ChatIcon className="h-6 w-6" />}
       </button>
     </div>
   );

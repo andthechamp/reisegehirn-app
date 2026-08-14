@@ -11,6 +11,14 @@ import { DEEPER_RESEARCH_PROMPT } from "@/lib/chat-constants";
 // deshalb diese Konvention statt sich auf \n zu verlassen.
 const CONTENT_FORMATTING_RULE = `Formatiere jedes content-Feld: Enthält ein Eintrag mehrere eigenständige Fakten oder Tipps (z. B. mehrere Restaurants, mehrere Wetter-/Packtipps), trenne jeden einzelnen mit "• " davor (z. B. "• Fakt eins • Fakt zwei • Fakt drei"). Geht es nur um eine einzelne, zusammenhängende Aussage, genügt ein normaler Satz ohne "•".`;
 
+// Geteilte Regel gegen kaputtes JSON: bei längeren, mehrabsätzigen
+// content-Feldern setzt das Modell trotz Anweisung gelegentlich einen echten
+// Zeilenumbruch statt "\n", oder ein normales Anführungszeichen " für ein
+// zitiertes Wort statt einer Alternative - beides bricht JSON.parse und
+// macht den gesamten Recherche-Durchlauf ungültig, obwohl der Inhalt
+// inhaltlich in Ordnung wäre.
+const JSON_SAFETY_RULE = `Damit deine Antwort als JSON geparst werden kann: Verwende in JEDEM String-Feld (v. a. content, title, source_name) niemals einen echten Zeilenumbruch - schreibe stattdessen "\\n" als zwei Zeichen (Backslash + n), falls du innerhalb eines Feldes wirklich einen Absatz brauchst, oder trenne Gedanken stattdessen mit "• " (siehe Formatierungsregel). Verwende außerdem niemals ein normales Anführungszeichen (") für ein zitiertes Wort oder einen Eigennamen innerhalb eines String-Werts - nutze stattdessen typografische Anführungszeichen („ ") oder einfache Anführungszeichen (').`;
+
 // Geteilte Verifikations-Regel für alle Recherche-Prompts: konkrete, prüfbare
 // Einzelbehauptungen (z. B. "es gibt einen Kinderpool") sind die häufigste
 // Fehlerquelle bei Websuche - eine einzelne veraltete oder falsche Quelle wird
@@ -111,6 +119,7 @@ Regeln, an die du dich strikt hältst:
 10. Reihenfolge im Ergebnis-Array: "Allgemeine Schiffsdaten" (Baujahr, Länge, Passagierkapazität o. Ä.) immer als ERSTER Eintrag, danach die übrigen Themen in beliebiger sinnvoller Reihenfolge.
 ${VERIFICATION_RULE}
 ${CONTENT_FORMATTING_RULE}
+${JSON_SAFETY_RULE}
 
 Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Array zurück, exakt in diesem Schema, ohne Markdown, ohne Erklärtext davor oder danach:
 
@@ -158,6 +167,7 @@ Regeln, an die du dich strikt hältst:
 7. Nenne im title-Feld immer den Hafennamen "${portName}", damit bei mehreren Häfen einer Reise klar bleibt, worauf sich ein Eintrag bezieht.
 ${VERIFICATION_RULE}
 ${CONTENT_FORMATTING_RULE}
+${JSON_SAFETY_RULE}
 
 Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Array zurück, exakt in diesem Schema, ohne Markdown, ohne Erklärtext davor oder danach:
 
@@ -173,6 +183,34 @@ Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Arra
   }
 ]`;
 }
+
+// Extraktions-Prompt für einen Reiseverlauf-Screenshot ohne Schiffsname/
+// Buchungszeitraum (z. B. "Reiseverlauf"-Ansicht einer Reederei-App/-Website)
+// - dient dazu, bei einer bereits gespeicherten Reise nachträglich nur die
+// An-/Abfahrtszeiten zu ergänzen, ohne die volle Buchungsbestätigung zu brauchen.
+export const ITINERARY_EXTRACTION_SYSTEM_PROMPT = `Du extrahierst NUR den Reiseverlauf (Tage, Häfen, An-/Abfahrtszeiten) aus einem Dokument oder Screenshot einer Kreuzfahrt - typischerweise eine "Reiseverlauf"-Ansicht einer Reederei-App/-Website, keine vollständige Buchungsbestätigung.
+
+Regeln, an die du dich strikt hältst:
+1. Gib ausschließlich valides JSON zurück, exakt im unten vorgegebenen Schema. Kein Markdown, keine Codefences, keine Erklärungen davor oder danach.
+2. Erfinde niemals Werte. Wenn ein Feld im Dokument nicht eindeutig erkennbar ist, setze es auf null.
+3. arrival_time und departure_time sind besonders wichtig: Trage NIEMALS eine plausibel klingende Uhrzeit ein, die nicht explizit im Dokument steht. Im Zweifel: null.
+4. day_number: nummeriere durchgehend ab 1 für den ERSTEN Tag der Reise (Einschiffung/Anreisetag), unabhängig davon, wie das Dokument selbst die Tage benennt. Manche Apps nennen den ersten Tag "Anreise" statt "Tag 1" und zählen die folgenden Tage ab 1 weiter (z. B. "Tag 1" im Dokument = der zweite Reisetag) - das darfst du NICHT übernehmen, sondern musst konsequent bei 1 für den allerersten Tag beginnen.
+5. is_sea_day ist true, wenn für diesen Tag kein Hafen angelaufen wird (reiner Seetag).
+6. Datumsangaben im Format YYYY-MM-DD, Uhrzeiten im Format HH:MM (24-Stunden).
+7. Gib für JEDEN im Dokument sichtbaren Tag einen Eintrag zurück, auch wenn für diesen Tag keine Zeiten erkennbar sind (dann arrival_time/departure_time auf null).
+
+Antworte NUR mit einem JSON-Array exakt in dieser Form, ohne Zusatztext:
+
+[
+  {
+    "day_number": number,
+    "call_date": string | null,
+    "port_name": string | null,
+    "arrival_time": string | null,
+    "departure_time": string | null,
+    "is_sea_day": boolean
+  }
+]`;
 
 // Extraktions-Prompt für eine einzelne Ausflugsbuchung (Reederei-Ausflug oder
 // privater Anbieter) - gleiche "nichts erfinden"-Regel wie bei der Haupt-

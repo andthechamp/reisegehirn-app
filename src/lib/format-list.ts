@@ -33,3 +33,20 @@ export function splitBulletList(text: string): string[] | null {
 
   return parts.length >= 2 ? parts : null;
 }
+
+/**
+ * Fallback für Recherche-Text ohne erkennbare Listen-Struktur: trennt lange
+ * Fließtext-Absätze in einzelne Sätze auf, damit sie nicht als ein
+ * ununterbrochener Textblock erscheinen. Split nur nach Satzzeichen + Leerzeichen
+ * + Großbuchstabe, damit Abkürzungen ("bzw.", "z. B.", "ca. 5 Euro") nicht
+ * fälschlich einen Satz beenden.
+ */
+export function splitSentences(text: string): string[] | null {
+  const trimmed = text.trim();
+  const parts = trimmed
+    .split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ])/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  return parts.length >= 2 ? parts : null;
+}
