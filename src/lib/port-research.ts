@@ -2,10 +2,16 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
 import { buildPortResearchPrompt } from "@/lib/prompts";
 import { parseResearchFindings, SHARED_PORT_CATEGORIES } from "@/lib/research-schema";
+import { googleSearchUrl, lookupWikipediaImage } from "@/lib/wikimedia";
+import { buildWeatherFinding, getWeatherData } from "@/lib/weather";
 
 export type PortResearchResult =
   | { ok: true; findings: Record<string, unknown>[] }
   | { ok: false; error: string };
+
+// Geteiltes Hafenwissen (port_research) gilt für diese Zeitspanne als aktuell -
+// danach wird bei Gelegenheit erneut recherchiert statt der Cache blind vertraut.
+export const PORT_RESEARCH_CACHE_MAX_AGE_DAYS = 7;
 
 /**
  * Führt die Websuche-Recherche für einen Hafenanlauf aus und ersetzt die
@@ -54,6 +60,35 @@ export async function researchAndSavePort(
     return { ok: false, error: "Keine Findings geparst." };
   }
 
+  // Bilder werden nicht mehr von der KI per Websuche gesucht (unzuverlässig,
+  // siehe buildPortResearchPrompt) - stattdessen hier deterministisch über
+  // die Wikipedia-API nachgeschlagen, ein kostenloser HTTP-Call pro
+  // Sehenswürdigkeit statt eines KI-Aufrufs. Liefert dabei auch gleich den
+  // "Mehr erfahren"-Link (Wikipedia-Artikel, sonst Google-Suche als Fallback).
+  const sehenswuerdigkeitenFinding = findings.find((f) => f.category === "sehenswuerdigkeiten" && f.items);
+  if (sehenswuerdigkeitenFinding?.items) {
+    sehenswuerdigkeitenFinding.items = await Promise.all(
+      sehenswuerdigkeitenFinding.items.map(async (item) => {
+        const lookup = await lookupWikipediaImage(item.name);
+        return {
+          ...item,
+          image_url: lookup?.url ?? null,
+          image_source: lookup?.source ?? null,
+          article_url: lookup?.articleUrl ?? googleSearchUrl(`${item.name} ${portName}`),
+        };
+      })
+    );
+  }
+
+  // Wetter/Packtipps kommen nicht mehr von der KI (siehe buildPortResearchPrompt),
+  // sondern werden hier aus historischen Open-Meteo-Daten berechnet und als
+  // eigener Finding-Eintrag ergänzt. Kein Fund (z. B. Geocoding fehlgeschlagen)
+  // -> Thema fällt weg, statt eine falsche/erfundene Angabe zu zeigen.
+  const weatherData = await getWeatherData(portName, callDate);
+  if (weatherData) {
+    findings.push(buildWeatherFinding(portName, callDate, weatherData));
+  }
+
   const sharedFindings = findings.filter((f) => SHARED_PORT_CATEGORIES.includes(f.category));
   const tripFindings = findings.filter((f) => !SHARED_PORT_CATEGORIES.includes(f.category));
 
@@ -74,6 +109,7 @@ export async function researchAndSavePort(
       category: f.category,
       title: f.title,
       content: f.content,
+      items: f.items ?? null,
       source_tier: f.source_tier,
       source_name: f.source_name,
       source_url: f.source_url,
@@ -110,4 +146,31 @@ export async function researchAndSavePort(
     // dieser Reise wird er hier ergänzt, ohne ihn in der geteilten Tabelle zu speichern.
     findings: [...insertedPort.map((r) => ({ ...r, port_call_id: portCallId })), ...insertedTrip],
   };
+}
+
+/**
+ * Recherchiert einen Hafenanlauf nur, wenn kein aktueller Cache-Treffer in
+ * port_research existiert (analog zum Cache-Check in /api/research/port,
+ * aber ohne die Response-Formatierung fürs Frontend). Für den automatischen
+ * Anstoß direkt nach dem Hochladen einer Reise (/api/confirm), damit nicht
+ * jeder Hafen einer bereits recherchierten Route unnötig neu gesucht wird.
+ */
+export async function ensurePortResearched(
+  supabase: SupabaseClient,
+  params: { tripId: string; portCallId: string; shipName: string; portName: string; callDate: string }
+): Promise<PortResearchResult> {
+  const cutoff = new Date(Date.now() - PORT_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const { data: cachedPort, error: cachedPortError } = await supabase
+    .from("port_research")
+    .select("*")
+    .eq("port_name", params.portName)
+    .gte("retrieved_at", cutoff)
+    .order("sort_order", { ascending: true });
+  if (cachedPortError) return { ok: false, error: cachedPortError.message };
+
+  if (cachedPort && cachedPort.length > 0) {
+    return { ok: true, findings: cachedPort.map((r) => ({ ...r, port_call_id: params.portCallId })) };
+  }
+
+  return researchAndSavePort(supabase, params);
 }

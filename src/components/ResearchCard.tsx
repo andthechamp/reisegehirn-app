@@ -61,7 +61,7 @@ export default function ResearchCard({
 
       {expanded && (
         <div className="pb-3 pl-10 pr-3">
-          <FindingContent content={f.content} />
+          <FindingContent content={f.content} items={f.items} />
 
           {(categoryLabel || f.source_name) && (
             <div className="mt-2 flex flex-wrap items-center gap-1.5">

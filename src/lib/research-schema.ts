@@ -1,6 +1,8 @@
 // Spiegelt die Spalten der research_findings-Tabelle aus supabase/schema.sql
 // (Ebene 2 "Recherchiertes Wissen").
 
+import { isValidWikimediaFileUrl } from "@/lib/wikimedia";
+
 export type ResearchCategory =
   | "anleger"
   | "ausflug_offiziell"
@@ -16,11 +18,28 @@ export type ResearchCategory =
 
 export type SourceTier = "A" | "B" | "C";
 export type Staleness = "zeitlos" | "saisonal" | "verfällt";
+export type ImageSource = "wikimedia_commons" | "wikipedia";
+
+// Maßgebliche strukturierte Fassung einer einzelnen Sehenswürdigkeit -
+// unabhängig vom (nur für Chat/Fließtext gedachten) content-Feld, damit die
+// Bild-Anzeige nicht von fragilem Text-Parsing der nummerierten Liste
+// abhängt (siehe buildPortResearchPrompt).
+export interface SightItem {
+  name: string;
+  description: string;
+  image_url: string | null;
+  image_source: ImageSource | null;
+  // Link für "Mehr erfahren" - Wikipedia-Artikel falls vorhanden, sonst eine
+  // Google-Suche als Fallback (siehe lookupWikipediaImage/googleSearchUrl).
+  article_url: string | null;
+}
 
 export interface ResearchFinding {
   category: ResearchCategory;
   title: string;
   content: string;
+  // Nur bei category "sehenswuerdigkeiten" befüllt (siehe buildPortResearchPrompt).
+  items?: SightItem[];
   source_tier: SourceTier;
   source_name: string | null;
   source_url: string | null;
@@ -57,6 +76,23 @@ const VALID_CATEGORIES: ResearchCategory[] = [
 ];
 const VALID_SOURCE_TIERS: SourceTier[] = ["A", "B", "C"];
 const VALID_STALENESS: Staleness[] = ["zeitlos", "saisonal", "verfällt"];
+const VALID_IMAGE_SOURCES: ImageSource[] = ["wikimedia_commons", "wikipedia"];
+
+function isSightItem(item: unknown): item is SightItem {
+  if (typeof item !== "object" || item === null) return false;
+  const i = item as Record<string, unknown>;
+  return (
+    typeof i.name === "string" &&
+    typeof i.description === "string" &&
+    // image_url/image_source kommen nicht mehr von der KI (die liefert nur
+    // noch name+description) - sie werden erst danach serverseitig über
+    // lookupWikipediaImage() ergänzt, sind beim Parsen also normalerweise
+    // schlicht nicht vorhanden (undefined).
+    (i.image_url === undefined || i.image_url === null || typeof i.image_url === "string") &&
+    (i.image_source === undefined || i.image_source === null || VALID_IMAGE_SOURCES.includes(i.image_source as ImageSource)) &&
+    (i.article_url === undefined || i.article_url === null || typeof i.article_url === "string")
+  );
+}
 
 function isResearchFinding(item: unknown): item is ResearchFinding {
   if (typeof item !== "object" || item === null) return false;
@@ -68,7 +104,8 @@ function isResearchFinding(item: unknown): item is ResearchFinding {
     VALID_SOURCE_TIERS.includes(f.source_tier as SourceTier) &&
     VALID_STALENESS.includes(f.staleness as Staleness) &&
     (f.source_name === null || typeof f.source_name === "string") &&
-    (f.source_url === null || typeof f.source_url === "string")
+    (f.source_url === null || typeof f.source_url === "string") &&
+    (f.items === undefined || (Array.isArray(f.items) && f.items.every(isSightItem)))
   );
 }
 
@@ -96,9 +133,14 @@ function looksLikeRealStringEnd(text: string, i: number): boolean {
  *    öffnende Anführung („) mit einer geraden ASCII-Anführung (") statt der
  *    passenden schließenden schließt (z. B. „Insel der Seeräuber" statt
  *    „Insel der Seeräuber") - diese unescapte " mitten im String beendet
- *    für JSON.parse den String vorzeitig. Erkannt über einen Blick auf das
- *    nächste Nicht-Leerzeichen-Zeichen: folgt kein JSON-Strukturzeichen
- *    (",", "}", "]", ":"), war es keine echte schließende Anführung.
+ *    für JSON.parse den String vorzeitig. Erkannt primär über ein offenes „,
+ *    das noch nicht durch " geschlossen wurde: folgt danach eine gerade "
+ *    ohne dass zwischendurch " kam, ist das fast sicher die gemeinte
+ *    schließende Anführung, unabhängig davon, was danach folgt (z. B. direkt
+ *    ein Komma, wie bei „Meine Landausflüge.de", die ...). Ohne offenes „
+ *    bleibt als Fallback der Blick auf das nächste Nicht-Leerzeichen-Zeichen:
+ *    folgt kein JSON-Strukturzeichen (",", "}", "]", ":"), war es keine
+ *    echte schließende Anführung.
  *
  * Außerhalb von Strings (Einrückung zwischen den Objekten) bleibt der Text
  * unverändert, da dort erlaubt/irrelevant.
@@ -106,6 +148,7 @@ function looksLikeRealStringEnd(text: string, i: number): boolean {
 function escapeControlCharsInStrings(text: string): string {
   let result = "";
   let inString = false;
+  let openGermanQuote = false;
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (inString) {
@@ -114,8 +157,20 @@ function escapeControlCharsInStrings(text: string): string {
         i += 1;
         continue;
       }
+      if (ch === "„") {
+        openGermanQuote = true;
+        result += ch;
+        continue;
+      }
       if (ch === '"') {
-        if (looksLikeRealStringEnd(text, i + 1)) {
+        if (openGermanQuote) {
+          // Schließt eine zuvor geöffnete „...“-Phrase innerhalb des
+          // content-Feldes - das ist NIE das echte Ende des JSON-Strings,
+          // selbst wenn direkt danach zufällig ein Komma folgt (siehe
+          // „Meine Landausflüge.de", die ... im Beispiel oben).
+          openGermanQuote = false;
+          result += '\\"';
+        } else if (looksLikeRealStringEnd(text, i + 1)) {
           inString = false;
           result += ch;
         } else {
@@ -138,7 +193,10 @@ function escapeControlCharsInStrings(text: string): string {
       result += ch;
       continue;
     }
-    if (ch === '"') inString = true;
+    if (ch === '"') {
+      inString = true;
+      openGermanQuote = false;
+    }
     result += ch;
   }
   return result;
@@ -154,6 +212,23 @@ function escapeControlCharsInStrings(text: string): string {
  */
 function stripCitationTags(text: string): string {
   return text.replace(/<\/?cite(?:[^<>]*)>/g, "");
+}
+
+/**
+ * Das Modell hält sich nicht immer an die Prompt-Vorgabe, image_url nur bei
+ * einer echten Datei-Seite mit klarer Lizenz zu setzen - z. B. liefert es
+ * gelegentlich einen Commons-Kategorie-Link mit mehreren Bildern unklarer
+ * Lizenz statt eines einzelnen Bildes (beobachtet bei Bergen: "Category:
+ * Bergen_Fishmarket" statt "File:..."). Statt dem selbstberichteten
+ * image_source zu vertrauen, wird die URL serverseitig geprüft und bei
+ * ungültiger Form auf null gesetzt, BEVOR sie in port_research landet.
+ */
+function sanitizeSightItems(items: SightItem[]): SightItem[] {
+  return items.map((item) =>
+    item.image_url && !isValidWikimediaFileUrl(item.image_url)
+      ? { ...item, image_url: null, image_source: null }
+      : item
+  );
 }
 
 /**
@@ -180,5 +255,5 @@ export function parseResearchFindings(raw: string): ResearchFinding[] {
   }
 
   if (!Array.isArray(parsed)) return [];
-  return parsed.filter(isResearchFinding);
+  return parsed.filter(isResearchFinding).map((f) => (f.items ? { ...f, items: sanitizeSightItems(f.items) } : f));
 }

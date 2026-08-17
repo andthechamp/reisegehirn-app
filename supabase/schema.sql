@@ -174,6 +174,13 @@ create table port_research (
                )),
   title        text not null,
   content      text not null,
+  -- Nur für category 'sehenswuerdigkeiten' befüllt: maßgebliche strukturierte
+  -- Fassung der 5 Sehenswürdigkeiten, je Eintrag { name, description,
+  -- image_url, image_source }, Bilder ausschließlich von Wikimedia Commons/
+  -- Wikipedia (siehe buildPortResearchPrompt) - sonst null. Bewusst getrennt
+  -- von content (das bleibt Fließtext für Chat-Kontext/Suche), damit die
+  -- Bild-Anzeige nicht am fragilen Parsen der nummerierten Liste in content hängt.
+  items        jsonb,
   source_tier  text not null check (source_tier in ('A', 'B', 'C')),
   source_name  text,
   source_url   text,

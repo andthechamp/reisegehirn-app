@@ -3,17 +3,39 @@
  * ("1. Punkt eins 2. Punkt zwei ..."), auch wenn das Modell keine echten
  * Zeilenumbrüche zwischen den Punkten gesetzt hat. Gibt null zurück, wenn
  * kein Listen-Muster erkennbar ist - dann wird der Text als Fließtext angezeigt.
+ *
+ * Eine im Fließtext erwähnte Zahl wie "17. Jahrhundert" sieht für sich
+ * genommen genauso aus wie ein echter Listenpunkt ("N. Text") - das lässt
+ * sich nicht an der Zahl selbst unterscheiden, nur an der Reihenfolge: echte
+ * Listenpunkte bilden immer exakt die Sequenz 1, 2, 3, ... Deshalb werden
+ * alle Kandidaten-Trennstellen gesammelt und nur akzeptiert, wenn ihre Zahlen
+ * lückenlos bei 1 beginnend aufsteigen.
  */
 export function splitNumberedList(text: string): string[] | null {
   const trimmed = text.trim();
   if (!/^\d+\.\s/.test(trimmed)) return null;
 
-  const parts = trimmed
-    .split(/\s*(?=\d+\.\s)/)
-    .map((p) => p.replace(/^\d+\.\s*/, "").trim())
-    .filter(Boolean);
+  // Bevorzugt: echte Zeilenumbriche zwischen den Punkten (wie in
+  // buildPortResearchPrompt für sehenswuerdigkeiten verlangt).
+  const lines = trimmed.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  if (lines.length >= 2 && lines.every((l, i) => new RegExp(`^${i + 1}\\.\\s`).test(l))) {
+    return lines.map((l) => l.replace(/^\d+\.\s*/, "").trim());
+  }
 
-  return parts.length >= 2 ? parts : null;
+  // Fallback ohne echte Zeilenumbrüche: Kandidaten sammeln (?<!\d) verhindert
+  // dabei zusätzlich, dass "17." selbst als Zahlenlauf "1" + "7." erkannt wird.
+  const candidates = [...trimmed.matchAll(/(?<!\d)(\d+)\.\s+/g)];
+  if (candidates.length < 2 || !candidates.every((m, i) => Number(m[1]) === i + 1)) {
+    return null;
+  }
+
+  const parts: string[] = [];
+  for (let i = 0; i < candidates.length; i++) {
+    const start = candidates[i].index! + candidates[i][0].length;
+    const end = i + 1 < candidates.length ? candidates[i + 1].index! : trimmed.length;
+    parts.push(trimmed.slice(start, end).trim());
+  }
+  return parts.filter(Boolean).length >= 2 ? parts.filter(Boolean) : null;
 }
 
 /**

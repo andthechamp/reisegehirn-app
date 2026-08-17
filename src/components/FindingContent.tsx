@@ -1,10 +1,61 @@
 import { splitNumberedList, splitBulletList, splitSentences } from "@/lib/format-list";
+import { googleSearchUrl, resolveDisplayImageUrl } from "@/lib/wikimedia";
+import type { SightItem } from "@/lib/research-schema";
 
 // Ab dieser Länge wirkt ein einzelner Absatz als dichter Textblock - erst
 // dann lohnt sich die Auftrennung in einzelne Sätze.
 const LONG_PARAGRAPH_THRESHOLD = 180;
 
-export default function FindingContent({ content }: { content: string }) {
+interface FindingContentProps {
+  content: string;
+  // Nur bei category "sehenswuerdigkeiten" gesetzt - maßgebliche Fassung,
+  // unabhängig vom Text-Parsing von content (siehe buildPortResearchPrompt).
+  items?: SightItem[] | null;
+}
+
+export default function FindingContent({ content, items }: FindingContentProps) {
+  if (items && items.length > 0) {
+    return (
+      <ol className="mt-1 list-none space-y-3 pl-0 text-sm leading-relaxed text-ink/80">
+        {items.map((item, i) => {
+          const thumbUrl = item.image_url ? resolveDisplayImageUrl(item.image_url) : null;
+          // Ältere, vor dieser Umstellung gespeicherte Einträge kennen
+          // article_url noch nicht (undefined) - dann hier client-seitig auf
+          // die Google-Suche ausweichen, damit "Mehr erfahren" nie fehlt.
+          const moreInfoUrl = item.article_url ?? googleSearchUrl(item.name);
+          return (
+            <li key={i} className="flex gap-3">
+              <span className="shrink-0 font-medium text-fjord">{i + 1}.</span>
+              <a
+                href={moreInfoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-1 gap-3 rounded-lg transition hover:bg-fjord-light/40"
+                title={`Mehr erfahren: ${item.name}`}
+              >
+                {thumbUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={thumbUrl}
+                    alt={item.name}
+                    loading="lazy"
+                    className="h-16 w-16 shrink-0 rounded-lg object-cover bg-ink/5"
+                  />
+                )}
+                <span className="flex-1">
+                  <span className="font-medium text-ink underline decoration-ink/20 underline-offset-2">
+                    {item.name}
+                  </span>
+                  {item.description && <>: {item.description}</>}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    );
+  }
+
   const numbered = splitNumberedList(content);
   if (numbered) {
     return (

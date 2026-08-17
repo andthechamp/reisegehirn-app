@@ -1,4 +1,5 @@
 import type { getSupabaseServerClient } from "@/lib/supabase";
+import type { SightItem } from "@/lib/research-schema";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServerClient>>;
 
@@ -45,6 +46,8 @@ export interface TripContext {
     category: string;
     title: string;
     content: string;
+    // Nur bei category "sehenswuerdigkeiten" befüllt (siehe port_research.items).
+    items: SightItem[] | null;
     source_tier: string;
     source_name: string | null;
     source_url: string | null;
@@ -157,6 +160,7 @@ export async function fetchTripContext(
       category: r.category,
       title: r.title,
       content: r.content,
+      items: (r.items as SightItem[] | null) ?? null,
       source_tier: r.source_tier,
       source_name: r.source_name,
       source_url: r.source_url,
@@ -208,6 +212,7 @@ export async function fetchTripContext(
         category: r.category,
         title: r.title,
         content: r.content,
+        items: null,
         source_tier: r.source_tier,
         source_name: r.source_name,
         source_url: r.source_url,
@@ -219,6 +224,7 @@ export async function fetchTripContext(
         category: r.category,
         title: r.title,
         content: r.content,
+        items: null,
         source_tier: r.source_tier,
         source_name: r.source_name,
         source_url: r.source_url,

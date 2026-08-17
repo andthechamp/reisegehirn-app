@@ -109,6 +109,8 @@ Das Schiff heißt exakt: "${shipName}"
 Regeln, an die du dich strikt hältst:
 1. Nutze das web_search-Tool aktiv, um Informationen zu finden. Verlasse dich nicht nur auf dein Trainingswissen - Schiffsausstattung, Decksplan und Restaurants ändern sich durch Refits und sind schnell veraltet.
 2. WICHTIG - Schwesterschiffe nicht verwechseln: Viele Reedereien haben Flotten mit sehr ähnlich benannten Schiffen (z. B. "Mein Schiff 1" bis "Mein Schiff 7", "AIDAperla" vs. "AIDAprima"). Diese unterscheiden sich oft in Baujahr, Größe, Decksplan und Restaurant-Auswahl. Prüfe bei JEDER Quelle explizit, ob sie sich wirklich auf "${shipName}" bezieht, und nicht auf ein anderes Schiff derselben Reederei/Flotte. Ist das bei einem Suchtreffer nicht eindeutig erkennbar, verwirf diesen Treffer für konkrete Fakten (Restaurantnamen, Deckpläne, Kapazitäten) - nutze ihn höchstens noch für Informationen, die nachweislich für die ganze Baureihe/Flotte gelten, und mach das im content-Feld ausdrücklich kenntlich (z. B. "gilt für die gesamte Mein-Schiff-Flotte").
+2b. WICHTIG - auch gleicher Schiffsname kann unterschiedliche Schiffe meinen: Manche Reedereien vergeben einen Schiffsnamen nach Ausmusterung des alten Trägers an einen komplett neuen Schiffsneubau weiter (z. B. "Mein Schiff 1" von 2018 ist ein anderes, neu gebautes Schiff als die gleichnamige "Mein Schiff 1" von 1996/2009, die inzwischen unter anderem Namen bei einer anderen Reederei fährt). Prüfe bei Baujahr/Baujahr-Angaben in Quellen, ob sie zur tatsächlich gemeinten Schiffsgeneration passen - eine Quelle über eine ältere Namensvorgängerin desselben Namens NICHT für Ausstattungs-/Restaurant-Fakten der aktuellen Schiffsgeneration verwenden, auch wenn der Schiffsname identisch ist. Restaurant- und Ausstattungskonzepte werden zudem bei Refits gezielt zwischen einzelnen Flottenschiffen getauscht (ein Restaurant kann von einem Schiff genommen und durch ein anderes ersetzt werden) - eine Quelle, die nur "gehört zur Mein-Schiff-Flotte" sagt, reicht NICHT als Beleg dafür, dass ein bestimmtes Restaurant auch auf "${shipName}" existiert.
+2c. WICHTIG - keine gemischte Vertrauenswürdigkeit in einem Eintrag: Ist innerhalb eines content-Feldes auch nur EINE Einzelbehauptung nicht ausreichend verifiziert (siehe Verifikationsregel unten), dann darf der gesamte Eintrag NICHT als source_tier "A" geführt werden, selbst wenn andere Teile desselben Eintrags aus einer offiziellen Quelle stammen - vergib in diesem Fall höchstens "B" oder "C", je nach der unsichersten enthaltenen Behauptung. Besser: unsichere Einzelbehauptungen (z. B. eine nicht gegengeprüfte Restaurant-Liste) in einen eigenen, separaten Eintrag mit eigenem, niedrigerem source_tier auslagern, statt sie mit sicheren Fakten in einem Eintrag mit hohem source_tier zu vermischen.
 3. Erfinde niemals Informationen. Findest du zu einem Aspekt (z. B. Decksplan-Link) nichts Verlässliches für genau dieses Schiff, lass diesen Punkt einfach weg, statt zu raten oder ein Schwesterschiff einzusetzen.
 4. Bevorzuge die offizielle Reederei-Website für Fakten zu Ausstattung, Decksplan und Restaurants. Etablierte Kreuzfahrt-Portale sind als Ergänzung in Ordnung.
 5. Bewerte jede Quelle: "A" = offizielle Reederei-Seite, "B" = etabliertes Kreuzfahrt-Portal, "C" = Forum/Blog/unklare Quelle.
@@ -151,14 +153,14 @@ Schiff: "${shipName}" (Reederei des Schiffs für offizielle Ausflüge relevant)
 Regeln, an die du dich strikt hältst:
 1. Nutze das web_search-Tool aktiv. Verlasse dich nicht nur auf dein Trainingswissen - Anlegestellen, Ausflugsangebote, Preise und Öffnungszeiten ändern sich.
 2. Themen, die du abdecken sollst (falls auffindbar), jeweils als eigener Eintrag:
-   - sehenswuerdigkeiten: GENAU EIN Eintrag mit den Top 5 Sehenswürdigkeiten des Ortes. content-Feld: nummerierte Liste 1 bis 5, pro Punkt Name plus ein bis zwei Sätze Beschreibung. Nach Bekanntheit/Beliebtheit auswählen, nicht nach Nähe zum Anleger. Trenne die 5 Punkte durch ein echtes Zeilenumbruchzeichen (\n) im JSON-String, nicht alles als einen zusammenhängenden Fließtext.
+   - sehenswuerdigkeiten: GENAU EIN Eintrag mit den Top 5 Sehenswürdigkeiten des Ortes. content-Feld: nummerierte Liste 1 bis 5, pro Punkt Name plus ein bis zwei Sätze Beschreibung. Nach Bekanntheit/Beliebtheit auswählen, nicht nach Nähe zum Anleger. Trenne die 5 Punkte durch ein echtes Zeilenumbruchzeichen (\n) im JSON-String, nicht alles als einen zusammenhängenden Fließtext. Fülle zusätzlich, UNABHÄNGIG vom content-Feld, das items-Feld dieses Eintrags: ein Array mit GENAU denselben 5 Sehenswürdigkeiten, je Objekt { "name": string, "description": string (1-2 Sätze, kann identisch zur Beschreibung in content sein) }. items ist die maßgebliche, strukturierte Fassung der 5 Punkte - content ist nur eine zusätzliche Fließtext-Variante für andere Zwecke, beide müssen dieselben 5 Sehenswürdigkeiten in derselben Reihenfolge enthalten. Suche für sehenswuerdigkeiten KEINE Bilder - das übernimmt ein separater Schritt außerhalb dieser Recherche, verschwende dafür keine Websuchen. Bei allen anderen Kategorien bleibt das items-Feld komplett weg (nicht einmal als leeres Array oder null).
    - anleger: NUR die Anlegestelle selbst - welcher Kai/welches Terminal, wo genau befindet er sich. KEINE Angaben zu Fußweg/Entfernung/Route ins Zentrum hier, das gehört ausschließlich unter zu_fuss.
    - ausflug_offiziell: Von der Reederei angebotene Landausflüge, falls dazu öffentlich etwas auffindbar ist.
    - ausflug_privat: Beliebte, unabhängig buchbare Ausflüge/Touren vor Ort.
    - zu_fuss: Entfernung und Wegbeschreibung vom Anleger ins Zentrum, plus was sich ohne Ausflug zu Fuß erreichen/erleben lässt. Dieses Thema gehört NUR hierhin, nicht zusätzlich unter anleger.
    - essen: Empfehlenswerte Restaurants/Cafés in Hafennähe.
    - praktisches: Währung, Sprache, übliche Öffnungszeiten, SIM/WLAN, Taxi vor Ort o. Ä.
-   - wetter_packen: Zu erwartendes Wetter zur Jahreszeit des Anlaufs, Packtipps.
+   Recherchiere KEIN Wetter und keine Packtipps (category "wetter_packen") - das wird separat aus historischen Wetterdaten berechnet, nicht per Websuche. Verschwende dafür keine Websuche.
    Lass Themen weg, zu denen du nichts Verlässliches findest, statt zu raten. Jedes Thema wird nur EINMAL behandelt, in der am besten passenden Kategorie - wiederhole dieselbe Information (z. B. den Fußweg ins Zentrum) nicht in mehreren Einträgen.
 3. Erfinde niemals Informationen. Ein Fund ohne belastbare Quelle wird weggelassen.
 4. Bewerte jede Quelle: "A" = offizielle Quelle (Reederei, Hafenbehörde, offizielle Tourismus-Seite), "B" = etabliertes Reise-/Kreuzfahrt-Portal, "C" = Forum/Blog/unklare Quelle.
@@ -176,12 +178,15 @@ Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Arra
     "category": "sehenswuerdigkeiten" | "anleger" | "ausflug_offiziell" | "ausflug_privat" | "zu_fuss" | "essen" | "praktisches" | "wetter_packen" | "sonstiges",
     "title": string,
     "content": string,
+    "items": [ { "name": string, "description": string } ] | undefined,
     "source_tier": "A" | "B" | "C",
     "source_name": string | null,
     "source_url": string | null,
     "staleness": "zeitlos" | "saisonal" | "verfällt"
   }
-]`;
+]
+
+Das items-Feld gehört NUR in den Eintrag mit category "sehenswuerdigkeiten" - bei jeder anderen category taucht der Schlüssel "items" im Objekt gar nicht erst auf.`;
 }
 
 // Extraktions-Prompt für einen Reiseverlauf-Screenshot ohne Schiffsname/
