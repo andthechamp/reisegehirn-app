@@ -1,6 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServerClient } from "@/lib/supabase";
+import { NextRequest, NextResponse, after } from "next/server";
+import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase";
+import { ensurePortResearched } from "@/lib/port-research";
 import type { ExtractionResult } from "@/lib/extraction-schema";
+
+export const runtime = "nodejs";
+// Nach dem Speichern werden alle Häfen der Reise im Hintergrund recherchiert
+// (siehe unten, after()) - mehrere Häfen nacheinander können eine Weile
+// dauern, daher großzügig bemessen (analog zum Ship-Research-Cron).
+export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,6 +66,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Hafenanläufe - confidence spiegelt Regel 3.2 aus dem Konzeptdokument:
     //    nur 'bestätigt', wenn beide Zeiten tatsächlich vorliegen.
+    let portsToResearch: { id: string; port_name: string; call_date: string }[] = [];
     if (data.port_calls?.length) {
       const rows = data.port_calls.map((pc) => ({
         trip_id: tripId,
@@ -71,8 +79,9 @@ export async function POST(req: NextRequest) {
         confidence: pc.arrival_time && pc.departure_time ? "bestätigt" : "unbekannt",
         source: "Foto-Upload durch Nutzer",
       }));
-      const { error } = await supabase.from("port_calls").insert(rows);
+      const { data: insertedPortCalls, error } = await supabase.from("port_calls").insert(rows).select();
       if (error) throw error;
+      portsToResearch = (insertedPortCalls ?? []).filter((pc) => !pc.is_sea_day);
     }
 
     // 4. Mitreisende - jeweils der passenden Kabine zugeordnet, falls cabin_number
@@ -86,6 +95,36 @@ export async function POST(req: NextRequest) {
       }));
       const { error } = await supabase.from("travelers").insert(rows);
       if (error) throw error;
+    }
+
+    // Direkt nach dem erfolgreichen Hochladen alle Häfen der Reise auf
+    // vorhandenes Wissen prüfen und fehlende Recherche automatisch anstoßen,
+    // statt darauf zu warten, dass der/die Nutzer:in jeden Hafen einzeln
+    // anklickt. Erst hier registriert (nach allen Inserts), damit bei einem
+    // späteren Fehler (z.B. Mitreisende) keine Recherche für eine Reise
+    // läuft, deren Speichern dem Nutzer als fehlgeschlagen gemeldet wird.
+    // Läuft nach der Response weiter (after()) und nutzt daher den
+    // Admin-Client, da der request-gebundene Client nach dem Response-Flush
+    // nicht mehr zuverlässig nutzbar ist. Sequenziell, um die Anthropic-API
+    // nicht mit parallelen Suchrunden für dieselbe Reise zu überlasten.
+    if (portsToResearch.length > 0) {
+      const shipName = data.trip.ship_name;
+      after(async () => {
+        const adminSupabase = getSupabaseAdminClient();
+        for (const pc of portsToResearch) {
+          try {
+            await ensurePortResearched(adminSupabase, {
+              tripId,
+              portCallId: pc.id,
+              shipName,
+              portName: pc.port_name,
+              callDate: pc.call_date,
+            });
+          } catch (err) {
+            console.error(`Automatische Hafenrecherche fehlgeschlagen (${pc.port_name}):`, err);
+          }
+        }
+      });
     }
 
     return NextResponse.json({ trip_id: tripId });

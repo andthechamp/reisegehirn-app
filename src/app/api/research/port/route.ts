@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { researchAndSavePort } from "@/lib/port-research";
+import { researchAndSavePort, PORT_RESEARCH_CACHE_MAX_AGE_DAYS } from "@/lib/port-research";
 import { getSupabaseServerClient } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 // Mehrstufige Recherche mit mehreren Suchrunden kann eine Weile dauern -
 // großzügiger bemessen als die einfache Extraktion.
 export const maxDuration = 120;
-
-const CACHE_MAX_AGE_DAYS = 7;
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,7 +39,7 @@ export async function POST(req: NextRequest) {
     // denselben Hafen innerhalb der letzten 7 Tage schon recherchiert hat.
     // Nur bei explizitem "Erneut recherchieren" (force) wird das übersprungen.
     if (!force) {
-      const cutoff = new Date(Date.now() - CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+      const cutoff = new Date(Date.now() - PORT_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
       const { data: cachedPort, error: cachedPortError } = await supabase
         .from("port_research")
         .select("*")
