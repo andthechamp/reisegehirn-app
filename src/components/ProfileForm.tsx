@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 interface ProfileFormProps {
   initialEmail: string;
   initialFullName: string;
+  initialChatLanguage: "de" | "vi";
 }
 
-export default function ProfileForm({ initialEmail, initialFullName }: ProfileFormProps) {
+export default function ProfileForm({ initialEmail, initialFullName, initialChatLanguage }: ProfileFormProps) {
   const router = useRouter();
   const [email] = useState(initialEmail);
   const [fullName, setFullName] = useState(initialFullName);
+  const [chatLanguage, setChatLanguage] = useState(initialChatLanguage);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -25,7 +27,7 @@ export default function ProfileForm({ initialEmail, initialFullName }: ProfileFo
       const res = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ full_name: fullName }),
+        body: JSON.stringify({ full_name: fullName, chat_language: chatLanguage }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Speichern fehlgeschlagen.");
@@ -58,6 +60,24 @@ export default function ProfileForm({ initialEmail, initialFullName }: ProfileFo
           placeholder="Wie sollen wir dich nennen?"
           className="w-full rounded-xl border border-ink/15 px-4 py-2.5 text-ink outline-none transition focus:border-fjord focus:ring-2 focus:ring-fjord/30"
         />
+      </div>
+
+      <div>
+        <label htmlFor="chat_language" className="mb-1 block text-sm font-medium text-ink/80">
+          Chat-Sprache
+        </label>
+        <p className="mb-2 text-xs text-ink/50">
+          Nur die Antworten im Chat wechseln die Sprache, der Rest der Seite bleibt Deutsch.
+        </p>
+        <select
+          id="chat_language"
+          value={chatLanguage}
+          onChange={(e) => setChatLanguage(e.target.value as "de" | "vi")}
+          className="w-full rounded-xl border border-ink/15 px-4 py-2.5 text-ink outline-none transition focus:border-fjord focus:ring-2 focus:ring-fjord/30"
+        >
+          <option value="de">Deutsch</option>
+          <option value="vi">Tiếng Việt (Vietnamesisch)</option>
+        </select>
       </div>
 
       {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>}

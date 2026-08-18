@@ -7,7 +7,7 @@ export async function GET() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("email, full_name")
+    .select("email, full_name, chat_language")
     .eq("id", user.id)
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -22,7 +22,7 @@ export async function PATCH(req: NextRequest) {
   const { user } = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Nicht eingeloggt." }, { status: 401 });
 
-  const { full_name } = (await req.json()) as { full_name?: string };
+  const { full_name, chat_language } = (await req.json()) as { full_name?: string; chat_language?: string };
   const trimmed = full_name?.trim();
   if (!trimmed) {
     return NextResponse.json({ error: "Name ist erforderlich." }, { status: 400 });
@@ -30,9 +30,15 @@ export async function PATCH(req: NextRequest) {
   if (trimmed.length > 100) {
     return NextResponse.json({ error: "Name ist zu lang." }, { status: 400 });
   }
+  if (chat_language !== undefined && chat_language !== "de" && chat_language !== "vi") {
+    return NextResponse.json({ error: "Ungültige Chat-Sprache." }, { status: 400 });
+  }
 
   const supabaseAdmin = getSupabaseAdminClient();
-  const { error } = await supabaseAdmin.from("profiles").update({ full_name: trimmed }).eq("id", user.id);
+  const { error } = await supabaseAdmin
+    .from("profiles")
+    .update({ full_name: trimmed, ...(chat_language !== undefined ? { chat_language } : {}) })
+    .eq("id", user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ ok: true });

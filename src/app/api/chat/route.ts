@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { anthropic, CHAT_MODEL } from "@/lib/anthropic";
-import { buildChatSystemPrompt } from "@/lib/prompts";
+import { buildChatSystemPrompt, type ChatLanguage } from "@/lib/prompts";
 import { fetchTripContext, serializeTripContext } from "@/lib/trip-context";
-import { getSupabaseServerClient } from "@/lib/supabase";
+import { getCurrentUser } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 // Etwas großzügiger als eine reine Textantwort, falls der Nutzer einer
@@ -17,11 +17,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "trip_id und message sind erforderlich." }, { status: 400 });
     }
 
-    const supabase = await getSupabaseServerClient();
+    const { supabase, user } = await getCurrentUser();
 
     const context = await fetchTripContext(supabase, trip_id);
     if (!context) {
       return NextResponse.json({ error: "Reise nicht gefunden." }, { status: 404 });
+    }
+
+    let chatLanguage: ChatLanguage = "de";
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("chat_language")
+        .eq("id", user.id)
+        .single();
+      if (profile?.chat_language === "vi") chatLanguage = "vi";
     }
 
     const { data: history, error: historyError } = await supabase
@@ -65,7 +75,7 @@ export async function POST(req: NextRequest) {
       system: [
         {
           type: "text",
-          text: buildChatSystemPrompt(serializeTripContext(context)),
+          text: buildChatSystemPrompt(serializeTripContext(context), chatLanguage),
           cache_control: { type: "ephemeral" },
         },
       ],

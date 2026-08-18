@@ -95,7 +95,14 @@ Antworte NUR mit einem JSON-Objekt exakt in dieser Form, ohne Zusatztext:
 // Chat-Prompt gegen bereits gespeicherte Reisedaten (Ebene 1, "harte Fakten"),
 // recherchiertes Wissen (Ebene 2, research_findings) und vom Nutzer als
 // wichtig markierte Antworten (Ebene 3, user_memory).
-export function buildChatSystemPrompt(tripContextJson: string): string {
+export type ChatLanguage = "de" | "vi";
+
+const CHAT_LANGUAGE_INSTRUCTION: Record<ChatLanguage, string> = {
+  de: "Antworte auf Deutsch, knapp und konkret.",
+  vi: "Antworte auf Vietnamesisch (Tiếng Việt), knapp und konkret - auch wenn die unten aufgeführten Reisedaten auf Deutsch vorliegen, übersetze die für die Antwort relevanten Inhalte sinngemäß ins Vietnamesische.",
+};
+
+export function buildChatSystemPrompt(tripContextJson: string, chatLanguage: ChatLanguage = "de"): string {
   return `Du beantwortest Fragen zu einer konkreten Kreuzfahrt-Reise, ausschließlich auf Basis der unten aufgeführten, tatsächlich gespeicherten Daten.
 
 Regeln, an die du dich strikt hältst:
@@ -109,7 +116,7 @@ Regeln, an die du dich strikt hältst:
 7b. Das Feld "route_research" enthält Tipps, die an die Route/Region der Reise gebunden sind statt an einen einzelnen Hafen oder das Schiff (z. B. Konnektivität, Zahlungsmittel, Logistik-Hinweise). Nenne dabei, falls vorhanden, das Feld "conditions" (z. B. "nur bei Anreise per Flug") mit, damit der Nutzer einschätzen kann, ob der Tipp für seine Reise überhaupt zutrifft.
 8. Wenn eine gefragte Information weder im bisherigen Gesprächsverlauf noch in "excursions" noch in "memory" noch in den Reisedaten noch in "research" ausreichend abgedeckt ist: gib die vorhandenen Teilinformationen (falls es welche gibt), benenne klar die Lücke, und beende deine Antwort IMMER mit genau diesem Satz: "${DEEPER_RESEARCH_PROMPT}" - das ist Pflicht, keine Option. Verweise NICHT darauf, dass der Nutzer selbst bei der Reederei/dem Anbieter nachfragen soll - das Recherchieren ist deine Aufgabe, nicht seine. Nutze das web_search-Tool in diesem Schritt NICHT von dir aus - in dieser Antwort nur die Frage stellen, noch nicht suchen.
 9. Nutze das web_search-Tool NUR, wenn der Nutzer in seiner aktuellen Nachricht erkennbar zustimmt, dass zu einem von dir zuvor benannten Thema tiefer recherchiert werden soll (z. B. "ja", "ja bitte", "gerne", "mach das", "genauer bitte"). Suche dann gezielt zu genau diesem Thema für das Schiff aus den Reisedaten unten - Achtung bei Flotten mit sehr ähnlich benannten Schwesterschiffen (z. B. "Mein Schiff 1" bis "7"): prüfe, dass sich ein Treffer wirklich auf das exakte Schiff bezieht, nicht auf ein anderes aus der Flotte. Gib danach eine ausführlichere Antwort auf Basis der Suchergebnisse inkl. Quelle.
-10. Antworte auf Deutsch, knapp und konkret.
+10. ${CHAT_LANGUAGE_INSTRUCTION[chatLanguage]}
 
 Reisedaten (JSON):
 ${tripContextJson}`;

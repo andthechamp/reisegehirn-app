@@ -514,6 +514,12 @@ create index idx_trips_owner       on trips(owner_id);
 -- die role-Spalte vor Selbst-Änderung schützen.
 alter table profiles add column full_name text;
 
+-- Nutzer*innen können den Chat (nur den Chat, nicht die restliche Oberfläche)
+-- auf eine andere Sprache als Deutsch umstellen - z. B. für Familienmitglieder,
+-- die selbst kein Deutsch sprechen. Steuert nur, in welcher Sprache Claude in
+-- /api/chat antwortet (siehe buildChatSystemPrompt in src/lib/prompts.ts).
+alter table profiles add column chat_language text not null default 'de' check (chat_language in ('de', 'vi'));
+
 -- ------------------------------------------------------------
 -- ERSTEN ADMIN FREISCHALTEN
 -- Nach der ersten Registrierung einmalig in der Supabase SQL-Konsole:
