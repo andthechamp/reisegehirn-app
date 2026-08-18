@@ -69,9 +69,10 @@ Dann eintragen: `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
 `NEXT_PUBLIC_SUPABASE_URL` (gleiche URL wie `SUPABASE_URL`) und
 `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
-Für den wöchentlichen Schiffsrecherche-Cron zusätzlich `CRON_SECRET` setzen
-(beliebiger geheimer String) — nötig, damit `/api/cron/refresh-ship-research`
-nicht von außen aufrufbar ist. Auf Vercel als Environment Variable eintragen;
+Zusätzlich **verpflichtend** `CRON_SECRET` setzen (beliebiger geheimer
+String, z. B. `openssl rand -hex 32`) — ohne dieses Secret lehnt
+`/api/cron/refresh-ship-research` jeden Aufruf ab (fail-closed), statt
+öffentlich erreichbar zu sein. Auf Vercel als Environment Variable eintragen;
 Vercel schickt ihn bei geplanten Cron-Aufrufen automatisch als Bearer-Token mit.
 
 ### 5. Starten
@@ -82,16 +83,27 @@ npm run dev
 
 Öffne [http://localhost:3000](http://localhost:3000) — du landest zuerst auf `/signup`, weil die ganze App einen Login verlangt.
 
-### 6. Ersten Admin freischalten
+### 6. Registrierung freischalten & ersten Admin setzen
 
-Registrierung schaltet standardmäßig ein normales Konto ohne Admin-Rechte frei.
-Nach der ersten Registrierung einmalig im Supabase SQL-Editor:
+Reisegehirn ist für einen geschlossenen Nutzerkreis gedacht — die Registrierung
+unter `/signup` ist per Allowlist gesperrt (Prüfung sitzt als Datenbank-Trigger
+auf `auth.users`, siehe `supabase/schema.sql`, Abschnitt "SIGNUP-ALLOWLIST").
+Vor der allerersten Registrierung einmalig im Supabase SQL-Editor die eigene
+E-Mail freischalten:
+
+```sql
+insert into public.allowed_signup_emails (email) values ('deine@mail.de');
+```
+
+Nach der Registrierung im selben SQL-Editor die eigene Rolle auf Admin setzen:
 
 ```sql
 update public.profiles set role = 'admin' where email = 'deine@mail.de';
 ```
 
-Danach erscheint im Header ein "Admin"-Link zu `/admin`, wo weitere Konten zu Admins gemacht werden können.
+Danach erscheint im Header ein "Admin"-Link zu `/admin`, wo weitere Konten zu
+Admins gemacht **und weitere E-Mail-Adressen zur Registrierung freigeschaltet**
+werden können — ohne erneut den SQL-Editor zu brauchen.
 
 ## Projektstruktur
 

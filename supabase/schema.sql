@@ -170,7 +170,15 @@ create table port_research (
   port_name    text not null,
   category     text not null check (category in (
                  'anleger', 'zu_fuss', 'essen', 'praktisches',
-                 'sehenswuerdigkeiten', 'wetter_packen', 'sonstiges'
+                 'sehenswuerdigkeiten', 'wetter_packen', 'sonstiges',
+                 -- insider_tipps/ausflug_privat kommen NICHT aus der
+                 -- automatischen Websuche-Recherche (siehe SHARED_PORT_CATEGORIES
+                 -- in research-schema.ts, die weiterhin unverändert bleibt) -
+                 -- sie sind hier nur für redaktionell kuratierte Einträge
+                 -- erlaubt (siehe curated-Spalte unten), z. B. von einem
+                 -- Reisebüro zusammengestellte Insider-Tipps oder private
+                 -- Ausflugsanbieter, die nicht reedereigebunden sind.
+                 'insider_tipps', 'ausflug_privat'
                )),
   title        text not null,
   content      text not null,
@@ -187,10 +195,44 @@ create table port_research (
   staleness    text not null default 'saisonal'
                  check (staleness in ('zeitlos', 'saisonal', 'verfällt')),
   sort_order   int not null default 0,
-  retrieved_at timestamptz not null default now()
+  retrieved_at timestamptz not null default now(),
+  -- true = redaktionell/manuell gepflegt (z. B. per Seed-Skript aus einer
+  -- Reisebüro-Tippliste), nicht das Ergebnis der KI-Websuche-Recherche.
+  -- researchAndSavePort löscht beim erneuten Recherchieren eines Hafens nur
+  -- curated = false Zeilen, damit kuratierte Einträge einen Refresh überleben.
+  curated      boolean not null default false
 );
 
 create index idx_port_research_name on port_research(port_name);
+
+-- Wissen, das an eine Route/Region gebunden ist statt an einen einzelnen
+-- Hafen oder ein Schiff (z. B. "eSIM lohnt sich in der Karibik" oder
+-- "Vorabend-Check-in nutzen, wenn per Flug angereist wird"). Es gibt aktuell
+-- keine automatische Trip->Region-Erkennung (trips.route_name ist Freitext) -
+-- die Zuordnung läuft über REGION_PORTS in src/lib/route-research.ts, das
+-- die port_calls eines Trips gegen eine kuratierte Liste bekannter Häfen je
+-- Region abgleicht. Ausschließlich redaktionell/manuell befüllt (kein
+-- KI-Recherche-Pfad), daher kein curated-Flag nötig wie bei port_research.
+create table route_research (
+  id           uuid primary key default gen_random_uuid(),
+  region       text not null,
+  category     text not null check (category in ('praktisches', 'insider_tipps', 'sonstiges')),
+  title        text not null,
+  content      text not null,
+  -- Freitext-Einschränkung, wann der Tipp gilt, z. B. "nur bei Anreise per
+  -- Flug" oder "vor allem in der Karibik relevant" - rein informativ für die
+  -- Anzeige, keine strukturierte Filterlogik.
+  conditions   text,
+  source_tier  text not null check (source_tier in ('A', 'B', 'C')),
+  source_name  text,
+  source_url   text,
+  staleness    text not null default 'zeitlos'
+                 check (staleness in ('zeitlos', 'saisonal', 'verfällt')),
+  sort_order   int not null default 0,
+  retrieved_at timestamptz not null default now()
+);
+
+create index idx_route_research_region on route_research(region);
 
 -- ------------------------------------------------------------
 -- EBENE 3: NUTZERGEDÄCHTNIS
@@ -277,6 +319,39 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+-- Reisegehirn ist für einen geschlossenen Nutzerkreis gedacht (Familie/
+-- Freunde) - freie Registrierung würde jedem mit der URL erlauben, sich
+-- selbst ein Konto anzulegen und danach über /api/chat, /api/extract,
+-- /api/research/* den Anthropic-API-Key der Betreiber zu verbrauchen. Die
+-- Prüfung sitzt als BEFORE INSERT-Trigger direkt auf auth.users (nicht nur
+-- im Next.js-Code), damit sie auch greift, wenn jemand die Supabase
+-- Auth-API direkt anspricht statt über die App-UI - Anon-Key und
+-- Projekt-URL sind ohnehin öffentlich im Browser-Bundle sichtbar.
+create table allowed_signup_emails (
+  email       text primary key,
+  created_at  timestamptz not null default now()
+);
+
+create function public.check_signup_allowed()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.allowed_signup_emails where email = lower(new.email)
+  ) then
+    raise exception 'Registrierung für diese E-Mail-Adresse ist nicht freigeschaltet.';
+  end if;
+  return new;
+end;
+$$;
+
+create trigger before_user_signup_check_allowlist
+  before insert on auth.users
+  for each row execute procedure public.check_signup_allowed();
+
 -- security definer, damit der Aufruf nicht an der eigenen RLS-Policy von
 -- profiles scheitert (sonst bräuchte man eine Policy, die wiederum diese
 -- Funktion braucht - Zirkelbezug).
@@ -355,8 +430,14 @@ alter table port_excursions  enable row level security;
 alter table research_findings enable row level security;
 alter table ship_research    enable row level security;
 alter table port_research    enable row level security;
+alter table route_research   enable row level security;
 alter table user_memory      enable row level security;
 alter table messages         enable row level security;
+-- allowed_signup_emails: keine Policies (analog zu profiles.role) - Lesen/
+-- Schreiben läuft ausschließlich über den Service-Role-Client in
+-- /api/admin/invites, damit kein eingeloggtes Konto die eigene Freischaltung
+-- selbst verwalten oder andere E-Mails einsehen kann.
+alter table allowed_signup_emails enable row level security;
 
 -- profiles: jede*r sieht das eigene Profil, Admins sehen alle. Änderungen
 -- (insb. role) laufen bewusst nur über den Service-Role-Key im Admin-Bereich,
@@ -416,6 +497,11 @@ create policy "ship_research: any authenticated user" on ship_research
 -- port_research: gleiches Muster wie ship_research (nicht reisespezifisch,
 -- keine personenbezogenen Daten).
 create policy "port_research: any authenticated user" on port_research
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- route_research: gleiches Muster (nicht reisespezifisch, keine
+-- personenbezogenen Daten).
+create policy "route_research: any authenticated user" on route_research
   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 create index idx_trip_members_user on trip_members(user_id);

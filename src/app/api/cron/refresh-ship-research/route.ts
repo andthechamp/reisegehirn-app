@@ -15,12 +15,18 @@ const STALE_AFTER_DAYS = 7;
  * selbst nach, statt exakt alle 7 Tage feuern zu müssen.
  */
 export async function GET(req: NextRequest) {
+  // Fail-closed: ohne gesetztes CRON_SECRET ist der Endpunkt sonst öffentlich
+  // aufrufbar (läuft über den Admin-Client, der RLS umgeht, und löst
+  // kostenpflichtige Anthropic-Aufrufe aus) - eine fehlende Env-Variable
+  // darf daher nie als "keine Prüfung nötig" interpretiert werden.
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!secret) {
+    console.error("Ship-Research-Refresh: CRON_SECRET ist nicht gesetzt, Aufruf wird abgelehnt.");
+    return NextResponse.json({ error: "Server nicht korrekt konfiguriert." }, { status: 500 });
+  }
+  const auth = req.headers.get("authorization");
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const supabase = getSupabaseAdminClient();
