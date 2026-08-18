@@ -29,6 +29,7 @@ export default function RouteResearch({ findings }: RouteResearchProps) {
             finding={{
               id: f.id,
               port_call_id: null,
+              cabin_category: null,
               category: f.category,
               title: f.title,
               // "conditions" hat keine eigene UI-Fläche in ResearchCard - hier

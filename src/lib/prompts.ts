@@ -53,7 +53,7 @@ Regeln, an die du dich strikt hältst:
 7. Datumsangaben im Format YYYY-MM-DD, Uhrzeiten im Format HH:MM (24-Stunden).
 8. Wenn mehrere Bilder/Dokumente hochgeladen wurden, führe die Informationen zu einem konsistenten Gesamtergebnis zusammen. Bei Widersprüchen zwischen den Dokumenten: neueres/spezifischeres Dokument bevorzugen und den Widerspruch in extraction_notes vermerken.
 9. Eine Buchung kann mehrere Kabinen umfassen (Familien-/Gruppenreisen). Lege für jede Kabine einen eigenen Eintrag in "bookings" an. Trage bei jedem Reisenden in "travelers" das Feld cabin_number mit der Kabinennummer ein, in der diese Person untergebracht ist, damit die Zuordnung eindeutig ist. Gibt es nur eine Kabine, genügt ein einzelner Eintrag in "bookings" und alle Reisenden bekommen dessen cabin_number.
-10. Falls nur ein Gesamtpreis für alle Kabinen zusammen angegeben ist (kein Preis pro Kabine einzeln), trage diesen Gesamtpreis bei genau einer der Kabinen ein und vermerke in extraction_notes ausdrücklich, dass es sich um den Gesamtpreis aller Kabinen handelt, nicht um den Preis dieser einen Kabine.
+10. Preisermittlung pro Kabine: Prüfe zuerst, ob im Dokument unter der jeweiligen Kabine (bzw. dem jeweiligen Buchungsabschnitt) eigene Preiszeilen stehen - z. B. "Kreuzfahrtpreis", "Frühbucher"-Rabatt, Aufschläge o. Ä., jeweils mit Einzelbetrag. Ist das der Fall, berechne price_total dieser Kabine als Summe dieser Zeilen (Rabatte als Abzug), auch wenn zusätzlich ein einmalig gedruckter "Gesamt"-Betrag im Dokument steht, der sich erkennbar auf mehrere Kabinen zusammen bezieht (z. B. weil er nur unter einer von mehreren Kabinen abgedruckt ist, aber der Summe aller Einzelpositionen aller Kabinen entspricht). Nur wenn es überhaupt KEINE solchen Preiszeilen pro Kabine gibt, sondern ausschließlich ein einziger Gesamtpreis für alle Kabinen zusammen angegeben ist, trage diesen Gesamtpreis bei genau einer der Kabinen ein und vermerke in extraction_notes ausdrücklich, dass es sich um den Gesamtpreis aller Kabinen handelt, nicht um den Preis dieser einen Kabine.
 
 Antworte NUR mit einem JSON-Objekt exakt in dieser Form, ohne Zusatztext:
 
@@ -139,8 +139,8 @@ Regeln, an die du dich strikt hältst:
 4. Bevorzuge die offizielle Reederei-Website für Fakten zu Ausstattung, Decksplan und Restaurants. Etablierte Kreuzfahrt-Portale sind als Ergänzung in Ordnung.
 5. Bewerte jede Quelle: "A" = offizielle Reederei-Seite, "B" = etabliertes Kreuzfahrt-Portal, "C" = Forum/Blog/unklare Quelle.
 6. staleness: "zeitlos" für dauerhafte Fakten (Baujahr, Länge, Tonnage, Deckanzahl), "saisonal" für Dinge, die sich öfter ändern (aktuelle Restaurant-Auswahl, Bordprogramm), "verfällt" für Preise/Angebote.
-7. Decke, falls auffindbar, ab (category "schiffswissen"): allgemeine Schiffsdaten, Decksplan (mit Link, falls vorhanden), Bordrestaurants, Kabinentypen/-kategorien, besondere Ausstattung (Pools, Spa, Kids Club o. Ä.). Jeder Punkt wird ein eigener Eintrag im Ergebnis-Array.
-8. Zusätzlich (category "insider_tipps"): recherchiere in Erfahrungsberichten, Reise-Foren und Bewertungsportalen (z. B. Cruise Critic, Reise-Blogs, Kreuzfahrt-Communities), was andere Gäste über dieses Schiff berichten, plus konkrete Insider-Tipps (z. B. ruhige/laute Kabinenlagen, versteckte Ausstattung, Timing-Tipps für beliebte Restaurants/Pools, was Gäste häufig überrascht oder enttäuscht). Das ist EXPLIZIT subjektiv, keine überprüfbare Fakten-Kategorie - schreibe entsprechend als Meinungswiedergabe (z. B. "mehrere Gäste berichten, dass...", "ein häufig genannter Tipp ist..."), nie als objektiven Fakt formuliert. Bevorzuge Themen, die in mehreren unabhängigen Berichten wiederkehren (echter Trend) gegenüber einzelnen Ausreißer-Meinungen, aber die strenge Zwei-Quellen-Pflicht aus der Verifikations-Regel unten gilt hier NICHT - eine einzelne, klar als Einzelmeinung gekennzeichnete Aussage ist in dieser Kategorie in Ordnung.
+7. Decke, falls auffindbar, ab (category "schiffswissen"): allgemeine Schiffsdaten, Decksplan (mit Link, falls vorhanden), Bordrestaurants, Bordprogramm/Abendgestaltung (Shows, Theater, Bars, was abends typischerweise los ist), besondere Ausstattung (Pools, Spa o. Ä.). Kids Club/Familienangebote und ein etwaiges Adults-Only-Konzept NUR aufnehmen, wenn dazu tatsächlich etwas Konkretes auffindbar ist - nicht erzwingen, wenn es zum Schiff nicht passt oder nichts Verlässliches dazu existiert. Kabinentypen/-kategorien als vollständige Übersicht gehören NICHT hierher (das wird pro tatsächlich gebuchter Kategorie separat recherchiert, siehe buildCabinResearchPrompt) - nimm hier höchstens auf, wie viele/welche Kabinenkategorien es GENERELL auf dem Schiff gibt, falls das für die Orientierung hilfreich ist, aber keine Detailbeschreibung einzelner Kategorien. Jeder Punkt wird ein eigener Eintrag im Ergebnis-Array.
+8. Zusätzlich (category "insider_tipps"): recherchiere in Erfahrungsberichten, Reise-Foren und Bewertungsportalen (z. B. Cruise Critic, Reise-Blogs, Kreuzfahrt-Communities) nach KONKRETEN, umsetzbaren Insider-Tipps (z. B. Timing-Tipps für beliebte Restaurants/Pools, versteckte Ausstattung, praktische Empfehlungen wie Allergie-/Sonderwunsch-Management). Nimm KEINE reinen Meinungs-/Kritiksammlungen ohne Handlungsbezug auf (z. B. "häufig genannte Kritikpunkte in Bewertungen", "gemischte Meinungen zum Restaurantkonzept") - wer schon gebucht hat, kann daraus nichts mehr tun, das erzeugt nur unnötige Sorge. Auch allgemeine Kabinenlage-/Kabinenqualitäts-Erfahrungsberichte gehören NICHT hierher, sondern zur kategoriespezifischen Kabinenrecherche (buildCabinResearchPrompt). Das ist EXPLIZIT subjektiv, keine überprüfbare Fakten-Kategorie - schreibe entsprechend als Meinungswiedergabe (z. B. "mehrere Gäste berichten, dass...", "ein häufig genannter Tipp ist..."), nie als objektiven Fakt formuliert. Bevorzuge Themen, die in mehreren unabhängigen Berichten wiederkehren (echter Trend) gegenüber einzelnen Ausreißer-Meinungen, aber die strenge Zwei-Quellen-Pflicht aus der Verifikations-Regel unten gilt hier NICHT - eine einzelne, klar als Einzelmeinung gekennzeichnete Aussage ist in dieser Kategorie in Ordnung.
 9. Nenne im title-Feld immer den exakten Schiffsnamen "${shipName}", damit spätere Verwechslungen sofort auffallen (z. B. "Restaurants an Bord der ${shipName}").
 10. Reihenfolge im Ergebnis-Array: "Allgemeine Schiffsdaten" (Baujahr, Länge, Passagierkapazität o. Ä.) immer als ERSTER Eintrag, danach die übrigen Themen in beliebiger sinnvoller Reihenfolge.
 ${WEB_INJECTION_GUARD_RULE}
@@ -163,6 +163,55 @@ Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Arra
 ]
 
 Schiff: ${shipName}`;
+}
+
+// Recherche-Prompt für EINE konkret gebuchte Kabinenkategorie auf einem
+// bestimmten Schiff (nicht für eine allgemeine Übersicht aller Kategorien -
+// das deckt buildShipResearchPrompt bewusst nicht mehr ab). Ergebnis landet
+// in ship_research mit gesetztem cabin_category (siehe schema.sql) - geteilt
+// über alle Reisen, die dieselbe Kombination aus Schiff und Kategorie gebucht
+// haben, analog zum bestehenden Schiffswissen-Cache.
+export function buildCabinResearchPrompt(shipName: string, cabinCategory: string): string {
+  return `Du recherchierst mit dem web_search-Tool verlässliche, konkrete Informationen zu EINER bestimmten, tatsächlich gebuchten Kabinenkategorie auf einem bestimmten Kreuzfahrtschiff.
+
+Schiff: "${shipName}"
+Kabinenkategorie: "${cabinCategory}"
+
+Regeln, an die du dich strikt hältst:
+1. Es geht NICHT um eine allgemeine Übersicht aller Kabinentypen des Schiffs, sondern ausschließlich um Details zu genau dieser einen, bereits gebuchten Kategorie "${cabinCategory}" - die Person hat schon gebucht und will wissen, was sie konkret erwartet.
+2. WICHTIG - Schwesterschiffe nicht verwechseln (siehe auch Regel bei der Schiffsrecherche): Prüfe bei jeder Quelle, ob sie sich wirklich auf "${shipName}" bezieht, nicht auf ein anderes Schiff derselben Flotte - Kabinengrößen/-grundrisse unterscheiden sich zwischen Schwesterschiffen erheblich.
+3. Decke, falls auffindbar, ab:
+   - Reale Wohnfläche in m² (offiziell laut Reederei, ODER aus Erfahrungsberichten, falls kein offizieller Wert auffindbar ist - dann als solches kennzeichnen)
+   - Grundriss/Ausstattung: Bett-Anordnung, Sitzecke, Balkon-/Fenstergröße falls zutreffend, Stauraum, Anzahl/Lage der Steckdosen, Bad-Ausstattung
+   - Typische Deck-Lage dieser Kategorie und was das für Lärm (z. B. über/unter Restaurants, Bars, Pooldeck) oder Aussicht bedeutet, falls dazu Erfahrungsberichte auffindbar sind
+   - Was Gäste in Bewertungen/Foren konkret zu GENAU dieser Kategorie berichten (z. B. "wirkt geräumiger als vergleichbare Kategorien anderer Reedereien", "Stauraum unter dem Bett gut nutzbar") - IMMER als Meinungswiedergabe kennzeichnen (z. B. "ein Erfahrungsbericht beschreibt...", "mehrere Gäste berichten..."), nie als objektiven Fakt, außer es handelt sich um offizielle Reederei-Angaben (m², Ausstattungsliste)
+4. Erfinde niemals Werte, insbesondere keine m²-Angabe, wenn du keine findest - dann diesen Punkt weglassen statt zu schätzen.
+5. Bewerte jede Quelle: "A" = offizielle Reederei-Seite, "B" = etabliertes Kreuzfahrt-Portal, "C" = Forum/Blog/Erfahrungsbericht.
+6. category: "schiffswissen" für offizielle/objektive Fakten (m², Ausstattungsliste laut Reederei), "insider_tipps" für Erfahrungsberichte/Meinungen von Gästen.
+7. staleness: "zeitlos" für bauliche Fakten (m², Grundriss), "saisonal" für Ausstattungsdetails, die sich durch Refits ändern können.
+8. Nenne im title-Feld immer sowohl die Kabinenkategorie als auch das Schiff (z. B. "${cabinCategory} auf der ${shipName}: Größe und Ausstattung"), damit bei mehreren Kabinenkategorien einer Reise klar bleibt, worauf sich ein Eintrag bezieht.
+9. Findest du zu dieser konkreten Kategorie auf diesem konkreten Schiff nichts Verlässliches, gib ein leeres Array zurück statt zu raten oder Infos einer anderen Kategorie/eines anderen Schiffs zu verwenden.
+${WEB_INJECTION_GUARD_RULE}
+${VERIFICATION_RULE}
+${CONTENT_FORMATTING_RULE}
+${JSON_SAFETY_RULE}
+
+Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Array zurück, exakt in diesem Schema, ohne Markdown, ohne Erklärtext davor oder danach:
+
+[
+  {
+    "category": "schiffswissen" | "insider_tipps",
+    "title": string,
+    "content": string,
+    "source_tier": "A" | "B" | "C",
+    "source_name": string | null,
+    "source_url": string | null,
+    "staleness": "zeitlos" | "saisonal" | "verfällt"
+  }
+]
+
+Schiff: ${shipName}
+Kabinenkategorie: ${cabinCategory}`;
 }
 
 // Recherche-Prompt für einen konkreten Hafenanlauf (Anleger, Ausflüge, zu Fuß

@@ -68,8 +68,8 @@ export default function ShipResearch({ tripId, initialFindings }: ShipResearchPr
 
       {findings.length === 0 && !loading && (
         <p className="text-sm text-ink/50">
-          Noch keine Infos zu diesem Schiff recherchiert (Decksplan, Restaurants, Ausstattung, Gästestimmen &amp;
-          Insider-Tipps).
+          Noch keine Infos zu diesem Schiff recherchiert (Decksplan, Restaurants, Bordprogramm, Ausstattung,
+          Gästestimmen &amp; Insider-Tipps).
         </p>
       )}
 

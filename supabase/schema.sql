@@ -525,3 +525,16 @@ alter table profiles add column chat_language text not null default 'de' check (
 -- Nach der ersten Registrierung einmalig in der Supabase SQL-Konsole:
 --   update public.profiles set role = 'admin' where email = 'deine@mail.de';
 -- ------------------------------------------------------------
+
+-- Kabinenkategorie-Recherche (Größe, Stauraum, Steckdosen, Lagegefühl je nach
+-- Deck o. Ä.) - fachlich wie ship_research (geteilter Cache, nicht
+-- trip-gebunden), aber zusätzlich nach der tatsächlich gebuchten
+-- Kabinenkategorie gefiltert statt einer generischen "alle Kabinentypen"-
+-- Übersicht. NULL = die bestehenden allgemeinen Schiffsinfos (Decksplan,
+-- Restaurants, Baujahr o. Ä.), ein gesetzter Wert = Kabinenkategorie-
+-- spezifischer Fund (siehe normalizeCabinCategory in src/lib/cabin.ts für die
+-- Normalisierung von bookings.cabin_type auf diesen Schlüssel, damit z. B.
+-- "Balkonkabine Kategorie D (4er Belegung)" und "... (2er Belegung)" denselben
+-- Cache-Eintrag teilen).
+alter table ship_research add column cabin_category text;
+create index idx_ship_research_ship_cabin on ship_research(ship_name, cabin_category);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { researchAndSaveShip } from "@/lib/ship-research";
+import { researchAndSaveCabin } from "@/lib/ship-research";
 import { getSupabaseServerClient } from "@/lib/supabase";
+import { normalizeCabinCategory } from "@/lib/cabin";
 
 export const runtime = "nodejs";
 // Mehrstufige Recherche mit mehreren Suchrunden kann eine Weile dauern -
@@ -9,9 +10,13 @@ export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
   try {
-    const { trip_id, force } = (await req.json()) as { trip_id?: string; force?: boolean };
-    if (!trip_id) {
-      return NextResponse.json({ error: "trip_id ist erforderlich." }, { status: 400 });
+    const { trip_id, cabin_category, force } = (await req.json()) as {
+      trip_id?: string;
+      cabin_category?: string;
+      force?: boolean;
+    };
+    if (!trip_id || !cabin_category) {
+      return NextResponse.json({ error: "trip_id und cabin_category sind erforderlich." }, { status: 400 });
     }
 
     const supabase = await getSupabaseServerClient();
@@ -25,15 +30,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Reise nicht gefunden." }, { status: 404 });
     }
 
-    // Schiffsinfos sind nicht reisespezifisch - vor einer neuen Recherche erst
-    // prüfen, ob eine andere Reise auf demselben Schiff schon recherchiert hat.
-    // Nur bei explizitem "Erneut recherchieren" (force) wird das übersprungen.
+    const normalizedCategory = normalizeCabinCategory(cabin_category);
+
+    // Kabineninfos sind nicht reisespezifisch, sondern an Schiff+Kategorie
+    // gebunden - vor einer neuen Recherche erst prüfen, ob eine andere Reise
+    // mit derselben Kombination schon recherchiert hat. Nur bei explizitem
+    // "Erneut recherchieren" (force) wird das übersprungen.
     if (!force) {
       const { data: cached, error: cacheError } = await supabase
         .from("ship_research")
         .select("*")
         .eq("ship_name", trip.ship_name)
-        .is("cabin_category", null)
+        .eq("cabin_category", normalizedCategory)
         .order("sort_order", { ascending: true });
       if (cacheError) throw cacheError;
       if (cached && cached.length > 0) {
@@ -41,7 +49,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const result = await researchAndSaveShip(supabase, trip.ship_name);
+    const result = await researchAndSaveCabin(supabase, trip.ship_name, normalizedCategory);
     if (!result.ok) {
       return NextResponse.json(
         { error: `Recherche fehlgeschlagen: ${result.error}` },
@@ -51,7 +59,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ findings: result.findings, cached: false });
   } catch (err) {
-    console.error("Schiffsrecherche fehlgeschlagen:", err);
+    console.error("Kabinenrecherche fehlgeschlagen:", err);
     const message =
       err instanceof Error
         ? err.message

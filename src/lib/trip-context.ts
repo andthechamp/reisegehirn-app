@@ -44,6 +44,11 @@ export interface TripContext {
   research: Array<{
     id: string;
     port_call_id: string | null; // null = reiseübergreifend (z. B. Schiffswissen)
+    // Nur bei aus ship_research stammenden Einträgen gesetzt: die
+    // normalisierte Kabinenkategorie (siehe normalizeCabinCategory), auf die
+    // sich dieser Fund bezieht - null = allgemeine Schiffsinfos, nicht an
+    // eine bestimmte Kabinenkategorie gebunden.
+    cabin_category: string | null;
     category: string;
     title: string;
     content: string;
@@ -189,6 +194,7 @@ export async function fetchTripContext(
     return callIds.map((callId) => ({
       id: r.id as string,
       port_call_id: callId,
+      cabin_category: null,
       category: r.category,
       title: r.title,
       content: r.content,
@@ -242,6 +248,7 @@ export async function fetchTripContext(
       ...(shipResearch ?? []).map((r) => ({
         id: r.id,
         port_call_id: null,
+        cabin_category: (r.cabin_category as string | null) ?? null,
         category: r.category,
         title: r.title,
         content: r.content,
@@ -255,6 +262,7 @@ export async function fetchTripContext(
       ...(research ?? []).map((r) => ({
         id: r.id,
         port_call_id: r.port_call_id,
+        cabin_category: null,
         category: r.category,
         title: r.title,
         content: r.content,

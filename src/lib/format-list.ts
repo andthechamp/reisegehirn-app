@@ -56,19 +56,48 @@ export function splitBulletList(text: string): string[] | null {
   return parts.length >= 2 ? parts : null;
 }
 
+// Häufige deutsche Abkürzungen, deren Punkt kein Satzende ist - ohne diese
+// Liste würde z. B. "z. B." (Großbuchstabe nach dem Punkt!) fälschlich als
+// zwei Sätze erkannt, siehe splitSentences.
+const ABBREVIATIONS = new Set([
+  "z", "b", "u", "a", "d", "h", "ca", "bzw", "etc", "usw", "nr", "str",
+  "dr", "prof", "geb", "tel", "abs", "anm", "kap", "bd", "aufl", "min",
+  "max", "inkl", "exkl", "std", "vgl", "ggf", "evtl",
+]);
+
+// Erkennt, ob ein Textabschnitt mit einer Abkürzung endet - entweder aus
+// obiger Liste, oder ein einzelner Buchstabe gefolgt von einem Punkt (deckt
+// mehrteilige Abkürzungen wie "z. B." ab: erst "z.", dann "B." einzeln).
+function endsWithAbbreviation(text: string): boolean {
+  const match = text.match(/([A-Za-zÄÖÜäöü]{1,6})\.$/);
+  if (!match) return false;
+  const word = match[1].toLowerCase();
+  return word.length === 1 || ABBREVIATIONS.has(word);
+}
+
 /**
  * Fallback für Recherche-Text ohne erkennbare Listen-Struktur: trennt lange
  * Fließtext-Absätze in einzelne Sätze auf, damit sie nicht als ein
  * ununterbrochener Textblock erscheinen. Split nur nach Satzzeichen + Leerzeichen
- * + Großbuchstabe, damit Abkürzungen ("bzw.", "z. B.", "ca. 5 Euro") nicht
- * fälschlich einen Satz beenden.
+ * + Großbuchstabe, damit Abkürzungen ("bzw.", "ca. 5 Euro") nicht fälschlich
+ * einen Satz beenden - mehrteilige Abkürzungen wie "z. B." werden nach dem
+ * ersten Split wieder zusammengeführt (siehe endsWithAbbreviation).
  */
 export function splitSentences(text: string): string[] | null {
   const trimmed = text.trim();
-  const parts = trimmed
+  const rawParts = trimmed
     .split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ])/)
     .map((p) => p.trim())
     .filter(Boolean);
+
+  const parts: string[] = [];
+  for (const part of rawParts) {
+    if (parts.length > 0 && endsWithAbbreviation(parts[parts.length - 1])) {
+      parts[parts.length - 1] = `${parts[parts.length - 1]} ${part}`;
+    } else {
+      parts.push(part);
+    }
+  }
 
   return parts.length >= 2 ? parts : null;
 }
