@@ -9,6 +9,7 @@ interface ProfileRow {
   full_name: string | null;
   role: "user" | "admin";
   created_at: string;
+  trip_count: number;
 }
 
 interface UserTableProps {
@@ -59,6 +60,31 @@ export default function UserTable({ currentUserId }: UserTableProps) {
     }
   }
 
+  async function removeUser(u: ProfileRow) {
+    const warning =
+      u.trip_count > 0
+        ? `${u.full_name || u.email} wirklich entfernen? Diese Person besitzt ${u.trip_count} Reise(n) - beim Entfernen werden diese Reisen samt allen Daten darin (Kabinen, Mitreisende, Häfen, Chat, Recherchen, Ausflüge) unwiderruflich mitgelöscht.`
+        : `${u.full_name || u.email} wirklich entfernen? Das kann nicht rückgängig gemacht werden.`;
+    if (!window.confirm(warning)) return;
+
+    setPendingId(u.id);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: u.id }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Entfernen fehlgeschlagen.");
+      setUsers((prev) => prev.filter((p) => p.id !== u.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   if (loading) return <Spinner />;
 
   return (
@@ -76,15 +102,27 @@ export default function UserTable({ currentUserId }: UserTableProps) {
                 {u.full_name && `${u.email} · `}
                 {u.role === "admin" ? "Admin" : "Nutzer"} · seit{" "}
                 {new Date(u.created_at).toLocaleDateString("de-DE")}
+                {u.trip_count > 0 && ` · ${u.trip_count} Reise(n)`}
               </p>
             </div>
-            <button
-              onClick={() => toggleRole(u)}
-              disabled={pendingId === u.id}
-              className="shrink-0 rounded-lg border border-ink/15 px-3 py-1.5 text-xs font-medium text-ink/70 transition hover:border-fjord/40 hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {u.role === "admin" ? "Admin entziehen" : "Zu Admin machen"}
-            </button>
+            <div className="flex shrink-0 gap-2">
+              <button
+                onClick={() => toggleRole(u)}
+                disabled={pendingId === u.id}
+                className="rounded-lg border border-ink/15 px-3 py-1.5 text-xs font-medium text-ink/70 transition hover:border-fjord/40 hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {u.role === "admin" ? "Admin entziehen" : "Zu Admin machen"}
+              </button>
+              {u.id !== currentUserId && (
+                <button
+                  onClick={() => removeUser(u)}
+                  disabled={pendingId === u.id}
+                  className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-700 transition hover:border-red-400 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Entfernen
+                </button>
+              )}
+            </div>
           </li>
         ))}
       </ul>
