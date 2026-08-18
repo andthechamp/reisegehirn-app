@@ -1,23 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, getSupabaseAdminClient } from "@/lib/supabase";
-
-// Bestätigt anhand der Session (RLS-Client, kein Vertrauen in Client-Input),
-// dass die aufrufende Person Admin ist, bevor irgendetwas über den
-// Service-Role-Client (der RLS umgeht) gemacht wird. Gleiches Muster wie
-// admin/users/route.ts.
-async function requireAdmin() {
-  const { supabase, user } = await getCurrentUser();
-  if (!user) return null;
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-  if (profile?.role !== "admin") return null;
-
-  return user;
-}
+import { requireAdmin, getSupabaseAdminClient } from "@/lib/supabase";
 
 export async function GET() {
   const admin = await requireAdmin();

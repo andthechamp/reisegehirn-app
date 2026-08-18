@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { researchAndSaveShip } from "@/lib/ship-research";
-import { getSupabaseServerClient } from "@/lib/supabase";
+import { getSupabaseServerClient, requireAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 // Mehrstufige Recherche mit mehreren Suchrunden kann eine Weile dauern -
@@ -9,6 +9,17 @@ export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
   try {
+    // Fehlende/veraltete Schiffsinfos werden seit der Umstellung auf
+    // automatische Recherche (siehe ensureShipResearched, aufgerufen beim
+    // Laden einer Reise) im Hintergrund für alle Nutzer:innen nachgeladen -
+    // dieser Endpunkt (manueller Trigger, u.a. "Erneut recherchieren") bleibt
+    // Admins vorbehalten, damit nicht jede/r Kreuzfahrtgast beliebig oft
+    // kostenpflichtige Anthropic-Aufrufe auslösen kann.
+    const admin = await requireAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: "Nicht berechtigt." }, { status: 403 });
+    }
+
     const { trip_id, force } = (await req.json()) as { trip_id?: string; force?: boolean };
     if (!trip_id) {
       return NextResponse.json({ error: "trip_id ist erforderlich." }, { status: 400 });

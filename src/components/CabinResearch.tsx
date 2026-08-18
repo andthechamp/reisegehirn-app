@@ -22,9 +22,13 @@ interface CabinResearchProps {
   tripId: string;
   groups: CabinGroup[];
   initialFindings: Finding[]; // alle Findings mit gesetztem cabin_category
+  // Der manuelle Trigger ist admin-only (siehe /api/research/cabin) - für
+  // alle anderen Nutzer:innen läuft Recherche automatisch beim Laden der
+  // Reise im Hintergrund (siehe ensureCabinResearched).
+  isAdmin: boolean;
 }
 
-export default function CabinResearch({ tripId, groups, initialFindings }: CabinResearchProps) {
+export default function CabinResearch({ tripId, groups, initialFindings, isAdmin }: CabinResearchProps) {
   const [findings, setFindings] = useState<Finding[]>(initialFindings);
   const [loadingCategory, setLoadingCategory] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -91,19 +95,23 @@ export default function CabinResearch({ tripId, groups, initialFindings }: Cabin
                   <span className="text-ink/40"> · Kabine {g.cabinNumbers.join(", ")}</span>
                 )}
               </p>
-              <button
-                onClick={() => handleResearch(g.label)}
-                disabled={loading}
-                className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {loading && <SpinnerIcon className="h-3.5 w-3.5" />}
-                {loading ? "Recherchiert …" : groupFindings.length > 0 ? "Erneut recherchieren" : "Jetzt recherchieren"}
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => handleResearch(g.label)}
+                  disabled={loading}
+                  className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {loading && <SpinnerIcon className="h-3.5 w-3.5" />}
+                  {loading ? "Recherchiert …" : groupFindings.length > 0 ? "Erneut recherchieren" : "Jetzt recherchieren"}
+                </button>
+              )}
             </div>
 
             {groupFindings.length === 0 && !loading && (
               <p className="text-sm text-ink/50">
-                Noch keine Infos zu dieser Kabinenkategorie recherchiert (Größe, Ausstattung, Lage).
+                {isAdmin
+                  ? "Noch keine Infos zu dieser Kabinenkategorie recherchiert (Größe, Ausstattung, Lage)."
+                  : "Infos zu dieser Kabinenkategorie werden im Hintergrund recherchiert (Größe, Ausstattung, Lage) - bitte gleich noch einmal vorbeischauen."}
               </p>
             )}
 

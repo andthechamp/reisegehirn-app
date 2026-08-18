@@ -15,6 +15,7 @@ interface PortDaySwiperProps {
   excursions: Excursion[];
   research: Finding[];
   onDeleteExcursion: (id: string) => void;
+  isAdmin: boolean;
 }
 
 // Swipe gilt erst ab dieser Distanz als Geste, sonst würde ein normaler Tap
@@ -27,6 +28,7 @@ export default function PortDaySwiper({
   excursions,
   research,
   onDeleteExcursion,
+  isAdmin,
 }: PortDaySwiperProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
@@ -135,6 +137,7 @@ export default function PortDaySwiper({
               tripId={tripId}
               portCallId={active.id}
               initialFindings={research.filter((r) => r.port_call_id === active.id)}
+              isAdmin={isAdmin}
             />
           </>
         )}

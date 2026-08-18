@@ -7,6 +7,13 @@ export type ShipResearchResult =
   | { ok: true; findings: unknown[] }
   | { ok: false; error: string };
 
+// Schiffs-/Kabineninfos (ship_research) gelten für diese Zeitspanne als
+// aktuell - danach wird bei Gelegenheit erneut recherchiert statt der Cache
+// blind vertraut. Gleicher Schwellwert wie der wöchentliche Cron
+// (STALE_AFTER_DAYS in cron/refresh-ship-research/route.ts) und wie
+// PORT_RESEARCH_CACHE_MAX_AGE_DAYS in port-research.ts.
+export const SHIP_RESEARCH_CACHE_MAX_AGE_DAYS = 7;
+
 async function runResearch(
   system: string,
   userMessage: string,
@@ -139,4 +146,58 @@ export async function researchAndSaveCabin(
   if (insertError) return { ok: false, error: insertError.message };
 
   return { ok: true, findings: inserted ?? [] };
+}
+
+/**
+ * Recherchiert die allgemeinen Schiffsinfos nur, wenn kein aktueller
+ * Cache-Treffer existiert (analog zu ensurePortResearched in
+ * port-research.ts). Für den automatischen Anstoß beim Laden einer Reise
+ * (/api/trips/[id]), damit Nutzer:innen keinen manuellen Trigger mehr
+ * brauchen.
+ */
+export async function ensureShipResearched(
+  supabase: SupabaseClient,
+  shipName: string
+): Promise<ShipResearchResult> {
+  const cutoff = new Date(Date.now() - SHIP_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const { data: cached, error } = await supabase
+    .from("ship_research")
+    .select("*")
+    .eq("ship_name", shipName)
+    .is("cabin_category", null)
+    .order("sort_order", { ascending: true });
+  if (error) return { ok: false, error: error.message };
+
+  const hasFreshRow = (cached ?? []).some(
+    (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
+  );
+  if (hasFreshRow) return { ok: true, findings: cached ?? [] };
+
+  return researchAndSaveShip(supabase, shipName);
+}
+
+/**
+ * Analog zu ensureShipResearched, aber für eine konkrete Kabinenkategorie
+ * (cabinLabel wie bei researchAndSaveCabin).
+ */
+export async function ensureCabinResearched(
+  supabase: SupabaseClient,
+  shipName: string,
+  cabinLabel: string
+): Promise<ShipResearchResult> {
+  const cutoff = new Date(Date.now() - SHIP_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const { data: cached, error } = await supabase
+    .from("ship_research")
+    .select("*")
+    .eq("ship_name", shipName)
+    .eq("cabin_category", cabinLabel)
+    .order("sort_order", { ascending: true });
+  if (error) return { ok: false, error: error.message };
+
+  const hasFreshRow = (cached ?? []).some(
+    (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
+  );
+  if (hasFreshRow) return { ok: true, findings: cached ?? [] };
+
+  return researchAndSaveCabin(supabase, shipName, cabinLabel);
 }

@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServerClient } from "@/lib/supabase";
-import { fetchTripContext } from "@/lib/trip-context";
+import { NextRequest, NextResponse, after } from "next/server";
+import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase";
+import { fetchTripContext, type TripContext } from "@/lib/trip-context";
+import { ensureShipResearched, ensureCabinResearched } from "@/lib/ship-research";
+import { ensurePortResearched } from "@/lib/port-research";
+import { normalizeCabinCategory, extractDeckNumber, cabinLabel } from "@/lib/cabin";
 import type { ExtractionResult } from "@/lib/extraction-schema";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServerClient>>;
@@ -61,6 +64,22 @@ async function syncCollection<T extends { id?: string }>(
   return results;
 }
 
+// Leitet aus den Buchungen die zu recherchierenden Kabinenkategorie-Labels
+// ab (Kategorie, ggf. "Kategorie · Deck N") - dieselbe Gruppierung wie im
+// Frontend (siehe trips/[id]/page.tsx), hier serverseitig für den
+// automatischen Recherche-Anstoß unten.
+function distinctCabinLabels(bookings: TripContext["bookings"]): string[] {
+  const labels = new Set<string>();
+  for (const b of bookings) {
+    if (!b.cabin_type) continue;
+    const category = normalizeCabinCategory(b.cabin_type);
+    if (!category) continue;
+    const deck = b.cabin_number ? extractDeckNumber(b.cabin_number) : null;
+    labels.add(cabinLabel(category, deck));
+  }
+  return [...labels];
+}
+
 export async function GET(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
@@ -83,7 +102,57 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
     } = await supabase.auth.getUser();
     const isOwner = context.trip.owner_id === user?.id;
 
-    return NextResponse.json({ context, messages: messages ?? [], isOwner });
+    let isAdmin = false;
+    if (user) {
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+      isAdmin = profile?.role === "admin";
+    }
+
+    // Nutzer:innen können Recherche nicht mehr manuell anstoßen (siehe
+    // /api/research/ship|port|cabin, jetzt admin-only) - stattdessen prüft
+    // jedes Laden einer Reise selbst, was fehlt oder veraltet ist, und holt
+    // es im Hintergrund nach. ensureShipResearched/ensureCabinResearched/
+    // ensurePortResearched machen dabei selbst nur dann einen (kostenpflich-
+    // tigen) Anthropic-Aufruf, wenn kein aktueller Cache-Treffer existiert -
+    // ein Laden ohne Rückstand kostet also nur ein paar zusätzliche
+    // DB-Lesezugriffe. Läuft nach der Response weiter (after()) und nutzt
+    // daher den Admin-Client, da der request-gebundene Client nach dem
+    // Response-Flush nicht mehr zuverlässig nutzbar ist (gleiches Muster wie
+    // /api/confirm). Sequenziell, um die Anthropic-API nicht mit parallelen
+    // Suchrunden für dieselbe Reise zu überlasten.
+    const shipName = context.trip.ship_name;
+    const cabinLabels = distinctCabinLabels(context.bookings);
+    const portsToCheck = context.port_calls.filter((pc) => !pc.is_sea_day);
+    after(async () => {
+      const adminSupabase = getSupabaseAdminClient();
+      try {
+        await ensureShipResearched(adminSupabase, shipName);
+      } catch (err) {
+        console.error(`Automatische Schiffsrecherche fehlgeschlagen (${shipName}):`, err);
+      }
+      for (const label of cabinLabels) {
+        try {
+          await ensureCabinResearched(adminSupabase, shipName, label);
+        } catch (err) {
+          console.error(`Automatische Kabinenrecherche fehlgeschlagen (${shipName} / ${label}):`, err);
+        }
+      }
+      for (const pc of portsToCheck) {
+        try {
+          await ensurePortResearched(adminSupabase, {
+            tripId: params.id,
+            portCallId: pc.id,
+            shipName,
+            portName: pc.port_name,
+            callDate: pc.call_date,
+          });
+        } catch (err) {
+          console.error(`Automatische Hafenrecherche fehlgeschlagen (${pc.port_name}):`, err);
+        }
+      }
+    });
+
+    return NextResponse.json({ context, messages: messages ?? [], isOwner, isAdmin });
   } catch (err) {
     console.error("Laden der Reise fehlgeschlagen:", err);
     const message =

@@ -18,13 +18,20 @@ im Chat, verwaltet gebuchte Ausflüge und lässt sich mit Mitreisenden teilen.
   (z. B. aus der Reederei-App) hochladen — die erkannten Zeiten werden anhand
   von Datum/Hafenname automatisch den passenden Tagen zugeordnet, auch wenn
   an einem Tag mehrere Häfen angelaufen werden.
-- **Hafen- und Schiffsrecherche**: Auf Knopfdruck recherchiert Claude per
-  Websuche zu einem einzelnen Hafentag (Anlegestelle, Sehenswürdigkeiten,
-  Ausflüge, Essen, Praktisches, Wetter) oder zum Schiff selbst (Decksplan,
-  Restaurants, Ausstattung, Erfahrungsberichte anderer Gäste). Jeder Fund
-  nennt seine Quelle und wird verifiziert, bevor er als Fakt behandelt wird.
-  Schiffsrecherche wird zusätzlich wöchentlich per Cron aufgefrischt
-  (`vercel.json`, `/api/cron/refresh-ship-research`).
+- **Hafen- und Schiffsrecherche**: Claude recherchiert per Websuche zu einem
+  einzelnen Hafentag (Anlegestelle, Sehenswürdigkeiten, Ausflüge, Essen,
+  Praktisches, Wetter), zum Schiff selbst (Decksplan, Restaurants,
+  Ausstattung, Erfahrungsberichte anderer Gäste) und zur gebuchten
+  Kabinenkategorie. Jeder Fund nennt seine Quelle und wird verifiziert, bevor
+  er als Fakt behandelt wird. Läuft automatisch im Hintergrund, sobald eine
+  Reise geladen wird und Daten fehlen oder älter als 7 Tage sind (siehe
+  `ensureShipResearched`/`ensureCabinResearched`/`ensurePortResearched`) -
+  normale Nutzer:innen sehen nur das Ergebnis, ohne selbst etwas anzustoßen.
+  Schiffsinfos werden zusätzlich wöchentlich per Cron aufgefrischt
+  (`vercel.json`, `/api/cron/refresh-ship-research`). Ein manueller
+  "Erneut recherchieren"-Trigger bleibt Admins vorbehalten
+  (`/api/research/ship|port|cabin`), damit nicht jedes Konto beliebig oft
+  kostenpflichtige Anthropic-Aufrufe auslösen kann.
 - **Chat**: Fragen zur Reise beantwortet Claude auf Basis der gespeicherten
   Daten, der Recherche-Funde und bisheriger Chat-Antworten. Wichtige
   Antworten lassen sich als "Gemerkt" markieren und tauchen dann auf der

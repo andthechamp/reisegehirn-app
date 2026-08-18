@@ -24,9 +24,13 @@ interface PortResearchProps {
   tripId: string;
   portCallId: string;
   initialFindings: Finding[];
+  // Der manuelle Trigger ist admin-only (siehe /api/research/port) - für
+  // alle anderen Nutzer:innen läuft Recherche automatisch beim Laden der
+  // Reise im Hintergrund (siehe ensurePortResearched).
+  isAdmin: boolean;
 }
 
-export default function PortResearch({ tripId, portCallId, initialFindings }: PortResearchProps) {
+export default function PortResearch({ tripId, portCallId, initialFindings, isAdmin }: PortResearchProps) {
   const [findings, setFindings] = useState<Finding[]>(initialFindings);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,16 +75,24 @@ export default function PortResearch({ tripId, portCallId, initialFindings }: Po
 
   return (
     <div className="mt-2 space-y-2">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handleResearch}
-          disabled={loading}
-          className="flex items-center gap-1.5 text-xs font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          {loading && <SpinnerIcon className="h-3 w-3" />}
-          {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Hafen recherchieren"}
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleResearch}
+            disabled={loading}
+            className="flex items-center gap-1.5 text-xs font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {loading && <SpinnerIcon className="h-3 w-3" />}
+            {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Hafen recherchieren"}
+          </button>
+        </div>
+      )}
+
+      {!isAdmin && findings.length === 0 && (
+        <p className="text-xs text-ink/50">
+          Infos zu diesem Hafen werden im Hintergrund recherchiert - bitte gleich noch einmal vorbeischauen.
+        </p>
+      )}
 
       {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-800">{error}</div>}
 

@@ -27,6 +27,7 @@ export default function TripPage() {
   const [memory, setMemory] = useState<TripContext["memory"]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isOwner, setIsOwner] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +42,7 @@ export default function TripPage() {
         setMemory(json.context.memory);
         setMessages(json.messages);
         setIsOwner(json.isOwner);
+        setIsAdmin(json.isAdmin);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
       } finally {
@@ -119,6 +121,7 @@ export default function TripPage() {
       <ShipResearch
         tripId={tripId}
         initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category === null)}
+        isAdmin={isAdmin}
       />
 
       <CabinResearch
@@ -142,6 +145,7 @@ export default function TripPage() {
           )
         )}
         initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category !== null)}
+        isAdmin={isAdmin}
       />
 
       <RouteResearch findings={context.route_research} />
@@ -160,6 +164,7 @@ export default function TripPage() {
           excursions={excursions}
           research={context.research}
           onDeleteExcursion={handleDeleteExcursion}
+          isAdmin={isAdmin}
         />
       </section>
 

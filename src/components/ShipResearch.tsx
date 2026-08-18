@@ -14,9 +14,13 @@ const CATEGORY_LABEL: Record<string, string> = {
 interface ShipResearchProps {
   tripId: string;
   initialFindings: Finding[];
+  // Der manuelle Trigger ist admin-only (siehe /api/research/ship) - für
+  // alle anderen Nutzer:innen läuft Recherche automatisch beim Laden der
+  // Reise im Hintergrund (siehe ensureShipResearched).
+  isAdmin: boolean;
 }
 
-export default function ShipResearch({ tripId, initialFindings }: ShipResearchProps) {
+export default function ShipResearch({ tripId, initialFindings, isAdmin }: ShipResearchProps) {
   const [findings, setFindings] = useState<Finding[]>(initialFindings);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,22 +58,25 @@ export default function ShipResearch({ tripId, initialFindings }: ShipResearchPr
     <section className="space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-xl font-medium text-ink">Schiffsinfos</h2>
-        <button
-          onClick={handleResearch}
-          disabled={loading}
-          className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          {loading && <SpinnerIcon className="h-3.5 w-3.5" />}
-          {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Jetzt recherchieren"}
-        </button>
+        {isAdmin && (
+          <button
+            onClick={handleResearch}
+            disabled={loading}
+            className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {loading && <SpinnerIcon className="h-3.5 w-3.5" />}
+            {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Jetzt recherchieren"}
+          </button>
+        )}
       </div>
 
       {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>}
 
       {findings.length === 0 && !loading && (
         <p className="text-sm text-ink/50">
-          Noch keine Infos zu diesem Schiff recherchiert (Decksplan, Restaurants, Bordprogramm, Ausstattung,
-          Gästestimmen &amp; Insider-Tipps).
+          {isAdmin
+            ? "Noch keine Infos zu diesem Schiff recherchiert (Decksplan, Restaurants, Bordprogramm, Ausstattung, Gästestimmen & Insider-Tipps)."
+            : "Infos zu diesem Schiff werden im Hintergrund recherchiert (Decksplan, Restaurants, Bordprogramm, Ausstattung, Gästestimmen & Insider-Tipps) - bitte gleich noch einmal vorbeischauen."}
         </p>
       )}
 

@@ -58,6 +58,27 @@ export async function getCurrentUser() {
 }
 
 /**
+ * Bestätigt anhand der Session (RLS-Client, kein Vertrauen in Client-Input),
+ * dass die aufrufende Person Admin ist, bevor irgendetwas admin-only
+ * ausgeführt wird. Zentraler Helfer für alle Admin-only-Endpunkte (Nutzer-
+ * verwaltung, manuelles Anstoßen von Recherche) - vorher in mehreren Routen
+ * dupliziert.
+ */
+export async function requireAdmin() {
+  const { supabase, user } = await getCurrentUser();
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  if (profile?.role !== "admin") return null;
+
+  return user;
+}
+
+/**
  * Service-Role-Client, der Row-Level-Security umgeht. NUR für echte
  * Admin-Operationen verwenden (Nutzerverwaltung über die Supabase Auth
  * Admin-API) - darf niemals im Browser-Bundle landen und niemals für

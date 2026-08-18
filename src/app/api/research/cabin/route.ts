@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { researchAndSaveCabin } from "@/lib/ship-research";
-import { getSupabaseServerClient } from "@/lib/supabase";
+import { getSupabaseServerClient, requireAdmin } from "@/lib/supabase";
 import { normalizeCabinCategory } from "@/lib/cabin";
 
 export const runtime = "nodejs";
@@ -10,6 +10,17 @@ export const maxDuration = 120;
 
 export async function POST(req: NextRequest) {
   try {
+    // Fehlende/veraltete Kabineninfos werden seit der Umstellung auf
+    // automatische Recherche (siehe ensureCabinResearched, aufgerufen beim
+    // Laden einer Reise) im Hintergrund für alle Nutzer:innen nachgeladen -
+    // dieser Endpunkt (manueller Trigger, u.a. "Erneut recherchieren") bleibt
+    // Admins vorbehalten, damit nicht jede/r Kreuzfahrtgast beliebig oft
+    // kostenpflichtige Anthropic-Aufrufe auslösen kann.
+    const admin = await requireAdmin();
+    if (!admin) {
+      return NextResponse.json({ error: "Nicht berechtigt." }, { status: 403 });
+    }
+
     const { trip_id, cabin_category, force } = (await req.json()) as {
       trip_id?: string;
       cabin_category?: string;
