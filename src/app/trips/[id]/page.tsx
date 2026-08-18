@@ -8,7 +8,7 @@ import CabinCard from "@/components/CabinCard";
 import type { ChatMessage } from "@/components/ChatPanel";
 import ShipResearch from "@/components/ShipResearch";
 import CabinResearch from "@/components/CabinResearch";
-import { normalizeCabinCategory } from "@/lib/cabin";
+import { normalizeCabinCategory, extractDeckNumber, cabinLabel } from "@/lib/cabin";
 import PortResearch from "@/components/PortResearch";
 import RouteResearch from "@/components/RouteResearch";
 import ExcursionForm from "@/components/ExcursionForm";
@@ -124,17 +124,22 @@ export default function TripPage() {
       <CabinResearch
         tripId={tripId}
         groups={Object.values(
-          context.bookings.reduce<Record<string, { category: string; cabinNumbers: string[] }>>((acc, b) => {
-            if (!b.cabin_type) return acc;
-            const category = normalizeCabinCategory(b.cabin_type);
-            if (!category) return acc;
-            const group = acc[category] ?? { category, cabinNumbers: [] };
-            if (b.cabin_number && !group.cabinNumbers.includes(b.cabin_number)) {
-              group.cabinNumbers.push(b.cabin_number);
-            }
-            acc[category] = group;
-            return acc;
-          }, {})
+          context.bookings.reduce<Record<string, { label: string; category: string; deck: string | null; cabinNumbers: string[] }>>(
+            (acc, b) => {
+              if (!b.cabin_type) return acc;
+              const category = normalizeCabinCategory(b.cabin_type);
+              if (!category) return acc;
+              const deck = b.cabin_number ? extractDeckNumber(b.cabin_number) : null;
+              const label = cabinLabel(category, deck);
+              const group = acc[label] ?? { label, category, deck, cabinNumbers: [] };
+              if (b.cabin_number && !group.cabinNumbers.includes(b.cabin_number)) {
+                group.cabinNumbers.push(b.cabin_number);
+              }
+              acc[label] = group;
+              return acc;
+            },
+            {}
+          )
         )}
         initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category !== null)}
       />

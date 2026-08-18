@@ -92,18 +92,20 @@ export async function researchAndSaveShip(
 
 /**
  * Analog zu researchAndSaveShip, aber für eine konkret gebuchte
- * Kabinenkategorie (siehe normalizeCabinCategory in src/lib/cabin.ts). Geteilt
- * über alle Reisen mit derselben Schiff+Kategorie-Kombination.
+ * Kabinenkategorie. cabinLabel ist die reine Kategorie oder "Kategorie ·
+ * Deck N" (siehe cabinLabel() in src/lib/cabin.ts) - geteilt über alle
+ * Reisen mit derselben Schiff+Kategorie(+Deck)-Kombination. buildCabinResearchPrompt
+ * parst das Deck selbst wieder aus dem Label heraus.
  */
 export async function researchAndSaveCabin(
   supabase: SupabaseClient,
   shipName: string,
-  cabinCategory: string
+  cabinLabel: string
 ): Promise<ShipResearchResult> {
   const result = await runResearch(
-    buildCabinResearchPrompt(shipName, cabinCategory),
-    `Recherchiere Informationen zur Kabinenkategorie "${cabinCategory}" auf dem Kreuzfahrtschiff "${shipName}".`,
-    `Kabinenrecherche (${shipName} / ${cabinCategory})`
+    buildCabinResearchPrompt(shipName, cabinLabel),
+    `Recherchiere Informationen zur Kabinenkategorie "${cabinLabel}" auf dem Kreuzfahrtschiff "${shipName}".`,
+    `Kabinenrecherche (${shipName} / ${cabinLabel})`
   );
   if (!result.ok) return result;
 
@@ -111,12 +113,12 @@ export async function researchAndSaveCabin(
     .from("ship_research")
     .delete()
     .eq("ship_name", shipName)
-    .eq("cabin_category", cabinCategory);
+    .eq("cabin_category", cabinLabel);
   if (deleteError) return { ok: false, error: deleteError.message };
 
   const rows = result.findings.map((f, i) => ({
     ship_name: shipName,
-    cabin_category: cabinCategory,
+    cabin_category: cabinLabel,
     category: f.category,
     title: f.title,
     content: f.content,

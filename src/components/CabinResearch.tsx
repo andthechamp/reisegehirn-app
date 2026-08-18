@@ -12,7 +12,9 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 interface CabinGroup {
-  category: string; // normalisiert, z. B. "Balkonkabine Kategorie D"
+  label: string; // Cache-/API-Schlüssel: Kategorie oder "Kategorie · Deck N" (siehe cabinLabel() in lib/cabin.ts)
+  category: string; // reine Kategorie, für die Anzeige, z. B. "Balkonkabine Kategorie D"
+  deck: string | null;
   cabinNumbers: string[];
 }
 
@@ -27,28 +29,28 @@ export default function CabinResearch({ tripId, groups, initialFindings }: Cabin
   const [loadingCategory, setLoadingCategory] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleResearch(category: string) {
-    setLoadingCategory(category);
+  async function handleResearch(label: string) {
+    setLoadingCategory(label);
     setError(null);
-    const existing = findings.filter((f) => f.cabin_category === category);
+    const existing = findings.filter((f) => f.cabin_category === label);
     const force = existing.length > 0;
     try {
       const res = await fetch("/api/research/cabin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trip_id: tripId, cabin_category: category, force }),
+        body: JSON.stringify({ trip_id: tripId, cabin_category: label, force }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Recherche fehlgeschlagen.");
       if (json.findings.length === 0) {
-        setError(`Zu "${category}" konnten keine verlässlichen Informationen gefunden werden.`);
+        setError(`Zu "${label}" konnten keine verlässlichen Informationen gefunden werden.`);
       } else {
         setFindings((prev) => [
-          ...prev.filter((f) => f.cabin_category !== category),
+          ...prev.filter((f) => f.cabin_category !== label),
           ...(json.findings as Array<Record<string, unknown>>).map((r) => ({
             id: r.id as string,
             port_call_id: null,
-            cabin_category: (r.cabin_category as string | null) ?? category,
+            cabin_category: (r.cabin_category as string | null) ?? label,
             category: r.category as string,
             title: r.title as string,
             content: r.content as string,
@@ -77,19 +79,20 @@ export default function CabinResearch({ tripId, groups, initialFindings }: Cabin
       {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>}
 
       {groups.map((g) => {
-        const groupFindings = findings.filter((f) => f.cabin_category === g.category);
-        const loading = loadingCategory === g.category;
+        const groupFindings = findings.filter((f) => f.cabin_category === g.label);
+        const loading = loadingCategory === g.label;
         return (
-          <div key={g.category} className="space-y-2">
+          <div key={g.label} className="space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-ink/80">
                 {g.category}
+                {g.deck && <span className="text-ink/40"> · Deck {g.deck}</span>}
                 {g.cabinNumbers.length > 0 && (
                   <span className="text-ink/40"> · Kabine {g.cabinNumbers.join(", ")}</span>
                 )}
               </p>
               <button
-                onClick={() => handleResearch(g.category)}
+                onClick={() => handleResearch(g.label)}
                 disabled={loading}
                 className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
               >

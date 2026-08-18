@@ -30,9 +30,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Reise nicht gefunden." }, { status: 404 });
     }
 
-    const normalizedCategory = normalizeCabinCategory(cabin_category);
+    // cabin_category kommt vom Client bereits als fertiges Label (Kategorie,
+    // ggf. "Kategorie · Deck N" - siehe cabinLabel() in src/lib/cabin.ts).
+    // normalizeCabinCategory hier nur als defensive Absicherung, falls doch
+    // mal ein roher cabin_type-Wert mit Klammern/Kommas ankommt.
+    const normalizedLabel = normalizeCabinCategory(cabin_category);
 
-    // Kabineninfos sind nicht reisespezifisch, sondern an Schiff+Kategorie
+    // Kabineninfos sind nicht reisespezifisch, sondern an Schiff+Kategorie(+Deck)
     // gebunden - vor einer neuen Recherche erst prüfen, ob eine andere Reise
     // mit derselben Kombination schon recherchiert hat. Nur bei explizitem
     // "Erneut recherchieren" (force) wird das übersprungen.
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
         .from("ship_research")
         .select("*")
         .eq("ship_name", trip.ship_name)
-        .eq("cabin_category", normalizedCategory)
+        .eq("cabin_category", normalizedLabel)
         .order("sort_order", { ascending: true });
       if (cacheError) throw cacheError;
       if (cached && cached.length > 0) {
@@ -49,7 +53,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const result = await researchAndSaveCabin(supabase, trip.ship_name, normalizedCategory);
+    const result = await researchAndSaveCabin(supabase, trip.ship_name, normalizedLabel);
     if (!result.ok) {
       return NextResponse.json(
         { error: `Recherche fehlgeschlagen: ${result.error}` },

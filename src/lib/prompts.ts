@@ -169,13 +169,25 @@ Schiff: ${shipName}`;
 // bestimmten Schiff (nicht für eine allgemeine Übersicht aller Kategorien -
 // das deckt buildShipResearchPrompt bewusst nicht mehr ab). Ergebnis landet
 // in ship_research mit gesetztem cabin_category (siehe schema.sql) - geteilt
-// über alle Reisen, die dieselbe Kombination aus Schiff und Kategorie gebucht
-// haben, analog zum bestehenden Schiffswissen-Cache.
-export function buildCabinResearchPrompt(shipName: string, cabinCategory: string): string {
+// über alle Reisen, die dieselbe Kombination aus Schiff und Kategorie (bzw.
+// Kategorie+Deck, falls das Deck bekannt ist) gebucht haben, analog zum
+// bestehenden Schiffswissen-Cache. cabinLabel ist die reine Kategorie oder
+// "Kategorie · Deck N" (siehe normalizeCabinCategory/extractDeckNumber in
+// src/lib/cabin.ts) - das Deck wird hier aus dem Label geparst, damit an
+// dieser einen Stelle die maßgebliche Quelle für "kennen wir das Deck?" liegt.
+export function buildCabinResearchPrompt(shipName: string, cabinLabel: string): string {
+  const deckMatch = cabinLabel.match(/^(.*) · Deck (\d+)$/);
+  const cabinCategory = deckMatch ? deckMatch[1] : cabinLabel;
+  const deckNumber = deckMatch ? deckMatch[2] : null;
+  const deckContext = deckNumber
+    ? `Die Kabine liegt konkret auf Deck ${deckNumber}.`
+    : `Das genaue Deck ist nicht bekannt.`;
+
   return `Du recherchierst mit dem web_search-Tool verlässliche, konkrete Informationen zu EINER bestimmten, tatsächlich gebuchten Kabinenkategorie auf einem bestimmten Kreuzfahrtschiff.
 
 Schiff: "${shipName}"
 Kabinenkategorie: "${cabinCategory}"
+${deckContext}
 
 Regeln, an die du dich strikt hältst:
 1. Es geht NICHT um eine allgemeine Übersicht aller Kabinentypen des Schiffs, sondern ausschließlich um Details zu genau dieser einen, bereits gebuchten Kategorie "${cabinCategory}" - die Person hat schon gebucht und will wissen, was sie konkret erwartet.
@@ -183,14 +195,15 @@ Regeln, an die du dich strikt hältst:
 3. Decke, falls auffindbar, ab:
    - Reale Wohnfläche in m² (offiziell laut Reederei, ODER aus Erfahrungsberichten, falls kein offizieller Wert auffindbar ist - dann als solches kennzeichnen)
    - Grundriss/Ausstattung: Bett-Anordnung, Sitzecke, Balkon-/Fenstergröße falls zutreffend, Stauraum, Anzahl/Lage der Steckdosen, Bad-Ausstattung
-   - Typische Deck-Lage dieser Kategorie und was das für Lärm (z. B. über/unter Restaurants, Bars, Pooldeck) oder Aussicht bedeutet, falls dazu Erfahrungsberichte auffindbar sind
    - Was Gäste in Bewertungen/Foren konkret zu GENAU dieser Kategorie berichten (z. B. "wirkt geräumiger als vergleichbare Kategorien anderer Reedereien", "Stauraum unter dem Bett gut nutzbar") - IMMER als Meinungswiedergabe kennzeichnen (z. B. "ein Erfahrungsbericht beschreibt...", "mehrere Gäste berichten..."), nie als objektiven Fakt, außer es handelt sich um offizielle Reederei-Angaben (m², Ausstattungsliste)
-4. Erfinde niemals Werte, insbesondere keine m²-Angabe, wenn du keine findest - dann diesen Punkt weglassen statt zu schätzen.
-5. Bewerte jede Quelle: "A" = offizielle Reederei-Seite, "B" = etabliertes Kreuzfahrt-Portal, "C" = Forum/Blog/Erfahrungsbericht.
-6. category: "schiffswissen" für offizielle/objektive Fakten (m², Ausstattungsliste laut Reederei), "insider_tipps" für Erfahrungsberichte/Meinungen von Gästen.
-7. staleness: "zeitlos" für bauliche Fakten (m², Grundriss), "saisonal" für Ausstattungsdetails, die sich durch Refits ändern können.
-8. Nenne im title-Feld immer sowohl die Kabinenkategorie als auch das Schiff (z. B. "${cabinCategory} auf der ${shipName}: Größe und Ausstattung"), damit bei mehreren Kabinenkategorien einer Reise klar bleibt, worauf sich ein Eintrag bezieht.
-9. Findest du zu dieser konkreten Kategorie auf diesem konkreten Schiff nichts Verlässliches, gib ein leeres Array zurück statt zu raten oder Infos einer anderen Kategorie/eines anderen Schiffs zu verwenden.
+   Nimm KEINE generelle "typische Deck-Lage dieser Kategorie" auf (z. B. "diese Kategorie liegt meist auf den oberen Decks") - das ist zu ungenau und verwirrt eher, als dass es hilft.
+4. WICHTIG bei Lärm-/Lage-Erfahrungsberichten (z. B. "laut über der Bar", "ruhige Lage am Heck"): ${deckContext} Nenne einen konkreten Lärm-/Lage-Erfahrungsbericht NUR, wenn er entweder (a) explizit Deck ${deckNumber ?? "N"} betrifft, oder (b) erkennbar deckunabhängig für die ganze Kategorie gilt (z. B. reine Ausstattungserfahrung ohne Lagebezug). Bezieht sich ein gefundener Erfahrungsbericht erkennbar auf ein ANDERES Deck als das oben genannte (z. B. Deck 8 oder 9 bei gebuchtem Deck 7), verwende ihn NICHT, auch wenn er zur selben Kabinenkategorie gehört - sonst entsteht der falsche Eindruck, es gälte für die eigene Kabine. Ist das Deck oben als unbekannt markiert, nenne Lage-/Lärm-Erfahrungen nur, wenn sie das betroffene Deck selbst explizit nennen, damit die Person selbst abgleichen kann.
+5. Erfinde niemals Werte, insbesondere keine m²-Angabe, wenn du keine findest - dann diesen Punkt weglassen statt zu schätzen.
+6. Bewerte jede Quelle: "A" = offizielle Reederei-Seite, "B" = etabliertes Kreuzfahrt-Portal, "C" = Forum/Blog/Erfahrungsbericht.
+7. category: "schiffswissen" für offizielle/objektive Fakten (m², Ausstattungsliste laut Reederei), "insider_tipps" für Erfahrungsberichte/Meinungen von Gästen.
+8. staleness: "zeitlos" für bauliche Fakten (m², Grundriss), "saisonal" für Ausstattungsdetails, die sich durch Refits ändern können.
+9. Nenne im title-Feld immer sowohl die Kabinenkategorie als auch das Schiff (z. B. "${cabinCategory} auf der ${shipName}: Größe und Ausstattung"), damit bei mehreren Kabinenkategorien einer Reise klar bleibt, worauf sich ein Eintrag bezieht.
+10. Findest du zu dieser konkreten Kategorie auf diesem konkreten Schiff nichts Verlässliches, gib ein leeres Array zurück statt zu raten oder Infos einer anderen Kategorie/eines anderen Schiffs zu verwenden.
 ${WEB_INJECTION_GUARD_RULE}
 ${VERIFICATION_RULE}
 ${CONTENT_FORMATTING_RULE}
