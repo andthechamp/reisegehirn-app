@@ -8,6 +8,7 @@ import CabinCard from "@/components/CabinCard";
 import type { ChatMessage } from "@/components/ChatPanel";
 import ShipResearch from "@/components/ShipResearch";
 import PortResearch from "@/components/PortResearch";
+import RouteResearch from "@/components/RouteResearch";
 import ExcursionForm from "@/components/ExcursionForm";
 import PortDaySwiper from "@/components/PortDaySwiper";
 import MemoryItem from "@/components/MemoryItem";
@@ -114,6 +115,8 @@ export default function TripPage() {
       </section>
 
       <ShipResearch tripId={tripId} initialFindings={context.research.filter((r) => r.port_call_id === null)} />
+
+      <RouteResearch findings={context.route_research} />
 
       {/* Häfen und Ausflüge: pro Hafentag Recherche und gebuchte Ausflüge zusammen */}
       <section className="space-y-3">

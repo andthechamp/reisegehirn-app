@@ -44,11 +44,17 @@ export async function POST(req: NextRequest) {
         .from("port_research")
         .select("*")
         .eq("port_name", portCall.port_name)
-        .gte("retrieved_at", cutoff)
         .order("sort_order", { ascending: true });
       if (cachedPortError) throw cachedPortError;
 
-      if (cachedPort && cachedPort.length > 0) {
+      // Kuratierte Zeilen (curated = true) unterliegen keiner Alters-Prüfung
+      // und dürfen daher allein keinen Cache-Treffer vortäuschen - siehe
+      // ensurePortResearched in lib/port-research.ts für dieselbe Logik.
+      const hasFreshAiRow = (cachedPort ?? []).some(
+        (r) => r.curated !== true && typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
+      );
+
+      if (hasFreshAiRow && cachedPort) {
         // Reederei-/private Ausflüge sind trip-spezifisch (research_findings) -
         // die gibt's nur, wenn genau diese Reise diesen Hafen schon einmal
         // recherchiert hat. Ein Cache-Treffer bei port_research liefert daher

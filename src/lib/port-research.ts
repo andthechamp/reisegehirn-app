@@ -92,7 +92,14 @@ export async function researchAndSavePort(
   const sharedFindings = findings.filter((f) => SHARED_PORT_CATEGORIES.includes(f.category));
   const tripFindings = findings.filter((f) => !SHARED_PORT_CATEGORIES.includes(f.category));
 
-  const { error: deletePortError } = await supabase.from("port_research").delete().eq("port_name", portName);
+  // curated = true bleibt beim Neu-Recherchieren erhalten (z. B. redaktionell
+  // aus einer Reisebüro-Tippliste eingepflegte Einträge) - nur die von der
+  // KI-Websuche erzeugten Zeilen (curated = false) werden ersetzt.
+  const { error: deletePortError } = await supabase
+    .from("port_research")
+    .delete()
+    .eq("port_name", portName)
+    .eq("curated", false);
   if (deletePortError) return { ok: false, error: deletePortError.message };
 
   const { error: deleteTripError } = await supabase
@@ -140,11 +147,26 @@ export async function researchAndSavePort(
     insertedTrip = data ?? [];
   }
 
+  // Kuratierte Zeilen (z. B. redaktionelle Insider-Tipps) werden oben bewusst
+  // nicht gelöscht/neu eingefügt - ohne diesen Nachschlag würden sie im
+  // Response einer frischen Recherche fehlen, obwohl sie in der DB stehen.
+  const { data: curatedPort, error: curatedPortError } = await supabase
+    .from("port_research")
+    .select("*")
+    .eq("port_name", portName)
+    .eq("curated", true)
+    .order("sort_order", { ascending: true });
+  if (curatedPortError) return { ok: false, error: curatedPortError.message };
+
   return {
     ok: true,
     // port_research-Zeilen kennen keinen port_call_id - für die Anzeige auf
     // dieser Reise wird er hier ergänzt, ohne ihn in der geteilten Tabelle zu speichern.
-    findings: [...insertedPort.map((r) => ({ ...r, port_call_id: portCallId })), ...insertedTrip],
+    findings: [
+      ...(curatedPort ?? []).map((r) => ({ ...r, port_call_id: portCallId })),
+      ...insertedPort.map((r) => ({ ...r, port_call_id: portCallId })),
+      ...insertedTrip,
+    ],
   };
 }
 
@@ -164,12 +186,19 @@ export async function ensurePortResearched(
     .from("port_research")
     .select("*")
     .eq("port_name", params.portName)
-    .gte("retrieved_at", cutoff)
     .order("sort_order", { ascending: true });
   if (cachedPortError) return { ok: false, error: cachedPortError.message };
 
-  if (cachedPort && cachedPort.length > 0) {
-    return { ok: true, findings: cachedPort.map((r) => ({ ...r, port_call_id: params.portCallId })) };
+  // Ob eine neue KI-Recherche nötig ist, entscheidet sich ausschließlich an
+  // den nicht-kuratierten (curated = false) Zeilen - kuratierte Einträge
+  // unterliegen keiner Alters-Prüfung (redaktionell gepflegt, kein
+  // Websuche-Ergebnis, das veralten kann) und dürfen daher allein keinen
+  // Cache-Treffer vortäuschen, wenn die AI-Kategorien noch nie recherchiert wurden.
+  const hasFreshAiRow = (cachedPort ?? []).some(
+    (r) => r.curated !== true && typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
+  );
+  if (hasFreshAiRow) {
+    return { ok: true, findings: (cachedPort ?? []).map((r) => ({ ...r, port_call_id: params.portCallId })) };
   }
 
   return researchAndSavePort(supabase, params);

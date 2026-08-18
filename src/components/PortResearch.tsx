@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ResearchCard from "@/components/ResearchCard";
-import { SHARED_PORT_CATEGORIES } from "@/lib/research-schema";
 import { SpinnerIcon } from "@/components/icons";
 
 type Finding = TripContext["research"][number];
@@ -18,6 +17,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   praktisches: "Praktisches",
   wetter_packen: "Wetter & Packen",
   sonstiges: "Sonstiges",
+  insider_tipps: "Insider-Tipps",
 };
 
 interface PortResearchProps {
@@ -96,7 +96,7 @@ export default function PortResearch({ tripId, portCallId, initialFindings }: Po
               // löschbar, da das alle Reisen beträfe, die denselben Hafen
               // nutzen - analog zu Schiffsinfos in ShipResearch. Nur
               // trip-spezifische Ausflüge lassen sich entfernen.
-              onDelete={(SHARED_PORT_CATEGORIES as string[]).includes(f.category) ? undefined : handleDelete}
+              onDelete={f.shared ? undefined : handleDelete}
             />
           ))}
         </div>

@@ -1,5 +1,6 @@
 import type { getSupabaseServerClient } from "@/lib/supabase";
 import type { SightItem } from "@/lib/research-schema";
+import { regionsForPortNames } from "@/lib/route-research";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServerClient>>;
 
@@ -48,6 +49,24 @@ export interface TripContext {
     content: string;
     // Nur bei category "sehenswuerdigkeiten" befüllt (siehe port_research.items).
     items: SightItem[] | null;
+    source_tier: string;
+    source_name: string | null;
+    source_url: string | null;
+    staleness: string;
+    // true = stammt aus einer geteilten Tabelle (ship_research/port_research),
+    // nicht aus der trip-gebundenen research_findings - für diese Einträge
+    // darf die UI keinen Lösch-Button anbieten, siehe PortResearch.tsx.
+    shared: boolean;
+  }>;
+  // Routen-/regionsgebundenes Wissen (siehe route-research.ts), z. B.
+  // "eSIM lohnt sich in der Karibik" - bewusst getrennt vom research-Array,
+  // da es weder an einen Hafen (port_call_id) noch an ein Schiff hängt.
+  route_research: Array<{
+    id: string;
+    category: string;
+    title: string;
+    content: string;
+    conditions: string | null;
     source_tier: string;
     source_name: string | null;
     source_url: string | null;
@@ -152,6 +171,19 @@ export async function fetchTripContext(
       : { data: [] as Record<string, unknown>[], error: null };
   if (portResearchError) throw portResearchError;
 
+  // Regionen aus den angelaufenen Häfen ableiten (siehe REGION_PORTS in
+  // route-research.ts) - keine automatische Erkennung aus trip.route_name.
+  const regions = regionsForPortNames(portNames);
+  const { data: routeResearch, error: routeResearchError } =
+    regions.length > 0
+      ? await supabase
+          .from("route_research")
+          .select("*")
+          .in("region", regions)
+          .order("sort_order", { ascending: true })
+      : { data: [] as Record<string, unknown>[], error: null };
+  if (routeResearchError) throw routeResearchError;
+
   const portResearchExpanded = (portResearch ?? []).flatMap((r) => {
     const callIds = portNameToCallIds.get(r.port_name as string) ?? [];
     return callIds.map((callId) => ({
@@ -165,6 +197,7 @@ export async function fetchTripContext(
       source_name: r.source_name,
       source_url: r.source_url,
       staleness: r.staleness,
+      shared: true,
     }));
   });
 
@@ -217,6 +250,7 @@ export async function fetchTripContext(
         source_name: r.source_name,
         source_url: r.source_url,
         staleness: r.staleness,
+        shared: true,
       })),
       ...(research ?? []).map((r) => ({
         id: r.id,
@@ -229,9 +263,21 @@ export async function fetchTripContext(
         source_name: r.source_name,
         source_url: r.source_url,
         staleness: r.staleness,
+        shared: false,
       })),
       ...portResearchExpanded,
     ],
+    route_research: (routeResearch ?? []).map((r) => ({
+      id: r.id,
+      category: r.category,
+      title: r.title,
+      content: r.content,
+      conditions: r.conditions,
+      source_tier: r.source_tier,
+      source_name: r.source_name,
+      source_url: r.source_url,
+      staleness: r.staleness,
+    })),
     memory: (memory ?? []).map((m) => ({
       id: m.id,
       content: m.content,
