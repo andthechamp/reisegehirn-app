@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
           cache_control: { type: "ephemeral" },
         },
       ],
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 3 }],
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 3 }],
       messages,
     });
 

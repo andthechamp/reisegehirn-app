@@ -30,8 +30,11 @@ export async function researchAndSavePort(
   const response = await anthropic.messages.create({
     model: RESEARCH_MODEL,
     max_tokens: 16000,
+    // Strukturierte Extraktion nach Websuche statt tiefem Reasoning - "medium"
+    // spart Tokens gegenüber dem Default "high" ohne spürbaren Qualitätsverlust.
+    output_config: { effort: "medium" },
     system: buildPortResearchPrompt(shipName, portName, callDate),
-    tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 6 }],
+    tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 6 }],
     messages: [
       {
         role: "user",
