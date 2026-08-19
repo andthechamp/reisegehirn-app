@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { DEEPER_RESEARCH_PROMPT, DEEPER_RESEARCH_CONFIRMATION } from "@/lib/chat-constants";
 import MarkdownText from "@/components/MarkdownText";
 
 export interface ChatMessage {
@@ -104,10 +103,6 @@ export default function ChatPanel({ tripId, initialMessages, initialMemory }: Ch
     sendMessage(input.trim());
   }
 
-  const lastMessage = messages[messages.length - 1];
-  const offersDeeperResearch =
-    !sending && lastMessage?.role === "assistant" && lastMessage.content.includes(DEEPER_RESEARCH_PROMPT);
-
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
@@ -150,15 +145,6 @@ export default function ChatPanel({ tripId, initialMessages, initialMemory }: Ch
 
       <div className="shrink-0 space-y-2 border-t border-ink/10 p-3">
         {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">{error}</div>}
-
-        {offersDeeperResearch && (
-          <button
-            onClick={() => sendMessage(DEEPER_RESEARCH_CONFIRMATION)}
-            className="w-full rounded-lg border border-fjord/40 bg-fjord-light px-4 py-2 text-sm font-medium text-fjord-dark transition hover:bg-fjord-light/70"
-          >
-            Genauer recherchieren
-          </button>
-        )}
 
         <div className="flex gap-2">
           <input

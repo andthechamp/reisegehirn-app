@@ -5,8 +5,8 @@ import { fetchTripContext, serializeTripContext } from "@/lib/trip-context";
 import { getCurrentUser } from "@/lib/supabase";
 
 export const runtime = "nodejs";
-// Etwas großzügiger als eine reine Textantwort, falls der Nutzer einer
-// vertiefenden Recherche zustimmt und das web_search-Tool zum Einsatz kommt.
+// Etwas großzügiger als eine reine Textantwort, da Fragen ohne ausreichende
+// Datenbasis direkt (ohne separate Rückfrage) das web_search-Tool auslösen.
 export const maxDuration = 90;
 
 export async function POST(req: NextRequest) {
@@ -79,7 +79,9 @@ export async function POST(req: NextRequest) {
           cache_control: { type: "ephemeral" },
         },
       ],
-      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 3 }],
+      // CHAT_MODEL (Haiku) unterstützt kein programmatic tool calling -
+      // ohne explizites allowed_callers lehnt die API web_search mit 400 ab.
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 3, allowed_callers: ["direct"] }],
       messages,
     });
 
@@ -109,6 +111,35 @@ export async function POST(req: NextRequest) {
       { trip_id, role: "assistant", content: reply },
     ]);
     if (insertError) throw insertError;
+
+    // Hat das Modell laut Prompt-Regel 9 für diese Antwort das web_search-Tool
+    // genutzt (erkennbar an einem server_tool_use-Block), war die vorhandene
+    // Reisedaten-JSON (research/route_research/memory) für die Frage nicht
+    // ausreichend. Das Ergebnis zusätzlich als research_findings-Zeile
+    // ablegen, damit dieselbe oder eine ähnliche Frage in dieser Reise künftig
+    // direkt aus dem Kontext beantwortet werden kann, statt erneut zu suchen -
+    // sichtbar wird der Fund dadurch außerdem im Recherche-Bereich der App,
+    // nicht nur im Chatverlauf. Rein informativ, kein kritischer Pfad: ein
+    // Fehler hier darf die eigentliche Chat-Antwort nicht verhindern.
+    const usedWebSearch = response.content.some(
+      (block) => block.type === "server_tool_use" && block.name === "web_search"
+    );
+    if (usedWebSearch) {
+      const { error: findingError } = await supabase.from("research_findings").insert({
+        trip_id,
+        port_call_id: null,
+        category: "sonstiges",
+        title: message.trim().slice(0, 200),
+        content: reply,
+        source_tier: "C",
+        source_name: null,
+        source_url: null,
+        staleness: "verfällt",
+      });
+      if (findingError) {
+        console.error("Chat-Recherche konnte nicht als Fund gespeichert werden:", findingError);
+      }
+    }
 
     return NextResponse.json({ reply });
   } catch (err) {
