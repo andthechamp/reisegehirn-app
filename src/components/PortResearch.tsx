@@ -20,6 +20,33 @@ const CATEGORY_LABEL: Record<string, string> = {
   insider_tipps: "Insider-Tipps",
 };
 
+// Feste Lesereihenfolge statt der bisherigen sort_order (die je Hafen von der
+// zufälligen Antwortreihenfolge der KI-Websuche abhing und daher zwischen
+// Häfen inkonsistent war): erst Orientierung/Ankunft (Anleger,
+// Sehenswürdigkeiten, zu Fuß erreichbar), dann Ausflüge, dann Essen/
+// Praktisches/Wetter, zuletzt Insider-Tipps/Sonstiges. Innerhalb einer
+// Kategorie bleibt die bisherige sort_order maßgeblich (stabiler Sort).
+const CATEGORY_ORDER: string[] = [
+  "anleger",
+  "sehenswuerdigkeiten",
+  "zu_fuss",
+  "ausflug_offiziell",
+  "ausflug_privat",
+  "essen",
+  "praktisches",
+  "wetter_packen",
+  "insider_tipps",
+  "sonstiges",
+];
+
+function sortByCategory(findings: Finding[]): Finding[] {
+  return [...findings].sort((a, b) => {
+    const rankA = CATEGORY_ORDER.indexOf(a.category);
+    const rankB = CATEGORY_ORDER.indexOf(b.category);
+    return (rankA === -1 ? CATEGORY_ORDER.length : rankA) - (rankB === -1 ? CATEGORY_ORDER.length : rankB);
+  });
+}
+
 interface PortResearchProps {
   tripId: string;
   portCallId: string;
@@ -98,7 +125,7 @@ export default function PortResearch({ tripId, portCallId, initialFindings, isAd
 
       {findings.length > 0 && (
         <div className="space-y-2">
-          {findings.map((f) => (
+          {sortByCategory(findings).map((f) => (
             <ResearchCard
               key={f.id}
               finding={f}

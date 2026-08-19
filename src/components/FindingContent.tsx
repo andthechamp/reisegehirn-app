@@ -13,6 +13,22 @@ interface FindingContentProps {
   items?: SightItem[] | null;
 }
 
+// Manche Bullet-Punkte folgen dem Muster "Name – Beschreibung" (z. B.
+// Restaurant-/Bar-Listen: "Surf & Turf – Steaks & Grill (Deck 5)"). Der Name
+// vor dem ersten Gedankenstrich wird hervorgehoben, damit lange Listen beim
+// Überfliegen schneller lesbar sind - ohne Gedankenstrich (die meisten
+// anderen Recherche-Kategorien) bleibt es ein normaler Listenpunkt.
+function BulletItem({ text }: { text: string }) {
+  const match = text.match(/^(.{1,40}?)\s+–\s+(.+)$/);
+  if (!match) return <>{text}</>;
+  const [, name, rest] = match;
+  return (
+    <>
+      <span className="font-medium text-ink">{name}</span> – {rest}
+    </>
+  );
+}
+
 export default function FindingContent({ content, items }: FindingContentProps) {
   if (items && items.length > 0) {
     return (
@@ -69,10 +85,21 @@ export default function FindingContent({ content, items }: FindingContentProps) 
 
   const bulleted = splitBulletList(content);
   if (bulleted) {
+    // Ab einer gewissen Länge (z. B. Restaurant-/Bar-Listen mit 8+ Punkten)
+    // wirkt eine einspaltige Liste unnötig lang - ab Tablet-Breite dann in
+    // zwei CSS-Spalten fließen lassen, damit die Karte kompakter bleibt.
+    const dense = bulleted.length > 6;
     return (
-      <ul className="mt-1 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-ink/80">
+      <ul
+        className={
+          "mt-1 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-ink/80" +
+          (dense ? " sm:columns-2 sm:gap-x-6 sm:space-y-1" : "")
+        }
+      >
         {bulleted.map((item, i) => (
-          <li key={i}>{item}</li>
+          <li key={i} className={dense ? "break-inside-avoid" : undefined}>
+            <BulletItem text={item} />
+          </li>
         ))}
       </ul>
     );
