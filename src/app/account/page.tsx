@@ -1,3 +1,4 @@
+import CloseButton from "@/components/CloseButton";
 import ProfileForm from "@/components/ProfileForm";
 import { getSupabaseServerClient } from "@/lib/supabase";
 
@@ -13,7 +14,10 @@ export default async function AccountPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-sm px-6 py-16">
-      <h1 className="font-display mb-6 text-2xl font-semibold text-ink">Profil</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="font-display text-2xl font-semibold text-ink">Profil</h1>
+        <CloseButton />
+      </div>
       <ProfileForm
         initialEmail={profile?.email ?? ""}
         initialFullName={profile?.full_name ?? ""}
