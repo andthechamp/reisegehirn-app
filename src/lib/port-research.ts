@@ -1,17 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
 import { buildPortResearchPrompt } from "@/lib/prompts";
-import { parseResearchFindings, SHARED_PORT_CATEGORIES } from "@/lib/research-schema";
+import { parseResearchFindings, SHARED_PORT_CATEGORIES, computeCacheTtlDays } from "@/lib/research-schema";
 import { googleSearchUrl, lookupWikipediaImage } from "@/lib/wikimedia";
 import { buildWeatherFinding, getWeatherData } from "@/lib/weather";
 
 export type PortResearchResult =
   | { ok: true; findings: Record<string, unknown>[] }
   | { ok: false; error: string };
-
-// Geteiltes Hafenwissen (port_research) gilt für diese Zeitspanne als aktuell -
-// danach wird bei Gelegenheit erneut recherchiert statt der Cache blind vertraut.
-export const PORT_RESEARCH_CACHE_MAX_AGE_DAYS = 7;
 
 /**
  * Führt die Websuche-Recherche für einen Hafenanlauf aus und ersetzt die
@@ -184,7 +180,6 @@ export async function ensurePortResearched(
   supabase: SupabaseClient,
   params: { tripId: string; portCallId: string; shipName: string; portName: string; callDate: string }
 ): Promise<PortResearchResult> {
-  const cutoff = new Date(Date.now() - PORT_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const { data: cachedPort, error: cachedPortError } = await supabase
     .from("port_research")
     .select("*")
@@ -197,8 +192,13 @@ export async function ensurePortResearched(
   // unterliegen keiner Alters-Prüfung (redaktionell gepflegt, kein
   // Websuche-Ergebnis, das veralten kann) und dürfen daher allein keinen
   // Cache-Treffer vortäuschen, wenn die AI-Kategorien noch nie recherchiert wurden.
-  const hasFreshAiRow = (cachedPort ?? []).some(
-    (r) => r.curated !== true && typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
+  // TTL richtet sich nach der volatilsten Staleness-Einstufung unter den
+  // nicht-kuratierten Zeilen (siehe computeCacheTtlDays in ship-research.ts).
+  const aiRows = (cachedPort ?? []).filter((r) => r.curated !== true);
+  const ttlDays = computeCacheTtlDays(aiRows.map((r) => r.staleness));
+  const cutoff = new Date(Date.now() - ttlDays * 24 * 60 * 60 * 1000).toISOString();
+  const hasFreshAiRow = aiRows.some(
+    (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
   );
   if (hasFreshAiRow) {
     return { ok: true, findings: (cachedPort ?? []).map((r) => ({ ...r, port_call_id: params.portCallId })) };

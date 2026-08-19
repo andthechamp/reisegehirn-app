@@ -1,18 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
 import { buildShipResearchPrompt, buildCabinResearchPrompt } from "@/lib/prompts";
-import { parseResearchFindings } from "@/lib/research-schema";
+import { parseResearchFindings, computeCacheTtlDays } from "@/lib/research-schema";
 
 export type ShipResearchResult =
   | { ok: true; findings: unknown[] }
   | { ok: false; error: string };
-
-// Schiffs-/Kabineninfos (ship_research) gelten für diese Zeitspanne als
-// aktuell - danach wird bei Gelegenheit erneut recherchiert statt der Cache
-// blind vertraut. Gleicher Schwellwert wie der wöchentliche Cron
-// (STALE_AFTER_DAYS in cron/refresh-ship-research/route.ts) und wie
-// PORT_RESEARCH_CACHE_MAX_AGE_DAYS in port-research.ts.
-export const SHIP_RESEARCH_CACHE_MAX_AGE_DAYS = 7;
 
 async function runResearch(
   system: string,
@@ -159,7 +152,6 @@ export async function ensureShipResearched(
   supabase: SupabaseClient,
   shipName: string
 ): Promise<ShipResearchResult> {
-  const cutoff = new Date(Date.now() - SHIP_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const { data: cached, error } = await supabase
     .from("ship_research")
     .select("*")
@@ -167,6 +159,13 @@ export async function ensureShipResearched(
     .is("cabin_category", null)
     .order("sort_order", { ascending: true });
   if (error) return { ok: false, error: error.message };
+
+  // TTL richtet sich nach der volatilsten Staleness-Einstufung im aktuell
+  // gecachten Satz (siehe computeCacheTtlDays) statt einer festen Frist -
+  // ein Satz aus überwiegend "zeitlos"-Funden (z. B. reiner Decksplan) muss
+  // so nicht alle 7 Tage blind neu recherchiert werden.
+  const ttlDays = computeCacheTtlDays((cached ?? []).map((r) => r.staleness));
+  const cutoff = new Date(Date.now() - ttlDays * 24 * 60 * 60 * 1000).toISOString();
 
   const hasFreshRow = (cached ?? []).some(
     (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
@@ -185,7 +184,6 @@ export async function ensureCabinResearched(
   shipName: string,
   cabinLabel: string
 ): Promise<ShipResearchResult> {
-  const cutoff = new Date(Date.now() - SHIP_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const { data: cached, error } = await supabase
     .from("ship_research")
     .select("*")
@@ -193,6 +191,9 @@ export async function ensureCabinResearched(
     .eq("cabin_category", cabinLabel)
     .order("sort_order", { ascending: true });
   if (error) return { ok: false, error: error.message };
+
+  const ttlDays = computeCacheTtlDays((cached ?? []).map((r) => r.staleness));
+  const cutoff = new Date(Date.now() - ttlDays * 24 * 60 * 60 * 1000).toISOString();
 
   const hasFreshRow = (cached ?? []).some(
     (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff

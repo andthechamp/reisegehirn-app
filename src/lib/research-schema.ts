@@ -20,6 +20,34 @@ export type SourceTier = "A" | "B" | "C";
 export type Staleness = "zeitlos" | "saisonal" | "verfällt";
 export type ImageSource = "wikimedia_commons" | "wikipedia";
 
+// Wie lange ein Fund pro Staleness-Einstufung als aktuell gilt, bevor der
+// Cache (ship_research/port_research) für einen erneuten KI-Rechercheversuch
+// fällig wird. "zeitlos" (Decksplan, Kabinengrundriss o.ä.) ändert sich
+// praktisch nie und muss daher nicht alle paar Tage blind neu recherchiert
+// werden; "verfällt" (Preise, Öffnungszeiten) bleibt beim bisherigen
+// konservativen 7-Tage-Wert.
+export const CACHE_TTL_DAYS_BY_STALENESS: Record<Staleness, number> = {
+  zeitlos: 90,
+  saisonal: 30,
+  verfällt: 7,
+};
+
+/**
+ * Ein Rechercheergebnis wird als zusammenhängender Satz Zeilen mit fast
+ * identischem retrieved_at gespeichert (siehe researchAndSaveShip/-Cabin/
+ * -Port) - für die Frage "ist der Cache noch frisch genug?" zählt daher die
+ * VOLATILSTE unter den vorhandenen Staleness-Einstufungen: enthält der Satz
+ * auch nur eine "verfällt"-Zeile, ist der ganze Satz nach 7 Tagen fällig,
+ * selbst wenn andere Zeilen "zeitlos" sind. Ohne Zeilen (noch nie
+ * recherchiert) liefert der konservativste Wert, damit ein leerer Cache nie
+ * als "lange frisch" fehlinterpretiert wird.
+ */
+export function computeCacheTtlDays(stalenessValues: Array<string | null | undefined>): number {
+  const known = stalenessValues.filter((s): s is Staleness => VALID_STALENESS.includes(s as Staleness));
+  if (known.length === 0) return CACHE_TTL_DAYS_BY_STALENESS.verfällt;
+  return Math.min(...known.map((s) => CACHE_TTL_DAYS_BY_STALENESS[s]));
+}
+
 // Maßgebliche strukturierte Fassung einer einzelnen Sehenswürdigkeit -
 // unabhängig vom (nur für Chat/Fließtext gedachten) content-Feld, damit die
 // Bild-Anzeige nicht von fragilem Text-Parsing der nummerierten Liste

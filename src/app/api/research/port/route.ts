@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { researchAndSavePort, PORT_RESEARCH_CACHE_MAX_AGE_DAYS } from "@/lib/port-research";
+import { researchAndSavePort } from "@/lib/port-research";
+import { computeCacheTtlDays } from "@/lib/research-schema";
 import { getSupabaseServerClient, requireAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
@@ -47,10 +48,9 @@ export async function POST(req: NextRequest) {
 
     // Hafenunabhängiges Wissen (port_research) ist über alle Reisen hinweg
     // geteilt - vor einer neuen Recherche erst prüfen, ob eine andere Reise
-    // denselben Hafen innerhalb der letzten 7 Tage schon recherchiert hat.
-    // Nur bei explizitem "Erneut recherchieren" (force) wird das übersprungen.
+    // denselben Hafen schon recherchiert hat und dieser Fund noch als aktuell
+    // gilt. Nur bei explizitem "Erneut recherchieren" (force) wird das übersprungen.
     if (!force) {
-      const cutoff = new Date(Date.now() - PORT_RESEARCH_CACHE_MAX_AGE_DAYS * 24 * 60 * 60 * 1000).toISOString();
       const { data: cachedPort, error: cachedPortError } = await supabase
         .from("port_research")
         .select("*")
@@ -60,9 +60,13 @@ export async function POST(req: NextRequest) {
 
       // Kuratierte Zeilen (curated = true) unterliegen keiner Alters-Prüfung
       // und dürfen daher allein keinen Cache-Treffer vortäuschen - siehe
-      // ensurePortResearched in lib/port-research.ts für dieselbe Logik.
-      const hasFreshAiRow = (cachedPort ?? []).some(
-        (r) => r.curated !== true && typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
+      // ensurePortResearched in lib/port-research.ts für dieselbe Logik
+      // (inkl. der nach Staleness gestaffelten TTL, siehe computeCacheTtlDays).
+      const aiRows = (cachedPort ?? []).filter((r) => r.curated !== true);
+      const ttlDays = computeCacheTtlDays(aiRows.map((r) => r.staleness));
+      const cutoff = new Date(Date.now() - ttlDays * 24 * 60 * 60 * 1000).toISOString();
+      const hasFreshAiRow = aiRows.some(
+        (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
       );
 
       if (hasFreshAiRow && cachedPort) {
