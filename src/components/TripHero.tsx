@@ -24,6 +24,12 @@ function formatDate(iso: string): string {
   return new Date(`${iso}T00:00:00`).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
+function daysBetween(fromISO: string, toISO: string): number {
+  const from = new Date(`${fromISO}T00:00:00`);
+  const to = new Date(`${toISO}T00:00:00`);
+  return Math.round((to.getTime() - from.getTime()) / 86_400_000);
+}
+
 // Kurzer Ortsname ohne den Klammerzusatz (z. B. "Nordfjordeid" statt
 // "Nordfjordeid (Eidsfjord)") - für Fließtext und Kartenlabels lesbarer,
 // siehe auch primaryName in port-coordinates.ts.
@@ -92,10 +98,10 @@ export default function TripHero({
     return [{ port_name: pc.port_name, lat: coord.lat, lon: coord.lon, day_number: pc.day_number, state: portState(pc) }];
   });
 
+  const daysUntilStart = daysBetween(todayStr, trip.start_date);
+  const currentDayNumber = daysBetween(trip.start_date, todayStr) + 1;
   const bookingsReady = bookings.length > 0 && travelers.length > 0;
   const excursionsPlannedCount = nonSeaPortCalls.filter((pc) => hasExcursion(pc.id)).length;
-
-  const firstBooking = bookings[0] ?? null;
 
   return (
     <div className="space-y-4">
@@ -127,12 +133,33 @@ export default function TripHero({
                 {formatDate(trip.start_date)} – {formatDate(trip.end_date)}
               </p>
             </div>
-            <Link
-              href={`/trips/${tripId}/edit`}
-              className="shrink-0 rounded-full border border-[#F7F1E6]/50 px-3 py-1.5 text-sm font-medium text-[#F7F1E6] transition hover:bg-[#F7F1E6]/10"
-            >
-              Bearbeiten
-            </Link>
+            <div className="flex shrink-0 flex-col items-end gap-3">
+              <Link
+                href={`/trips/${tripId}/edit`}
+                className="rounded-full border border-[#F7F1E6]/50 px-3 py-1.5 text-sm font-medium text-[#F7F1E6] transition hover:bg-[#F7F1E6]/10"
+              >
+                Bearbeiten
+              </Link>
+              {daysUntilStart > 0 ? (
+                <div className="text-right">
+                  <span className="block font-display text-3xl italic tabular-nums text-[#F7F1E6]">{daysUntilStart}</span>
+                  <span className="block font-mono text-[9px] uppercase tracking-[.14em] text-[#F7F1E6]/50">
+                    Tage bis Reisestart
+                  </span>
+                </div>
+              ) : todayStr <= trip.end_date ? (
+                <div className="text-right">
+                  <span className="block font-display text-3xl italic tabular-nums text-[#F7F1E6]">{currentDayNumber}</span>
+                  <span className="block font-mono text-[9px] uppercase tracking-[.14em] text-[#F7F1E6]/50">
+                    von {dayCount} Tagen
+                  </span>
+                </div>
+              ) : (
+                <span className="font-mono text-[10px] uppercase tracking-[.1em] text-[#F7F1E6]/50">
+                  Reise beendet
+                </span>
+              )}
+            </div>
           </div>
 
           {portCalls.length > 0 && (
@@ -194,35 +221,22 @@ export default function TripHero({
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-[14px] border border-ink/12 bg-card p-4">
-            <p className="font-mono text-[9.5px] uppercase tracking-[.16em] text-ink/45">Morgen</p>
-            {highlightedPortCall ? (
-              <>
-                <p className="mt-1 font-medium text-ink">
-                  {highlightedDatePorts.map((pc) => shortPortName(pc.port_name)).join(" & ")}
-                </p>
-                <p className="mt-1 font-mono text-xs text-sea">
-                  {highlightedPortCall.arrival_time && highlightedPortCall.departure_time
-                    ? `An ${highlightedPortCall.arrival_time} · Ab ${highlightedPortCall.departure_time}`
-                    : calloutText}
-                </p>
-              </>
-            ) : (
-              <p className="mt-1 text-sm text-ink/50">Keine weiteren Häfen.</p>
-            )}
-          </div>
-          <div className="rounded-[14px] border border-ink/12 bg-card p-4">
-            <p className="font-mono text-[9.5px] uppercase tracking-[.16em] text-ink/45">Kabine</p>
-            {firstBooking ? (
-              <>
-                <p className="mt-1 font-mono text-[15px] font-bold text-ink">{firstBooking.cabin_number ?? "—"}</p>
-                <p className="mt-0.5 text-xs text-ink/65">{firstBooking.cabin_type ?? "Typ unbekannt"}</p>
-              </>
-            ) : (
-              <p className="mt-1 text-sm text-ink/50">Noch keine Kabine.</p>
-            )}
-          </div>
+        <div className="rounded-[14px] border border-ink/12 bg-card p-4">
+          <p className="font-mono text-[9.5px] uppercase tracking-[.16em] text-ink/45">Morgen</p>
+          {highlightedPortCall ? (
+            <>
+              <p className="mt-1 font-medium text-ink">
+                {highlightedDatePorts.map((pc) => shortPortName(pc.port_name)).join(" & ")}
+              </p>
+              <p className="mt-1 font-mono text-xs text-sea">
+                {highlightedPortCall.arrival_time && highlightedPortCall.departure_time
+                  ? `An ${highlightedPortCall.arrival_time} · Ab ${highlightedPortCall.departure_time}`
+                  : calloutText}
+              </p>
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-ink/50">Keine weiteren Häfen.</p>
+          )}
         </div>
 
         {portDayCount > 0 && (
