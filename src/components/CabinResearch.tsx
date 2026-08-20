@@ -99,7 +99,7 @@ export default function CabinResearch({ tripId, groups, initialFindings, isAdmin
                 <button
                   onClick={() => handleResearch(g.label)}
                   disabled={loading}
-                  className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex items-center gap-1.5 text-sm font-medium text-stamp hover:text-stamp-deep disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {loading && <SpinnerIcon className="h-3.5 w-3.5" />}
                   {loading ? "Recherchiert …" : groupFindings.length > 0 ? "Erneut recherchieren" : "Jetzt recherchieren"}

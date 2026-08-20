@@ -53,23 +53,38 @@ export default function TripList() {
     }
   }
 
-  if (loading || trips.length === 0) return null;
+  if (loading) return null;
+
+  if (trips.length === 0) {
+    return (
+      <div className="rounded-[18px] border-2 border-dashed border-ink/15 bg-card px-6 py-10 text-center">
+        <p className="font-display text-xl italic text-ink">Noch kein Logbuch angelegt</p>
+        <p className="mt-2 text-sm text-ink/60">
+          Lade deine Buchungsbestätigung hoch, um deine erste Reise anzulegen.
+        </p>
+        <Link
+          href="/trips/new"
+          className="mt-5 inline-flex h-[46px] items-center justify-center rounded-[14px] bg-stamp px-6 font-medium text-[#FDF8F0] transition hover:bg-stamp-deep"
+        >
+          + Neue Reise anlegen
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <section className="mb-8 space-y-2">
-      <h2 className="text-sm font-medium uppercase tracking-wide text-ink/50">Meine Reisen</h2>
-      {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-800">{error}</div>}
-      <ul className="space-y-1">
+    <section className="space-y-2">
+      {error && <div className="rounded-[14px] bg-red-50 px-3 py-2 text-xs text-red-800">{error}</div>}
+      <ul className="space-y-2">
         {trips.map((trip) => (
           <li
             key={trip.id}
-            className="flex items-center gap-2 rounded-lg border border-ink/10 px-4 py-3 text-sm transition hover:border-fjord/40 hover:bg-fjord-light/40"
+            className="flex items-center gap-2 rounded-[14px] border border-ink/12 bg-card px-4 py-3 text-sm transition hover:border-stamp/40"
           >
             <Link href={`/trips/${trip.id}`} className="min-w-0 flex-1">
-              <span className="font-medium text-ink">{trip.ship_name}</span>
-              <span className="text-ink/60">
-                {" "}
-                — {trip.route_name ?? "Route unbekannt"} · {trip.start_date} – {trip.end_date}
+              <span className="font-display text-lg italic text-ink">{trip.ship_name}</span>
+              <span className="block font-mono text-xs text-ink/55">
+                {trip.route_name ?? "Route unbekannt"} · {trip.start_date} – {trip.end_date}
               </span>
             </Link>
             {trip.is_owner && (
@@ -77,7 +92,7 @@ export default function TripList() {
                 onClick={() => handleDelete(trip)}
                 disabled={deletingId === trip.id}
                 title="Reise löschen"
-                className="shrink-0 text-xs text-ink/30 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                className="shrink-0 text-xs text-ink/35 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {deletingId === trip.id ? "Löscht …" : "Löschen"}
               </button>

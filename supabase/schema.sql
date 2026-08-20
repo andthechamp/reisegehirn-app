@@ -205,6 +205,18 @@ create table port_research (
 
 create index idx_port_research_name on port_research(port_name);
 
+-- Geokoordinaten pro Hafenname, für die Routenkarte auf der Reiseseite
+-- (siehe RouteMap.tsx). Nicht reisespezifisch und nicht zeitkritisch (ein
+-- Hafen bewegt sich nicht), daher geteilt über alle Reisen hinweg wie
+-- ship_research/port_research, aber ohne staleness/TTL - einmal geocodet,
+-- für immer gültig. Quelle: Nominatim/OpenStreetMap (siehe port-coordinates.ts).
+create table port_coordinates (
+  port_name    text primary key,
+  lat          numeric(9,6) not null,
+  lon          numeric(9,6) not null,
+  retrieved_at timestamptz not null default now()
+);
+
 -- Wissen, das an eine Route/Region gebunden ist statt an einen einzelnen
 -- Hafen oder ein Schiff (z. B. "eSIM lohnt sich in der Karibik" oder
 -- "Vorabend-Check-in nutzen, wenn per Flug angereist wird"). Es gibt aktuell
@@ -430,6 +442,7 @@ alter table port_excursions  enable row level security;
 alter table research_findings enable row level security;
 alter table ship_research    enable row level security;
 alter table port_research    enable row level security;
+alter table port_coordinates enable row level security;
 alter table route_research   enable row level security;
 alter table user_memory      enable row level security;
 alter table messages         enable row level security;
@@ -504,6 +517,11 @@ create policy "port_research: any authenticated user" on port_research
 create policy "route_research: any authenticated user" on route_research
   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
+-- port_coordinates: gleiches Muster (nicht reisespezifisch, keine
+-- personenbezogenen Daten).
+create policy "port_coordinates: any authenticated user" on port_coordinates
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
 create index idx_trip_members_user on trip_members(user_id);
 create index idx_trips_owner       on trips(owner_id);
 
@@ -538,3 +556,29 @@ alter table profiles add column chat_language text not null default 'de' check (
 -- Cache-Eintrag teilen).
 alter table ship_research add column cabin_category text;
 create index idx_ship_research_ship_cabin on ship_research(ship_name, cabin_category);
+
+-- Foto-Cache für Schiffe/Häfen (TripHero-Hero-Foto, Tageskarten-Fotos in
+-- PortDaySwiper) - gleiches Muster wie port_coordinates (nicht reisespezifisch,
+-- dauerhaft gültig einmal gefunden), siehe resolveShipPhoto/resolvePortPhoto
+-- in src/lib/ship-photos.ts. Ohne DB-Cache müsste jeder Seitenaufruf erneut
+-- Wikipedia/Wikimedia Commons abfragen (bis zu 4 Anfragen je Hafen für die
+-- Fallback-Kette Wikipedia-Titelbild -> Volltextsuche -> Commons-Suche
+-- "<Name> Hafen" -> Commons-Suche "<Name>") - das reißt bei mehreren
+-- Ladevorgängen hintereinander schnell Wikipedias Rate-Limit (429).
+-- url = null bedeutet "geprüft, kein brauchbares Foto gefunden" (negativer
+-- Cache-Treffer) statt eines fehlenden Eintrags, damit auch das nicht bei
+-- jedem Laden erneut versucht wird - checked_at steuert, wann so ein
+-- negativer Treffer erneut versucht werden darf (siehe PLACE_PHOTO_RECHECK_DAYS
+-- in ship-photos.ts).
+create table place_photos (
+  name                 text primary key,
+  url                  text,
+  attribution          text,
+  license_short_name   text,
+  checked_at           timestamptz not null default now()
+);
+
+alter table place_photos enable row level security;
+
+create policy "place_photos: any authenticated user" on place_photos
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');

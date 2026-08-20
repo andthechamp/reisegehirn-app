@@ -60,7 +60,8 @@ export default function UploadStep({ onExtracted }: UploadStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">Reise anlegen</h1>
+        <p className="font-mono text-[11px] uppercase tracking-[.16em] text-ink/45">Logbuch</p>
+        <h1 className="mt-1 font-display text-3xl italic text-ink">Reise anlegen</h1>
         <p className="mt-2 text-ink/70">
           Lade deine Buchungsbestätigung oder den Reiseverlauf als Foto oder PDF hoch.
           Mehrere Dateien sind möglich, wenn die Informationen auf mehrere Seiten verteilt sind.
@@ -68,7 +69,7 @@ export default function UploadStep({ onExtracted }: UploadStepProps) {
       </div>
 
       <div
-        className="rounded-2xl border-2 border-dashed border-fjord/40 bg-fjord-light/40 p-8 text-center transition hover:border-fjord/70"
+        className="rounded-[18px] border-2 border-dashed border-stamp/40 bg-card p-8 text-center transition hover:border-stamp/70"
         onClick={() => inputRef.current?.click()}
         onDrop={(e) => {
           e.preventDefault();
@@ -85,15 +86,15 @@ export default function UploadStep({ onExtracted }: UploadStepProps) {
           className="hidden"
           onChange={(e) => handleFileSelect(e.target.files)}
         />
-        <p className="text-fjord-dark font-medium">Foto oder PDF auswählen oder hierher ziehen</p>
-        <p className="mt-1 text-sm text-ink/50">JPG, PNG, WEBP, GIF oder PDF (kein HEIC)</p>
+        <p className="font-medium text-stamp-deep">Foto oder PDF auswählen oder hierher ziehen</p>
+        <p className="mt-1 font-mono text-[10.5px] text-ink/45">JPG, PNG, WEBP, GIF oder PDF (kein HEIC)</p>
       </div>
 
       {files.length > 0 && (
         <ul className="space-y-1 text-sm text-ink/80">
           {files.map((file, i) => (
             <li key={i} className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-fjord" />
+              <span className="h-1.5 w-1.5 rounded-full bg-stamp" />
               {file.name}
             </li>
           ))}
@@ -101,13 +102,13 @@ export default function UploadStep({ onExtracted }: UploadStepProps) {
       )}
 
       {error && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>
+        <div className="rounded-[14px] bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>
       )}
 
       <button
         onClick={handleSubmit}
         disabled={loading || files.length === 0}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
+        className="flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] bg-stamp font-medium text-[15.5px] text-[#FDF8F0] transition hover:bg-stamp-deep disabled:cursor-not-allowed disabled:opacity-40"
       >
         {loading && <SpinnerIcon className="h-4 w-4" />}
         {loading ? "Dokument wird gelesen …" : "Daten extrahieren"}

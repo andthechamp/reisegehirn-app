@@ -3,6 +3,8 @@ import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase"
 import { fetchTripContext, type TripContext } from "@/lib/trip-context";
 import { ensureShipResearched, ensureCabinResearched } from "@/lib/ship-research";
 import { ensurePortResearched } from "@/lib/port-research";
+import { ensurePortCoordinates } from "@/lib/port-coordinates";
+import { ensureShipPhoto, ensurePortPhotos } from "@/lib/ship-photos";
 import { normalizeCabinCategory, extractDeckNumber, cabinLabel } from "@/lib/cabin";
 import type { ExtractionResult } from "@/lib/extraction-schema";
 
@@ -123,6 +125,35 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
     const shipName = context.trip.ship_name;
     const cabinLabels = distinctCabinLabels(context.bookings);
     const portsToCheck = context.port_calls.filter((pc) => !pc.is_sea_day);
+
+    // Koordinaten fürs Kartenbild (RouteMap.tsx) - anders als die
+    // Websuche-Recherche unten bewusst NICHT über after() im Hintergrund,
+    // sondern blockierend: Geocoding kostet keinen Anthropic-Aufruf, nur
+    // einen schnellen Nominatim-Request pro noch unbekanntem Hafen (danach
+    // für immer gecacht, siehe port-coordinates.ts), und ohne Koordinaten
+    // kann die Karte beim ersten Laden einer neuen Reise gar nichts anzeigen.
+    const coordinates = await ensurePortCoordinates(
+      supabase,
+      portsToCheck.map((pc) => pc.port_name)
+    );
+
+    // Hero-Foto für die Reiseseite (TripHero) und Hafenfotos für die
+    // Tageskarten (PortDaySwiper): dauerhaft in place_photos gecacht (siehe
+    // ensureShipPhoto/ensurePortPhotos in lib/ship-photos.ts), sonst würde
+    // jeder Ladevorgang Wikipedia/Commons erneut abfragen und deren
+    // Rate-Limit reißen. Kostenlose Bildsuche ohne Anthropic-Aufruf, daher
+    // blockierend okay - wie ensurePortCoordinates oben.
+    const shipPhoto = await ensureShipPhoto(supabase, shipName);
+
+    const uniquePortNames = [...new Set(portsToCheck.map((pc) => pc.port_name))];
+    const portPhotoMap = await ensurePortPhotos(supabase, uniquePortNames);
+    const portPhotos = Object.fromEntries(
+      [...portPhotoMap].filter(([, photo]) => photo.url !== null).map(([name, photo]) => [name, photo.url as string])
+    );
+    const portPhotoAttributions = Object.fromEntries(
+      [...portPhotoMap].filter(([, photo]) => photo.attribution).map(([name, photo]) => [name, photo.attribution as string])
+    );
+
     after(async () => {
       const adminSupabase = getSupabaseAdminClient();
       try {
@@ -152,7 +183,17 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
       }
     });
 
-    return NextResponse.json({ context, messages: messages ?? [], isOwner, isAdmin });
+    return NextResponse.json({
+      context,
+      messages: messages ?? [],
+      isOwner,
+      isAdmin,
+      portCoordinates: Object.fromEntries(coordinates),
+      shipImageUrl: shipPhoto?.url ?? null,
+      shipImageAttribution: shipPhoto?.attribution ?? null,
+      portPhotos,
+      portPhotoAttributions,
+    });
   } catch (err) {
     console.error("Laden der Reise fehlgeschlagen:", err);
     const message =

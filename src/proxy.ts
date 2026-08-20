@@ -76,8 +76,11 @@ export const config = {
      * Auf alles anwenden außer:
      * - _next/static, _next/image (Next-interne Assets)
      * - favicon.ico
-     * - Dateien mit Endung (Bilder, Fonts etc.)
+     * - Dateien mit Endung (Bilder, Fonts, Skripte etc.) - u. a. public/
+     *   maplibre-gl-worker.mjs (siehe RouteMap.tsx): ein Worker lädt sein
+     *   Skript ohne Session-Cookie, ohne diesen Ausschluss landet der
+     *   Worker-Request im Login-Redirect statt im echten JS.
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|js|mjs)$).*)",
   ],
 };

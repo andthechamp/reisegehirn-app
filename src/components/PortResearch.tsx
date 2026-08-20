@@ -107,7 +107,7 @@ export default function PortResearch({ tripId, portCallId, initialFindings, isAd
           <button
             onClick={handleResearch}
             disabled={loading}
-            className="flex items-center gap-1.5 text-xs font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex items-center gap-1.5 text-xs font-medium text-sea hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {loading && <SpinnerIcon className="h-3 w-3" />}
             {loading ? "Recherchiert …" : findings.length > 0 ? "Erneut recherchieren" : "Hafen recherchieren"}

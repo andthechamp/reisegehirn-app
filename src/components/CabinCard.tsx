@@ -13,15 +13,15 @@ function initialsFor(name: string): string {
 
 export default function CabinCard({ booking, travelers }: { booking: Booking; travelers: Traveler[] }) {
   return (
-    <div className="rounded-xl border border-ink/10 bg-white p-4">
-      <p className="font-medium text-ink">{booking.cabin_number ?? "unbekannt"}</p>
-      <p className="text-xs text-ink/50">{booking.cabin_type ?? "Typ unbekannt"}</p>
+    <div className="rounded-[14px] border border-ink/12 bg-card p-4">
+      <p className="font-mono text-[15px] font-bold text-ink">{booking.cabin_number ?? "unbekannt"}</p>
+      <p className="text-[11.5px] text-ink/55">{booking.cabin_type ?? "Typ unbekannt"}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {travelers.map((t) => (
           <span
             key={t.id}
             title={t.name}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-fjord-light text-xs font-medium text-fjord-dark"
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-stamp-tint text-xs font-medium text-stamp-deep"
           >
             {initialsFor(t.name)}
           </span>

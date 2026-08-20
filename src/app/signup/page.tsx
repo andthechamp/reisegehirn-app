@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 import AuthForm from "@/components/AuthForm";
+import { lookupWikipediaImage } from "@/lib/wikimedia";
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const hero = await lookupWikipediaImage("Geirangerfjord", 1200);
+
   return (
-    <main className="mx-auto min-h-screen max-w-sm px-6 py-16">
-      <h1 className="font-display mb-6 text-2xl font-semibold text-ink">Konto anlegen</h1>
+    <main className="mx-auto max-w-sm px-6 pt-12">
       <Suspense>
-        <AuthForm mode="signup" />
+        <AuthForm mode="signup" heroImageUrl={hero?.url ?? null} />
       </Suspense>
     </main>
   );

@@ -1,12 +1,17 @@
 import { Suspense } from "react";
 import AuthForm from "@/components/AuthForm";
+import { lookupWikipediaImage } from "@/lib/wikimedia";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  // Mangels Trip-Kontext vor dem Login ein fester Platzhalter, wie im
+  // Prototyp-Handoff (design_handoff_reisegehirn_mobile/README.md, Abschnitt
+  // "Assets": Motive Geiranger/Geirangerfjord).
+  const hero = await lookupWikipediaImage("Geirangerfjord", 1200);
+
   return (
-    <main className="mx-auto min-h-screen max-w-sm px-6 py-16">
-      <h1 className="font-display mb-6 text-2xl font-semibold text-ink">Einloggen</h1>
+    <main className="mx-auto max-w-sm px-6 pt-12">
       <Suspense>
-        <AuthForm mode="login" />
+        <AuthForm mode="login" heroImageUrl={hero?.url ?? null} />
       </Suspense>
     </main>
   );

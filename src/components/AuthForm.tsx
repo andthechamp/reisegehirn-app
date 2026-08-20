@@ -4,12 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase-browser";
+import { AnchorIcon } from "@/components/icons";
 
 interface AuthFormProps {
   mode: "login" | "signup";
+  // Serverseitig via lookupWikipediaImage() aufgelöst (siehe login/page.tsx) -
+  // mangels Trip-Kontext vor dem Login ein fester Platzhalter (Geirangerfjord,
+  // wie im Prototyp-Handoff), kein per-Reise-Foto.
+  heroImageUrl?: string | null;
 }
 
-export default function AuthForm({ mode }: AuthFormProps) {
+export default function AuthForm({ mode, heroImageUrl }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -51,74 +56,122 @@ export default function AuthForm({ mode }: AuthFormProps) {
     setLoading(false);
   }
 
-  if (signupDone) {
-    return (
-      <div className="rounded-lg bg-fjord-light/40 px-4 py-3 text-sm text-ink/80">
-        Konto angelegt. Bitte den Bestätigungslink in deinem Postfach öffnen, um dich
-        einzuloggen.
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-ink/80">
-          E-Mail
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-xl border border-ink/15 px-4 py-2.5 text-ink outline-none transition focus:border-fjord focus:ring-2 focus:ring-fjord/30"
-        />
-      </div>
-      <div>
-        <label htmlFor="password" className="mb-1 block text-sm font-medium text-ink/80">
-          Passwort
-        </label>
-        <input
-          id="password"
-          type="password"
-          required
-          minLength={6}
-          autoComplete={mode === "login" ? "current-password" : "new-password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-xl border border-ink/15 px-4 py-2.5 text-ink outline-none transition focus:border-fjord focus:ring-2 focus:ring-fjord/30"
-        />
-      </div>
+    <div className="relative -mx-6 -mt-12 min-h-[calc(100vh-53px)] overflow-hidden bg-gradient-to-br from-[#7a6552] via-[#4a3f34] to-logbook text-[#F7F1E6]">
+      {heroImageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={heroImageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      )}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(35,32,27,.45) 0%, rgba(35,32,27,.05) 45%, rgba(35,32,27,.85) 100%)",
+        }}
+      />
 
-      {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>}
+      {/* Eigener positionierter Wrapper statt flex direkt auf dem Hero-Container:
+          Foto und Verlauf sind sonst Flex-Items wie dieser Inhalt und landen
+          trotz negativem z-index über dem eigenen Gradient-Hintergrund. */}
+      <div className="relative flex min-h-[calc(100vh-53px)] flex-col px-6 pb-10 pt-8">
+        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[.22em] text-[#F7F1E6]/90">
+          <AnchorIcon className="h-5 w-5" />
+          Reisegehirn
+        </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
-      >
-        {loading ? "Bitte warten …" : mode === "login" ? "Einloggen" : "Konto anlegen"}
-      </button>
+        <div className="mt-auto">
+        <p className="font-mono text-[11px] uppercase tracking-[.18em] text-[#F7F1E6]/70">
+          {mode === "login" ? "Logbuch Nr. 4" : "Erste Eintragung"}
+        </p>
+        <h1 className="mt-1 font-display text-[46px] italic leading-[0.96]">
+          {mode === "login" ? (
+            <>
+              Willkommen
+              <br />
+              an Bord
+            </>
+          ) : (
+            <>
+              Neues
+              <br />
+              Logbuch
+            </>
+          )}
+        </h1>
 
-      <p className="text-center text-sm text-ink/60">
-        {mode === "login" ? (
-          <>
-            Noch kein Konto?{" "}
-            <Link href="/signup" className="font-medium text-fjord-dark hover:underline">
-              Registrieren
-            </Link>
-          </>
+        {signupDone ? (
+          <div className="mt-6 rounded-[14px] border border-[#F7F1E6]/28 bg-[#F7F1E6]/10 px-4 py-3 text-sm text-[#F7F1E6]/90">
+            Konto angelegt. Bitte den Bestätigungslink in deinem Postfach öffnen, um dich
+            einzuloggen.
+          </div>
         ) : (
-          <>
-            Schon ein Konto?{" "}
-            <Link href="/login" className="font-medium text-fjord-dark hover:underline">
-              Einloggen
-            </Link>
-          </>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+            <div className="rounded-[14px] border border-[#F7F1E6]/28 bg-[#F7F1E6]/10 px-4 py-2">
+              <label htmlFor="email" className="block font-mono text-[9.5px] uppercase tracking-[.14em] text-[#F7F1E6]/60">
+                E-Mail
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-transparent py-1 text-[#F7F1E6] outline-none placeholder:text-[#F7F1E6]/40"
+              />
+            </div>
+            <div className="rounded-[14px] border border-[#F7F1E6]/28 bg-[#F7F1E6]/10 px-4 py-2">
+              <label htmlFor="password" className="block font-mono text-[9.5px] uppercase tracking-[.14em] text-[#F7F1E6]/60">
+                Passwort
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                minLength={6}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-transparent py-1 text-[#F7F1E6] outline-none"
+              />
+            </div>
+
+            {error && (
+              <div className="rounded-[14px] bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="h-[52px] w-full rounded-[14px] bg-stamp font-medium text-[15.5px] text-[#FDF8F0] transition hover:bg-stamp-deep disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {loading ? "Bitte warten …" : mode === "login" ? "Einloggen" : "Konto anlegen"}
+            </button>
+          </form>
         )}
-      </p>
-    </form>
+
+        <p className="mt-4 text-center text-sm text-[#F7F1E6]/70">
+          {mode === "login" ? (
+            <>
+              Noch kein Konto?{" "}
+              <Link href="/signup" className="font-medium text-[#F7F1E6] underline underline-offset-2">
+                Registrieren
+              </Link>
+            </>
+          ) : (
+            <>
+              Schon ein Konto?{" "}
+              <Link href="/login" className="font-medium text-[#F7F1E6] underline underline-offset-2">
+                Einloggen
+              </Link>
+            </>
+          )}
+        </p>
+        <p className="mt-1 text-center font-mono text-[10px] text-[#F7F1E6]/50">
+          Zugang nur für freigeschaltete Adressen
+        </p>
+        </div>
+      </div>
+    </div>
   );
 }

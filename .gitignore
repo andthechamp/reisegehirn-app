@@ -3,3 +3,7 @@ node_modules/
 .env.local
 .DS_Store
 *.log
+
+# Aus node_modules gebündelt per "postinstall" (siehe package.json) - kein
+# Quellcode, wird bei jedem npm install frisch erzeugt.
+/public/maplibre-gl-worker.mjs

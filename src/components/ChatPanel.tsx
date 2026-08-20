@@ -2,6 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import MarkdownText from "@/components/MarkdownText";
+import { StarIcon } from "@/components/icons";
+
+// Statische Vorschläge - die App kennt keine "häufigen Fragen"-Statistik,
+// diese Beispiele orientieren sich an den Feldern, die während der Reise am
+// öftesten gebraucht werden (Kabine, Ausflüge, Kleidung).
+const SUGGESTION_PILLS = ["Kabinennummer?", "Dresscode abends?", "Wann legen wir an?"];
 
 export interface ChatMessage {
   role: "user" | "assistant";
@@ -104,10 +110,10 @@ export default function ChatPanel({ tripId, initialMessages, initialMemory }: Ch
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col bg-paper">
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 && (
-          <p className="text-sm text-ink/50">
+          <p className="text-sm text-logbook/50">
             Stell eine Frage zu Terminen, Kabinen oder Reisenden dieser Reise.
           </p>
         )}
@@ -115,8 +121,10 @@ export default function ChatPanel({ tripId, initialMessages, initialMemory }: Ch
           <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
             <span
               className={
-                "inline-block max-w-[85%] rounded-xl px-3 py-2 text-left text-sm " +
-                (m.role === "user" ? "bg-fjord text-white" : "bg-fjord-light text-ink")
+                "inline-block max-w-[78%] px-3 py-2 text-left text-[13.5px] leading-[1.45] " +
+                (m.role === "user"
+                  ? "rounded-[16px_16px_4px_16px] bg-sea text-[#FDF8F0]"
+                  : "max-w-[84%] rounded-[16px_16px_16px_4px] border border-logbook/12 bg-card text-logbook")
               }
             >
               <MarkdownText text={m.content} />
@@ -126,25 +134,43 @@ export default function ChatPanel({ tripId, initialMessages, initialMemory }: Ch
                 <button
                   onClick={() => (markedMap.has(m.content) ? unmarkImportant(m.content) : markImportant(m.content))}
                   disabled={marking === m.content}
-                  className="mt-1 text-xs font-medium text-ink/40 hover:text-fjord disabled:cursor-default"
+                  className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-logbook/40 hover:text-stamp disabled:cursor-default"
                   title={markedMap.has(m.content) ? "Markierung aufheben" : undefined}
                 >
-                  {marking === m.content
-                    ? "Wird aktualisiert …"
-                    : markedMap.has(m.content)
-                      ? "✓ Gemerkt (klicken zum Aufheben)"
-                      : "★ Als wichtig markieren"}
+                  {marking === m.content ? (
+                    "Wird aktualisiert …"
+                  ) : markedMap.has(m.content) ? (
+                    <span className="text-stamp-deep">✓ Gemerkt — steht jetzt auf der Reiseseite</span>
+                  ) : (
+                    <>
+                      <StarIcon className="h-3.5 w-3.5" /> Als wichtig markieren
+                    </>
+                  )}
                 </button>
               </div>
             )}
           </div>
         ))}
-        {sending && <p className="text-sm text-ink/40">Antwort wird erstellt …</p>}
+        {sending && <p className="text-sm text-logbook/40">Antwort wird erstellt …</p>}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="shrink-0 space-y-2 border-t border-ink/10 p-3">
-        {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">{error}</div>}
+      <div className="shrink-0 space-y-2 border-t border-logbook/12 p-3">
+        {error && <div className="rounded-[14px] bg-red-50 px-3 py-2 text-sm text-red-800">{error}</div>}
+
+        <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+          {SUGGESTION_PILLS.map((pill) => (
+            <button
+              key={pill}
+              type="button"
+              onClick={() => sendMessage(pill)}
+              disabled={sending}
+              className="shrink-0 rounded-full border border-logbook/15 px-3 py-1.5 text-xs text-logbook/65 hover:border-stamp hover:text-stamp disabled:opacity-40"
+            >
+              {pill}
+            </button>
+          ))}
+        </div>
 
         <div className="flex gap-2">
           <input
@@ -155,14 +181,15 @@ export default function ChatPanel({ tripId, initialMessages, initialMemory }: Ch
               if (e.key === "Enter") handleSend();
             }}
             placeholder="z. B. Wann legen wir in Geiranger an?"
-            className="flex-1 rounded-lg border border-ink/15 px-3 py-2 text-sm focus:border-fjord focus:outline-none focus:ring-1 focus:ring-fjord"
+            className="h-[46px] flex-1 rounded-[14px] border border-logbook/15 px-3 text-sm focus:border-stamp focus:outline-none focus:ring-1 focus:ring-stamp"
           />
           <button
             onClick={handleSend}
             disabled={sending || !input.trim()}
-            className="rounded-lg bg-fjord px-4 py-2 text-sm font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[14px] bg-stamp text-lg font-medium text-[#FDF8F0] transition hover:bg-stamp-deep disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Senden"
           >
-            {sending ? "…" : "Senden"}
+            {sending ? "…" : "↑"}
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
+import { anthropic, RESEARCH_ENABLED, RESEARCH_MODEL } from "@/lib/anthropic";
 import { buildPortResearchPrompt } from "@/lib/prompts";
 import { parseResearchFindings, SHARED_PORT_CATEGORIES, computeCacheTtlDays } from "@/lib/research-schema";
 import { googleSearchUrl, lookupWikipediaImage } from "@/lib/wikimedia";
@@ -22,6 +22,10 @@ export async function researchAndSavePort(
   params: { tripId: string; portCallId: string; shipName: string; portName: string; callDate: string }
 ): Promise<PortResearchResult> {
   const { tripId, portCallId, shipName, portName, callDate } = params;
+
+  if (!RESEARCH_ENABLED) {
+    return { ok: false, error: "Recherche ist aktuell deaktiviert." };
+  }
 
   const response = await anthropic.messages.create({
     model: RESEARCH_MODEL,

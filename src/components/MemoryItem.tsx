@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import MarkdownText from "@/components/MarkdownText";
-import { ChevronDownIcon } from "@/components/icons";
+import { ChevronDownIcon, StarIcon } from "@/components/icons";
 
 // Vorschau, falls die Notiz eingeklappt ist - erster Satz oder erste Zeile,
 // ohne Markdown-Formatierung, damit die Kürzung nicht mitten in einem
@@ -20,9 +20,10 @@ export default function MemoryItem({ content, onDelete }: { content: string; onD
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <li className="rounded-lg border border-fjord/20 bg-fjord-light/30">
+    <li className="rounded-r-[14px] border-l-[3px] border-stamp bg-card">
       <button onClick={() => setExpanded((v) => !v)} className="flex w-full items-start gap-2 p-3 text-left">
-        <div className="min-w-0 flex-1 text-sm text-ink/80">
+        <StarIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-stamp" />
+        <div className="min-w-0 flex-1 text-[13.5px] leading-[1.45] text-ink/85">
           {expanded ? <MarkdownText text={content} /> : <p className="truncate">{previewOf(content)}</p>}
         </div>
         <span

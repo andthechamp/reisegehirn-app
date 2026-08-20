@@ -60,13 +60,13 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-medium uppercase tracking-wide text-ink/50">{label}</span>
+      <span className="font-mono text-[9.5px] uppercase tracking-[.14em] text-ink/50">{label}</span>
       <input
         type="text"
         value={value ?? ""}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-ink/15 px-3 py-2 text-sm focus:border-fjord focus:outline-none focus:ring-1 focus:ring-fjord"
+        className="mt-1 w-full rounded-[14px] border border-ink/15 px-3 py-2 text-sm focus:border-stamp focus:outline-none focus:ring-1 focus:ring-stamp"
       />
     </label>
   );
@@ -209,7 +209,8 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">
+        <p className="font-mono text-[11px] uppercase tracking-[.16em] text-ink/45">Logbuch</p>
+        <h1 className="mt-1 font-display text-3xl italic text-ink">
           {mode === "edit" ? "Reise bearbeiten" : "Daten prüfen"}
         </h1>
         <p className="mt-2 text-ink/70">
@@ -220,8 +221,8 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
       </div>
 
       {data.extraction_notes.length > 0 && (
-        <div className="rounded-xl bg-amber-light px-4 py-3">
-          <p className="text-sm font-medium text-amber">Bitte besonders prüfen:</p>
+        <div className="rounded-[14px] border border-stamp/25 bg-stamp-tint px-4 py-3">
+          <p className="text-sm font-medium text-stamp-deep">Bitte besonders prüfen:</p>
           <ul className="mt-1 list-inside list-disc text-sm text-ink/80">
             {data.extraction_notes.map((note, i) => (
               <li key={i}>{note}</li>
@@ -231,7 +232,7 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
       )}
 
       <section className="space-y-3">
-        <h2 className="font-display text-lg font-medium text-ink">Reise</h2>
+        <h2 className="font-display text-xl italic text-ink">Reise</h2>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Schiff" value={data.trip.ship_name} onChange={(v) => setData((p) => ({ ...p, trip: { ...p.trip, ship_name: v } }))} />
           <Field label="Route" value={data.trip.route_name} onChange={(v) => setData((p) => ({ ...p, trip: { ...p.trip, route_name: v } }))} />
@@ -244,17 +245,17 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-lg font-medium text-ink">Kabinen / Buchungen</h2>
+          <h2 className="font-display text-xl italic text-ink">Kabinen / Buchungen</h2>
           <button
             onClick={addBooking}
-            className="text-sm font-medium text-fjord hover:text-fjord-dark"
+            className="text-sm font-medium text-sea hover:opacity-80"
           >
             + Kabine hinzufügen
           </button>
         </div>
         <div className="space-y-3">
           {data.bookings.map((b, i) => (
-            <div key={i} className="rounded-lg border border-ink/10 p-3">
+            <div key={i} className="rounded-[14px] border border-ink/12 bg-card p-3">
               <div className="grid grid-cols-3 gap-2">
                 <Field label="Kabine" value={b.cabin_number} onChange={(v) => updateBooking(i, { cabin_number: v || null })} />
                 <Field label="Kabinentyp" value={b.cabin_type} onChange={(v) => updateBooking(i, { cabin_type: v || null })} />
@@ -279,7 +280,7 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
 
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-lg font-medium text-ink">Reiseverlauf</h2>
+          <h2 className="font-display text-xl italic text-ink">Reiseverlauf</h2>
           <div className="flex items-center gap-3">
             <input
               ref={timesFileInputRef}
@@ -291,17 +292,17 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
             <button
               onClick={() => timesFileInputRef.current?.click()}
               disabled={extractingTimes}
-              className="flex items-center gap-1.5 text-sm font-medium text-fjord hover:text-fjord-dark disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex items-center gap-1.5 text-sm font-medium text-sea hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {extractingTimes && <SpinnerIcon className="h-3.5 w-3.5" />}
               {extractingTimes ? "Liest Dokument …" : "Zeiten aus Foto/PDF übernehmen"}
             </button>
           </div>
         </div>
-        {timesNote && <p className="text-xs text-fjord-dark">{timesNote}</p>}
+        {timesNote && <p className="text-xs text-sea">{timesNote}</p>}
         <div className="space-y-2">
           {data.port_calls.map((pc, i) => (
-            <div key={i} className="grid grid-cols-5 gap-2 rounded-lg border border-ink/10 p-3">
+            <div key={i} className="grid grid-cols-5 gap-2 rounded-[14px] border border-ink/12 bg-card p-3">
               <Field label="Tag" value={pc.day_number} onChange={(v) => updatePortCall(i, { day_number: v === "" ? pc.day_number : Number(v) })} />
               <Field label="Datum" value={pc.call_date} onChange={(v) => updatePortCall(i, { call_date: v })} />
               <Field label="Hafen" value={pc.port_name} onChange={(v) => updatePortCall(i, { port_name: v })} />
@@ -326,10 +327,10 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-lg font-medium text-ink">Mitreisende</h2>
+        <h2 className="font-display text-xl italic text-ink">Mitreisende</h2>
         <div className="space-y-2">
           {data.travelers.map((t, i) => (
-            <div key={i} className="rounded-lg border border-ink/10 p-3">
+            <div key={i} className="rounded-[14px] border border-ink/12 bg-card p-3">
               <div className="grid grid-cols-3 gap-2">
                 <Field label="Name" value={t.name} onChange={(v) => updateTraveler(i, { name: v })} />
                 <Field label="Alter zur Reisezeit" value={t.age_at_trip} onChange={(v) => updateTraveler(i, { age_at_trip: v ? Number(v) : null })} />
@@ -349,19 +350,19 @@ export default function ReviewStep({ initial, onConfirmed, onBack, mode = "creat
         </div>
       </section>
 
-      {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>}
+      {error && <div className="rounded-[14px] bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>}
 
       <div className="flex gap-3">
         <button
           onClick={onBack}
-          className="rounded-xl border border-ink/20 px-6 py-3 font-medium text-ink/70 transition hover:bg-ink/5 focus:outline-none focus:ring-2 focus:ring-ink/30 focus:ring-offset-2"
+          className="rounded-[14px] border border-ink/20 px-6 py-3 font-medium text-ink/70 transition hover:bg-ink/5 focus:outline-none focus:ring-2 focus:ring-ink/30 focus:ring-offset-2"
         >
           Zurück
         </button>
         <button
           onClick={handleConfirm}
           disabled={saving}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-fjord px-6 py-3 font-medium text-white transition hover:bg-fjord-dark disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-fjord focus:ring-offset-2"
+          className="flex h-[52px] flex-1 items-center justify-center gap-2 rounded-[14px] bg-stamp font-medium text-[15.5px] text-[#FDF8F0] transition hover:bg-stamp-deep disabled:cursor-not-allowed disabled:opacity-40"
         >
           {saving && <SpinnerIcon className="h-4 w-4" />}
           {saving ? "Wird gespeichert …" : mode === "edit" ? "Änderungen speichern" : "Bestätigen und speichern"}

@@ -1,30 +1,58 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import ChatWidget from "@/components/ChatWidget";
+import { Suspense, useEffect, useState } from "react";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import ChatPanel from "@/components/ChatPanel";
+import type { ChatMessage } from "@/components/ChatPanel";
 import TripHero from "@/components/TripHero";
 import CabinCard from "@/components/CabinCard";
-import type { ChatMessage } from "@/components/ChatPanel";
 import ShipResearch from "@/components/ShipResearch";
 import CabinResearch from "@/components/CabinResearch";
 import { normalizeCabinCategory, extractDeckNumber, cabinLabel } from "@/lib/cabin";
-import PortResearch from "@/components/PortResearch";
 import RouteResearch from "@/components/RouteResearch";
 import ExcursionForm from "@/components/ExcursionForm";
+import ExcursionCard from "@/components/ExcursionCard";
 import PortDaySwiper from "@/components/PortDaySwiper";
 import MemoryItem from "@/components/MemoryItem";
 import ShareTrip from "@/components/ShareTrip";
 import Spinner from "@/components/Spinner";
+import TabBar, { type TripTab } from "@/components/TabBar";
 import type { TripContext } from "@/lib/trip-context";
 
 export default function TripPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-6 py-12">
+          <Spinner />
+        </main>
+      }
+    >
+      <TripPageContent />
+    </Suspense>
+  );
+}
+
+function TripPageContent() {
   const params = useParams<{ id: string }>();
   const tripId = params.id;
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const activeTab = (searchParams.get("tab") as TripTab | null) ?? "reise";
+
+  function setTab(tab: TripTab) {
+    router.push(`${pathname}?tab=${tab}`, { scroll: false });
+  }
 
   const [context, setContext] = useState<TripContext | null>(null);
   const [excursions, setExcursions] = useState<TripContext["excursions"]>([]);
   const [memory, setMemory] = useState<TripContext["memory"]>([]);
+  const [portCoordinates, setPortCoordinates] = useState<Record<string, { lat: number; lon: number }>>({});
+  const [shipImageUrl, setShipImageUrl] = useState<string | null>(null);
+  const [shipImageAttribution, setShipImageAttribution] = useState<string | null>(null);
+  const [portPhotos, setPortPhotos] = useState<Record<string, string>>({});
+  const [portPhotoAttributions, setPortPhotoAttributions] = useState<Record<string, string>>({});
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isOwner, setIsOwner] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -43,6 +71,11 @@ export default function TripPage() {
         setMessages(json.messages);
         setIsOwner(json.isOwner);
         setIsAdmin(json.isAdmin);
+        setPortCoordinates(json.portCoordinates ?? {});
+        setShipImageUrl(json.shipImageUrl ?? null);
+        setShipImageAttribution(json.shipImageAttribution ?? null);
+        setPortPhotos(json.portPhotos ?? {});
+        setPortPhotoAttributions(json.portPhotoAttributions ?? {});
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
       } finally {
@@ -92,96 +125,161 @@ export default function TripPage() {
     );
   }
 
+  const portCallById = new Map(context.port_calls.map((pc) => [pc.id, pc]));
+
   return (
-    <main className="mx-auto min-h-screen max-w-2xl space-y-8 px-6 pb-28 pt-12">
-      <TripHero tripId={tripId} trip={context.trip} portCalls={context.port_calls} />
-
-      {/* Reiseinfos, zusammengefasst: Eckdaten + Kabinen/Reisende in einem Block */}
-      <section className="space-y-3">
-        <h2 className="font-display text-xl font-medium text-ink">Reiseinfos</h2>
-        {(context.trip.start_port || context.trip.end_port) && (
-          <p className="text-sm text-ink/80">
-            {context.trip.start_port && <>Start: {context.trip.start_port}</>}
-            {context.trip.start_port && context.trip.end_port && " · "}
-            {context.trip.end_port && <>Ende: {context.trip.end_port}</>}
-          </p>
-        )}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {context.bookings.map((b) => (
-            <CabinCard
-              key={b.id}
-              booking={b}
-              travelers={context.travelers.filter((t) => t.cabin_number === b.cabin_number)}
+    <>
+      <main className="mx-auto min-h-screen max-w-2xl space-y-8 px-6 pb-[104px] pt-12">
+        {activeTab === "reise" && (
+          <>
+            <TripHero
+              tripId={tripId}
+              trip={context.trip}
+              portCalls={context.port_calls}
+              excursions={excursions}
+              bookings={context.bookings}
+              travelers={context.travelers}
+              portCoordinates={portCoordinates}
+              heroImageUrl={shipImageUrl}
+              heroImageAttribution={shipImageAttribution}
             />
-          ))}
-          {context.bookings.length === 0 && <p className="text-sm text-ink/50">Noch keine Kabinen hinterlegt.</p>}
-        </div>
-      </section>
 
-      <ShipResearch
-        tripId={tripId}
-        initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category === null)}
-        isAdmin={isAdmin}
-      />
+            {/* Reiseinfos, zusammengefasst: Eckdaten + Kabinen/Reisende in einem Block */}
+            <section className="space-y-3">
+              <h2 className="font-display text-xl font-medium text-ink">Reiseinfos</h2>
+              {(context.trip.start_port || context.trip.end_port) && (
+                <p className="text-sm text-ink/80">
+                  {context.trip.start_port && <>Start: {context.trip.start_port}</>}
+                  {context.trip.start_port && context.trip.end_port && " · "}
+                  {context.trip.end_port && <>Ende: {context.trip.end_port}</>}
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {context.bookings.map((b) => (
+                  <CabinCard
+                    key={b.id}
+                    booking={b}
+                    travelers={context.travelers.filter((t) => t.cabin_number === b.cabin_number)}
+                  />
+                ))}
+                {context.bookings.length === 0 && (
+                  <p className="text-sm text-ink/50">Noch keine Kabinen hinterlegt.</p>
+                )}
+              </div>
+            </section>
 
-      <CabinResearch
-        tripId={tripId}
-        groups={Object.values(
-          context.bookings.reduce<Record<string, { label: string; category: string; deck: string | null; cabinNumbers: string[] }>>(
-            (acc, b) => {
-              if (!b.cabin_type) return acc;
-              const category = normalizeCabinCategory(b.cabin_type);
-              if (!category) return acc;
-              const deck = b.cabin_number ? extractDeckNumber(b.cabin_number) : null;
-              const label = cabinLabel(category, deck);
-              const group = acc[label] ?? { label, category, deck, cabinNumbers: [] };
-              if (b.cabin_number && !group.cabinNumbers.includes(b.cabin_number)) {
-                group.cabinNumbers.push(b.cabin_number);
-              }
-              acc[label] = group;
-              return acc;
-            },
-            {}
-          )
+            <ShipResearch
+              tripId={tripId}
+              initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category === null)}
+              isAdmin={isAdmin}
+            />
+
+            <CabinResearch
+              tripId={tripId}
+              groups={Object.values(
+                context.bookings.reduce<
+                  Record<string, { label: string; category: string; deck: string | null; cabinNumbers: string[] }>
+                >((acc, b) => {
+                  if (!b.cabin_type) return acc;
+                  const category = normalizeCabinCategory(b.cabin_type);
+                  if (!category) return acc;
+                  const deck = b.cabin_number ? extractDeckNumber(b.cabin_number) : null;
+                  const label = cabinLabel(category, deck);
+                  const group = acc[label] ?? { label, category, deck, cabinNumbers: [] };
+                  if (b.cabin_number && !group.cabinNumbers.includes(b.cabin_number)) {
+                    group.cabinNumbers.push(b.cabin_number);
+                  }
+                  acc[label] = group;
+                  return acc;
+                }, {})
+              )}
+              initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category !== null)}
+              isAdmin={isAdmin}
+            />
+
+            <RouteResearch findings={context.route_research} />
+
+            {memory.length > 0 && (
+              <section className="space-y-2">
+                <h2 className="font-display text-xl font-medium text-ink">Gemerkt</h2>
+                <ul className="space-y-2">
+                  {memory.map((m) => (
+                    <MemoryItem key={m.id} content={m.content} onDelete={() => handleUnmark(m.id)} />
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {isOwner && <ShareTrip tripId={tripId} />}
+          </>
         )}
-        initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category !== null)}
-        isAdmin={isAdmin}
-      />
 
-      <RouteResearch findings={context.route_research} />
+        {activeTab === "tage" && (
+          <PortDaySwiper
+            tripId={tripId}
+            portCalls={context.port_calls}
+            excursions={excursions}
+            research={context.research}
+            onDeleteExcursion={handleDeleteExcursion}
+            isAdmin={isAdmin}
+            portPhotos={portPhotos}
+            portPhotoAttributions={portPhotoAttributions}
+          />
+        )}
 
-      {/* Häfen und Ausflüge: pro Hafentag Recherche und gebuchte Ausflüge zusammen */}
-      <section className="space-y-3">
-        <h2 className="font-display text-xl font-medium text-ink">Häfen und Ausflüge</h2>
-        <ExcursionForm
-          tripId={tripId}
-          portCalls={context.port_calls}
-          onAdded={(e) => setExcursions((prev) => [...prev, e])}
-        />
-        <PortDaySwiper
-          tripId={tripId}
-          portCalls={context.port_calls}
-          excursions={excursions}
-          research={context.research}
-          onDeleteExcursion={handleDeleteExcursion}
-          isAdmin={isAdmin}
-        />
-      </section>
+        {activeTab === "ausfluege" && (
+          <section className="space-y-3">
+            <div>
+              <h2 className="font-display text-xl font-medium text-ink">Ausflüge</h2>
+              {excursions.length > 0 && (
+                <p className="font-mono text-[11px] uppercase tracking-[.14em] text-ink/45">
+                  {excursions.length} gebucht
+                  {excursions.some((e) => e.price_total != null) && (
+                    <>
+                      {" "}
+                      ·{" "}
+                      {excursions.reduce((sum, e) => sum + (e.price_total ?? 0), 0).toFixed(2)}{" "}
+                      {excursions.find((e) => e.currency)?.currency ?? "EUR"}
+                    </>
+                  )}
+                </p>
+              )}
+            </div>
+            <ExcursionForm
+              tripId={tripId}
+              portCalls={context.port_calls}
+              onAdded={(e) => setExcursions((prev) => [...prev, e])}
+            />
+            {excursions.length > 0 ? (
+              <ul className="space-y-2">
+                {[...excursions]
+                  .sort((a, b) => (portCallById.get(a.port_call_id)?.day_number ?? 0) - (portCallById.get(b.port_call_id)?.day_number ?? 0))
+                  .map((e) => {
+                    const pc = portCallById.get(e.port_call_id);
+                    return (
+                      <ExcursionCard
+                        key={e.id}
+                        excursion={e}
+                        onDelete={handleDeleteExcursion}
+                        dayLabel={pc ? `Tag ${pc.day_number} · ${pc.port_name}` : undefined}
+                      />
+                    );
+                  })}
+              </ul>
+            ) : (
+              <p className="text-sm text-ink/50">Noch keine Ausflüge gebucht.</p>
+            )}
+          </section>
+        )}
 
-      {memory.length > 0 && (
-        <section className="space-y-2">
-          <h2 className="font-display text-xl font-medium text-ink">Gemerkt</h2>
-          <ul className="space-y-2">
-            {memory.map((m) => (
-              <MemoryItem key={m.id} content={m.content} onDelete={() => handleUnmark(m.id)} />
-            ))}
-          </ul>
-        </section>
-      )}
+        {activeTab === "chat" && (
+          <div className="-mx-6 h-[calc(100vh-56px-104px)] min-h-[420px]">
+            <ChatPanel tripId={tripId} initialMessages={messages} initialMemory={memory} />
+          </div>
+        )}
+      </main>
 
-      <ChatWidget tripId={tripId} initialMessages={messages} initialMemory={memory} />
-
-      {isOwner && <ShareTrip tripId={tripId} />}
-    </main>
+      <TabBar active={activeTab} onChange={setTab} />
+    </>
   );
 }

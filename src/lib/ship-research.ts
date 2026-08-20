@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { anthropic, RESEARCH_MODEL } from "@/lib/anthropic";
+import { anthropic, RESEARCH_ENABLED, RESEARCH_MODEL } from "@/lib/anthropic";
 import { buildShipResearchPrompt, buildCabinResearchPrompt } from "@/lib/prompts";
 import { parseResearchFindings, computeCacheTtlDays } from "@/lib/research-schema";
 
@@ -12,6 +12,10 @@ async function runResearch(
   userMessage: string,
   logLabel: string
 ): Promise<{ ok: true; findings: ReturnType<typeof parseResearchFindings> } | { ok: false; error: string }> {
+  if (!RESEARCH_ENABLED) {
+    return { ok: false, error: "Recherche ist aktuell deaktiviert." };
+  }
+
   const response = await anthropic.messages.create({
     model: RESEARCH_MODEL,
     max_tokens: 16000,

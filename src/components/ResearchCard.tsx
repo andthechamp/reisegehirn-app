@@ -29,16 +29,28 @@ export default function ResearchCard({
   const [expanded, setExpanded] = useState(false);
   const Icon = iconForFinding(f.category, f.title);
 
+  const accent = categoryTone === "amber" ? "border-stamp text-stamp" : "border-sea text-sea";
+
   return (
-    <div className="rounded-r-lg border-l-[3px] border-fjord bg-white shadow-sm">
+    <div className={"rounded-r-[14px] border-l-[3px] bg-card shadow-sm " + accent.split(" ")[0]}>
       <button
         onClick={() => setExpanded((v) => !v)}
         className="flex w-full items-start gap-3 py-3 pl-3 pr-3 text-left"
       >
-        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-fjord" />
+        <Icon className={"mt-0.5 h-4 w-4 shrink-0 " + accent.split(" ")[1]} />
         <div className="min-w-0 flex-1">
+          {categoryLabel && (
+            <p
+              className={
+                "font-mono text-[9.5px] font-bold uppercase tracking-[.16em] " +
+                (categoryTone === "amber" ? "text-stamp-deep" : "text-sea")
+              }
+            >
+              {categoryLabel}
+            </p>
+          )}
           <div className="flex flex-wrap items-start justify-between gap-2">
-            <p className="font-medium text-ink">{f.title}</p>
+            <p className="text-[15px] font-semibold text-ink">{f.title}</p>
             {onDelete && (
               <span
                 onClick={(e) => {
@@ -60,39 +72,22 @@ export default function ResearchCard({
       </button>
 
       {expanded && (
-        <div className="pb-3 pl-10 pr-3">
+        <div className="pb-3 pl-10 pr-3 text-[13.5px] leading-[1.55] text-ink/85">
           <FindingContent content={f.content} items={f.items} />
 
-          {(categoryLabel || f.source_name) && (
-            <div className="mt-2 flex flex-wrap items-center gap-1.5">
-              {categoryLabel && (
-                <span
-                  className={
-                    "rounded-full px-2 py-0.5 text-xs " +
-                    (categoryTone === "amber" ? "bg-amber-light text-amber" : "bg-fjord-light text-fjord-dark")
-                  }
-                >
-                  {categoryLabel}
-                </span>
-              )}
-              {f.source_name && (
-                <span className="rounded-full bg-fjord-light px-2 py-0.5 text-xs text-fjord-dark">
-                  {f.source_url ? (
-                    <a href={f.source_url} target="_blank" rel="noreferrer" className="hover:underline">
-                      {f.source_name}
-                    </a>
-                  ) : (
-                    f.source_name
-                  )}
-                </span>
-              )}
-              {f.source_name && (
-                <span className="rounded-full bg-ink/5 px-2 py-0.5 text-xs text-ink/50">
-                  {SOURCE_TIER_LABEL[f.source_tier] ?? f.source_tier}
-                </span>
-              )}
-              {f.staleness === "verfällt" && <span className="text-xs text-ink/40">kann veraltet sein</span>}
-            </div>
+          {f.source_name && (
+            <p className="mt-2 font-mono text-[10.5px] text-ink/45">
+              Quelle:{" "}
+              {f.source_url ? (
+                <a href={f.source_url} target="_blank" rel="noreferrer" className="hover:underline">
+                  {f.source_name}
+                </a>
+              ) : (
+                f.source_name
+              )}{" "}
+              ({SOURCE_TIER_LABEL[f.source_tier] ?? f.source_tier})
+              {f.staleness === "verfällt" && " · kann veraltet sein"}
+            </p>
           )}
         </div>
       )}
