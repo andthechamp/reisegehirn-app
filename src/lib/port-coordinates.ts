@@ -20,19 +20,25 @@ async function delay(ms: number): Promise<void> {
  * der Ortsname davor findet aber zuverlässig - siehe Testlauf während der
  * Konzeption der Routenkarte. Gibt null zurück, wenn kein Treffer gefunden
  * wurde (Hafen bleibt dann ohne Koordinate, die Karte zeigt ihn nicht an).
+ *
+ * limit=5 statt 1: Nominatims Top-Treffer ist oft die Verwaltungsgrenze der
+ * gleichnamigen Gemeinde (class "boundary"), deren Zentroid kilometerweit
+ * vom eigentlichen Ort abweichen kann (siehe Ålesund: Gemeinde-Zentroid lag
+ * ~15 km östlich der Stadt). Ein Ort/Stadt-Treffer (class "place") wird
+ * daher bevorzugt, falls vorhanden.
  */
 async function geocodePortName(portName: string): Promise<PortCoordinate | null> {
   const primaryName = portName.split("(")[0].trim();
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(primaryName)}&format=json&limit=1`;
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(primaryName)}&format=json&limit=5`;
 
   const res = await fetch(url, { headers: { "User-Agent": NOMINATIM_USER_AGENT } });
   if (!res.ok) return null;
 
-  const results = (await res.json()) as Array<{ lat: string; lon: string }>;
-  const first = results[0];
-  if (!first) return null;
+  const results = (await res.json()) as Array<{ lat: string; lon: string; class: string }>;
+  const best = results.find((r) => r.class === "place") ?? results[0];
+  if (!best) return null;
 
-  return { lat: Number(first.lat), lon: Number(first.lon) };
+  return { lat: Number(best.lat), lon: Number(best.lon) };
 }
 
 /**
