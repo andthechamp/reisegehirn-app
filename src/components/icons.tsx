@@ -110,6 +110,22 @@ export function ChevronDownIcon({ className }: IconProps) {
   );
 }
 
+export function ChevronLeftIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
+
+export function ChevronRightIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  );
+}
+
 export function CloseIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className}>
@@ -139,6 +155,7 @@ export function SpinnerIcon({ className }: IconProps) {
 const CATEGORY_ICON: Record<string, (props: IconProps) => React.ReactElement> = {
   schiffswissen: AnchorIcon,
   insider_tipps: ChatIcon,
+  bord_abc: InfoIcon,
   anleger: AnchorIcon,
   ausflug_offiziell: CompassIcon,
   ausflug_privat: CompassIcon,

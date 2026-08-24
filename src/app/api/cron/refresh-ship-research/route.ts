@@ -7,6 +7,12 @@ export const runtime = "nodejs";
 // Läuft ggf. mehrere Schiffe nacheinander durch - großzügig bemessen.
 export const maxDuration = 300;
 
+// Temporär pausiert: der automatische Refresh hat zuletzt zu viele Tokens
+// verbrannt, ohne verwertbare Ergebnisse zu liefern (siehe RESEARCH_MODEL-
+// Wechsel auf Sonnet in anthropic.ts). Bestehende Daten bleiben unangetastet,
+// bis das hier wieder auf true gesetzt wird.
+const CRON_REFRESH_ENABLED = false;
+
 /**
  * Täglich per Vercel Cron aufgerufen (siehe vercel.json). Sucht selbst nur
  * Schiffe/Kabinenkategorien, deren gecachter Fundsatz laut computeCacheTtlDays
@@ -17,6 +23,10 @@ export const maxDuration = 300;
  * statt starr im immer gleichen Takt feuern zu müssen.
  */
 export async function GET(req: NextRequest) {
+  if (!CRON_REFRESH_ENABLED) {
+    return NextResponse.json({ skipped: "Cron-Refresh ist aktuell pausiert." });
+  }
+
   // Fail-closed: ohne gesetztes CRON_SECRET ist der Endpunkt sonst öffentlich
   // aufrufbar (läuft über den Admin-Client, der RLS umgeht, und löst
   // kostenpflichtige Anthropic-Aufrufe aus) - eine fehlende Env-Variable

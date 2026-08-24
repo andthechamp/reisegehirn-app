@@ -20,8 +20,13 @@ interface GeocodeResult {
 }
 
 async function geocodePort(portName: string): Promise<GeocodeResult | null> {
+  // Klammerzusätze wie "Nordfjordeid (Eidsfjord)" oder "Hamburg (Einschiffung)"
+  // lässt die Geocoding-API oft komplett scheitern, der Ortsname davor findet
+  // aber zuverlässig - gleiches Problem/gleiche Lösung wie bei
+  // geocodePortName() in port-coordinates.ts.
+  const primaryName = portName.split("(")[0].trim();
   try {
-    const params = new URLSearchParams({ name: portName, count: "1", language: "de", format: "json" });
+    const params = new URLSearchParams({ name: primaryName, count: "1", language: "de", format: "json" });
     const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?${params.toString()}`);
     if (!res.ok) return null;
     const data = await res.json();

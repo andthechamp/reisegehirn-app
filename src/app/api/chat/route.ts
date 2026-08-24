@@ -5,9 +5,9 @@ import { fetchTripContext, serializeTripContext } from "@/lib/trip-context";
 import { getCurrentUser } from "@/lib/supabase";
 
 export const runtime = "nodejs";
-// Etwas großzügiger als eine reine Textantwort, da Fragen ohne ausreichende
-// Datenbasis direkt (ohne separate Rückfrage) das web_search-Tool auslösen.
-export const maxDuration = 90;
+// Reine Textantwort aus bereits gespeicherten Reisedaten - keine Websuche,
+// keine Tool-Runden, daher kurz bemessen.
+export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
@@ -66,9 +66,9 @@ export async function POST(req: NextRequest) {
 
     const response = await anthropic.messages.create({
       model: CHAT_MODEL,
-      // Thinking/Tool-Blöcke bei einer vertiefenden Recherche zählen selbst
-      // schon gegen dieses Budget, siehe gleiches Problem bei /api/research/ship.
-      max_tokens: 6000,
+      // Ohne Websuche-Runden ist die Antwort reiner Fließtext zu einer Frage
+      // über bereits gespeicherte Daten - 2000 Token reichen dafür reichlich.
+      max_tokens: 2000,
       // System-Prompt (inkl. komplettem Reisekontext als JSON) ändert sich
       // innerhalb desselben Gesprächs meist nicht - als Cache-Breakpoint
       // markieren, damit er nicht bei jeder Nachricht neu verarbeitet wird.
@@ -79,9 +79,13 @@ export async function POST(req: NextRequest) {
           cache_control: { type: "ephemeral" },
         },
       ],
-      // CHAT_MODEL (Haiku) unterstützt kein programmatic tool calling -
-      // ohne explizites allowed_callers lehnt die API web_search mit 400 ab.
-      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 3, allowed_callers: ["direct"] }],
+      // Bewusst ohne Tools: Der Chat antwortet ausschließlich aus dem
+      // Reisekontext im System-Prompt (Reisedaten, Recherche-Funde, gemerkte
+      // Antworten) und dem bisherigen Verlauf. Websuche zur Laufzeit war der
+      // teuerste Teil des Chats und hat außerdem ungeprüfte Funde in die
+      // Recherche-Anzeige der Reise geschrieben - beides ist jetzt weg, das
+      // Befüllen der Recherche läuft redaktionell (siehe RESEARCH_AUTO in
+      // lib/anthropic.ts und die Lückenliste im Admin-Bereich).
       messages,
     });
 
@@ -93,11 +97,10 @@ export async function POST(req: NextRequest) {
     if (textBlocks.length === 0) {
       throw new Error("Keine Textantwort vom Modell erhalten.");
     }
-    // Bei Websuche mit vielen Zitationen zerlegt das Modell seine Antwort oft
-    // in viele kleine Text-Fragmente (ein Fragment pro zitiertem Satz). Direkt
-    // aneinanderhängen (kein zusätzlicher Trenner) statt mit \n\n zu verbinden,
-    // sonst summieren sich daraus viele Leerzeilen. Mehrfache Leerzeilen, die
-    // aus dem Modelltext selbst kommen, zusätzlich auf maximal eine begrenzen.
+    // Ohne Websuche kommt die Antwort praktisch immer als ein einzelner
+    // Text-Block; die Blöcke trotzdem direkt aneinanderhängen (kein
+    // zusätzlicher Trenner), falls das Modell doch einmal aufteilt. Mehrfache
+    // Leerzeilen aus dem Modelltext auf maximal eine begrenzen.
     const reply = textBlocks
       .map((b) => b.text)
       .join("")
@@ -111,35 +114,6 @@ export async function POST(req: NextRequest) {
       { trip_id, role: "assistant", content: reply },
     ]);
     if (insertError) throw insertError;
-
-    // Hat das Modell laut Prompt-Regel 9 für diese Antwort das web_search-Tool
-    // genutzt (erkennbar an einem server_tool_use-Block), war die vorhandene
-    // Reisedaten-JSON (research/route_research/memory) für die Frage nicht
-    // ausreichend. Das Ergebnis zusätzlich als research_findings-Zeile
-    // ablegen, damit dieselbe oder eine ähnliche Frage in dieser Reise künftig
-    // direkt aus dem Kontext beantwortet werden kann, statt erneut zu suchen -
-    // sichtbar wird der Fund dadurch außerdem im Recherche-Bereich der App,
-    // nicht nur im Chatverlauf. Rein informativ, kein kritischer Pfad: ein
-    // Fehler hier darf die eigentliche Chat-Antwort nicht verhindern.
-    const usedWebSearch = response.content.some(
-      (block) => block.type === "server_tool_use" && block.name === "web_search"
-    );
-    if (usedWebSearch) {
-      const { error: findingError } = await supabase.from("research_findings").insert({
-        trip_id,
-        port_call_id: null,
-        category: "sonstiges",
-        title: message.trim().slice(0, 200),
-        content: reply,
-        source_tier: "C",
-        source_name: null,
-        source_url: null,
-        staleness: "verfällt",
-      });
-      if (findingError) {
-        console.error("Chat-Recherche konnte nicht als Fund gespeichert werden:", findingError);
-      }
-    }
 
     return NextResponse.json({ reply });
   } catch (err) {

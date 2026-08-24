@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ExcursionCard from "@/components/ExcursionCard";
 import PortResearch from "@/components/PortResearch";
+import RouteMap, { type RouteMapPort } from "@/components/RouteMap";
 
 type PortCall = TripContext["port_calls"][number];
 type Excursion = TripContext["excursions"][number];
@@ -22,6 +23,9 @@ interface PortDaySwiperProps {
   // port_name -> Attribution, nur bei Commons-Fotos gesetzt (CC-BY-SA-
   // Namensnennungspflicht).
   portPhotoAttributions: Record<string, string>;
+  // port_name -> Koordinaten, für die Desktop-Kartenansicht (ersetzt ab lg
+  // das Chip-Carousel, siehe RouteMap).
+  portCoordinates: Record<string, { lat: number; lon: number }>;
 }
 
 // Swipe gilt erst ab dieser Distanz als Geste, sonst würde ein normaler Tap
@@ -37,6 +41,7 @@ export default function PortDaySwiper({
   isAdmin,
   portPhotos,
   portPhotoAttributions,
+  portCoordinates,
 }: PortDaySwiperProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
@@ -47,6 +52,18 @@ export default function PortDaySwiper({
 
   const active = portCalls[activeIndex];
   const goTo = (i: number) => setActiveIndex(Math.max(0, Math.min(portCalls.length - 1, i)));
+
+  // Für die Desktop-Karte: einfache Vergangenheit/heute/zukunft-Einordnung
+  // reicht hier, anders als im Reise-Hero geht es nur um Tagesnavigation,
+  // nicht um Ausflugs-Erinnerungen.
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const mapPorts: RouteMapPort[] = portCalls.flatMap((pc) => {
+    if (pc.is_sea_day) return [];
+    const coord = portCoordinates[pc.port_name];
+    if (!coord) return [];
+    const state: RouteMapPort["state"] = pc.call_date < todayStr ? "done" : pc.call_date > todayStr ? "upcoming" : "today";
+    return [{ port_name: pc.port_name, lat: coord.lat, lon: coord.lon, day_number: pc.day_number, state }];
+  });
   const stampLabel = new Date(`${active.call_date}T00:00:00`)
     .toLocaleDateString("de-DE", { day: "2-digit", month: "long" })
     .toUpperCase();
@@ -72,8 +89,21 @@ export default function PortDaySwiper({
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex w-full overflow-x-auto pb-1">
+    <div className="space-y-3 lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-6 lg:space-y-0">
+      {mapPorts.length > 0 && (
+        <div className="hidden h-[420px] overflow-hidden rounded-[18px] border border-ink/12 lg:sticky lg:top-6 lg:block">
+          <RouteMap
+            ports={mapPorts}
+            selectedDayNumber={active.day_number}
+            onSelectPort={(p) => {
+              const i = portCalls.findIndex((pc) => pc.day_number === p.day_number);
+              if (i >= 0) goTo(i);
+            }}
+          />
+        </div>
+      )}
+
+      <div className="flex w-full overflow-x-auto pb-1 lg:hidden">
         <div className="flex w-max gap-1">
           {portCalls.map((pc, i) => (
             <button

@@ -22,9 +22,10 @@ interface CabinResearchProps {
   tripId: string;
   groups: CabinGroup[];
   initialFindings: Finding[]; // alle Findings mit gesetztem cabin_category
-  // Der manuelle Trigger ist admin-only (siehe /api/research/cabin) - für
-  // alle anderen Nutzer:innen läuft Recherche automatisch beim Laden der
-  // Reise im Hintergrund (siehe ensureCabinResearched).
+  // Der Recherche-Trigger ist admin-only (siehe /api/research/cabin). Seit
+  // RESEARCH_AUTO = false (lib/anthropic.ts) ist er der einzige Weg, der
+  // überhaupt noch einen Recherche-Lauf startet - fehlende Themen werden
+  // sonst nur als Lücke protokolliert und redaktionell gefüllt.
   isAdmin: boolean;
 }
 
@@ -111,7 +112,7 @@ export default function CabinResearch({ tripId, groups, initialFindings, isAdmin
               <p className="text-sm text-ink/50">
                 {isAdmin
                   ? "Noch keine Infos zu dieser Kabinenkategorie recherchiert (Größe, Ausstattung, Lage)."
-                  : "Infos zu dieser Kabinenkategorie werden im Hintergrund recherchiert (Größe, Ausstattung, Lage) - bitte gleich noch einmal vorbeischauen."}
+                  : "Für diese Kabinenkategorie sind noch keine Infos hinterlegt (Größe, Ausstattung, Lage)."}
               </p>
             )}
 

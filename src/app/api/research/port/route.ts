@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { researchAndSavePort } from "@/lib/port-research";
 import { computeCacheTtlDays } from "@/lib/research-schema";
 import { getSupabaseServerClient, requireAdmin } from "@/lib/supabase";
+import { portNameVariants } from "@/lib/port-names";
 
 export const runtime = "nodejs";
 // Mehrstufige Recherche mit mehreren Suchrunden kann eine Weile dauern -
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
       const { data: cachedPort, error: cachedPortError } = await supabase
         .from("port_research")
         .select("*")
-        .eq("port_name", portCall.port_name)
+        .in("port_name", portNameVariants(portCall.port_name))
         .order("sort_order", { ascending: true });
       if (cachedPortError) throw cachedPortError;
 

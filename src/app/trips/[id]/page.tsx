@@ -7,6 +7,7 @@ import type { ChatMessage } from "@/components/ChatPanel";
 import TripHero from "@/components/TripHero";
 import CabinCard from "@/components/CabinCard";
 import ShipResearch from "@/components/ShipResearch";
+import BordAbc from "@/components/BordAbc";
 import CabinResearch from "@/components/CabinResearch";
 import { normalizeCabinCategory, extractDeckNumber, cabinLabel } from "@/lib/cabin";
 import RouteResearch from "@/components/RouteResearch";
@@ -39,9 +40,13 @@ function TripPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activeTab = (searchParams.get("tab") as TripTab | null) ?? "reise";
+  // "bord-abc" ist kein Bottom-Tab (siehe TabBar.tsx) - eigener, aus der
+  // Schiffsinfos-Sektion erreichbarer Screen für die 36 flottenweiten
+  // Bordregeln-Themen, damit sie die Reise-Übersicht nicht überfluten.
+  type ExtendedTab = TripTab | "bord-abc";
+  const activeTab = (searchParams.get("tab") as ExtendedTab | null) ?? "reise";
 
-  function setTab(tab: TripTab) {
+  function setTab(tab: ExtendedTab) {
     router.push(`${pathname}?tab=${tab}`, { scroll: false });
   }
 
@@ -126,12 +131,15 @@ function TripPageContent() {
   }
 
   const portCallById = new Map(context.port_calls.map((pc) => [pc.id, pc]));
+  const bordAbcFindings = context.research.filter((r) => r.category === "bord_abc");
 
   return (
-    <>
-      <main className="mx-auto min-h-screen max-w-2xl space-y-8 px-6 pb-[104px] pt-12">
+    <div className="lg:mx-auto lg:flex lg:max-w-5xl lg:items-start lg:gap-10 lg:px-6 lg:pt-12">
+      <TabBar active={activeTab === "bord-abc" ? "reise" : activeTab} onChange={setTab} />
+
+      <main className="mx-auto min-h-screen max-w-2xl flex-1 space-y-8 px-6 pb-[104px] pt-12 lg:mx-0 lg:max-w-none lg:px-0 lg:pb-12 lg:pt-0">
         {activeTab === "reise" && (
-          <>
+          <div className="space-y-8 lg:mx-auto lg:max-w-2xl">
             <TripHero
               tripId={tripId}
               trip={context.trip}
@@ -170,8 +178,12 @@ function TripPageContent() {
 
             <ShipResearch
               tripId={tripId}
-              initialFindings={context.research.filter((r) => r.port_call_id === null && r.cabin_category === null)}
+              initialFindings={context.research.filter(
+                (r) => r.port_call_id === null && r.cabin_category === null && r.category !== "bord_abc"
+              )}
               isAdmin={isAdmin}
+              bordAbcCount={bordAbcFindings.length}
+              onOpenBordAbc={() => setTab("bord-abc")}
             />
 
             <CabinResearch
@@ -211,7 +223,7 @@ function TripPageContent() {
             )}
 
             {isOwner && <ShareTrip tripId={tripId} />}
-          </>
+          </div>
         )}
 
         {activeTab === "tage" && (
@@ -224,11 +236,12 @@ function TripPageContent() {
             isAdmin={isAdmin}
             portPhotos={portPhotos}
             portPhotoAttributions={portPhotoAttributions}
+            portCoordinates={portCoordinates}
           />
         )}
 
         {activeTab === "ausfluege" && (
-          <section className="space-y-3">
+          <section className="space-y-3 lg:mx-auto lg:max-w-2xl">
             <div>
               <h2 className="font-display text-xl font-medium text-ink">Ausflüge</h2>
               {excursions.length > 0 && (
@@ -273,13 +286,15 @@ function TripPageContent() {
         )}
 
         {activeTab === "chat" && (
-          <div className="-mx-6 h-[calc(100vh-56px-104px)] min-h-[420px]">
+          <div className="-mx-6 h-[calc(100vh-56px-104px)] min-h-[420px] lg:mx-auto lg:h-[calc(100vh-56px-48px)] lg:max-w-2xl">
             <ChatPanel tripId={tripId} initialMessages={messages} initialMemory={memory} />
           </div>
         )}
-      </main>
 
-      <TabBar active={activeTab} onChange={setTab} />
-    </>
+        {activeTab === "bord-abc" && (
+          <BordAbc findings={bordAbcFindings} onBack={() => setTab("reise")} />
+        )}
+      </main>
+    </div>
   );
 }

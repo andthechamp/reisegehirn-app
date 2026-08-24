@@ -142,7 +142,7 @@ create table research_findings (
 create table ship_research (
   id           uuid primary key default gen_random_uuid(),
   ship_name    text not null,
-  category     text not null check (category in ('schiffswissen', 'insider_tipps')),
+  category     text not null check (category in ('schiffswissen', 'insider_tipps', 'bord_abc')),
   title        text not null,
   content      text not null,
   source_tier  text not null check (source_tier in ('A', 'B', 'C')),
@@ -198,12 +198,24 @@ create table port_research (
   retrieved_at timestamptz not null default now(),
   -- true = redaktionell/manuell gepflegt (z. B. per Seed-Skript aus einer
   -- Reisebüro-Tippliste), nicht das Ergebnis der KI-Websuche-Recherche.
-  -- researchAndSavePort löscht beim erneuten Recherchieren eines Hafens nur
-  -- curated = false Zeilen, damit kuratierte Einträge einen Refresh überleben.
+  -- researchAndSavePort löscht generell keine Zeilen mehr (siehe port-research.ts) -
+  -- kuratierte wie recherchierte Einträge bleiben bei erneuten Aufrufen erhalten.
   curated      boolean not null default false
 );
 
 create index idx_port_research_name on port_research(port_name);
+
+-- Verhindert Race-Condition-Duplikate bei den automatisch recherchierten/
+-- berechneten Kategorien (z. B. wetter_packen, siehe getWeatherData in
+-- port-research.ts): laden zwei Requests dieselbe Reise nahezu gleichzeitig
+-- (React Strict Mode im Dev-Modus verdoppelt Effekte absichtlich, oder ein
+-- Nutzer lädt die Seite zweimal schnell hintereinander), sehen beide
+-- Hintergrund-Läufe "noch keine Zeile vorhanden" und legen beide eine an -
+-- mit leicht unterschiedlichem Inhalt, da z. B. Wetterwerte nicht exakt
+-- reproduzierbar berechnet werden. Nur curated=false betroffen: kuratierte
+-- Kategorien wie ausflug_privat dürfen bewusst mehrere Einträge pro
+-- (Hafen, Kategorie) haben (siehe curated-Spalte oben).
+create unique index idx_port_research_unique_auto on port_research(port_name, category) where curated = false;
 
 -- Geokoordinaten pro Hafenname, für die Routenkarte auf der Reiseseite
 -- (siehe RouteMap.tsx). Nicht reisespezifisch und nicht zeitkritisch (ein
@@ -557,6 +569,17 @@ alter table profiles add column chat_language text not null default 'de' check (
 alter table ship_research add column cabin_category text;
 create index idx_ship_research_ship_cabin on ship_research(ship_name, cabin_category);
 
+-- 'bord_abc' = flottenweite praktische Bordregeln (Check-in/-out, Bordkarte,
+-- Verbotene Gegenstände, Notfalltelefon usw.) aus dem offiziellen TUI-Cruises
+-- Bord-ABC - eigene Kategorie statt 'schiffswissen' (Restaurants/Decksplan)
+-- oder 'insider_tipps' (subjektive Gästestimmen), da es sich um verbindliche
+-- Reederei-Richtlinien handelt (source_tier 'A'). Bestehende Installationen
+-- müssen diesen Constraint nachziehen, da "create table" oben nur bei einer
+-- Neuanlage greift.
+alter table ship_research drop constraint ship_research_category_check;
+alter table ship_research add constraint ship_research_category_check
+  check (category in ('schiffswissen', 'insider_tipps', 'bord_abc'));
+
 -- Foto-Cache für Schiffe/Häfen (TripHero-Hero-Foto, Tageskarten-Fotos in
 -- PortDaySwiper) - gleiches Muster wie port_coordinates (nicht reisespezifisch,
 -- dauerhaft gültig einmal gefunden), siehe resolveShipPhoto/resolvePortPhoto
@@ -582,3 +605,63 @@ alter table place_photos enable row level security;
 
 create policy "place_photos: any authenticated user" on place_photos
   for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- ------------------------------------------------------------
+-- Recherche-Lücken
+-- ------------------------------------------------------------
+
+-- Protokoll fehlender Recherche-Themen. Ersetzt das frühere Verhalten, bei
+-- dem eine fehlende Kategorie bei JEDEM Laden einer Reise still einen neuen
+-- (kostenpflichtigen) Websuche-Lauf ausgelöst hat - siehe RESEARCH_AUTO in
+-- src/lib/research-config.ts. Die Tabelle erfüllt drei Zwecke:
+--
+--   1. Sichtbarkeit: der Admin-Bereich listet auf, was noch fehlt, damit es
+--      redaktionell (Seed-Skript) oder per bewusstem Klick gefüllt werden
+--      kann, BEVOR jemand die Reise öffnet.
+--   2. Wiederholungsbremse: attempts zählt, wie oft die automatische
+--      Recherche ein Thema schon erfolglos versucht hat. Ab
+--      MAX_AUTO_ATTEMPTS (src/lib/research-gaps.ts) versucht die Automatik es
+--      nicht mehr - ein Thema, das die Websuche partout nicht liefert, kann
+--      so kein Dauerkostenleck mehr werden. Ein manueller Admin-Aufruf
+--      ("Erneut recherchieren") ignoriert die Bremse.
+--   3. Bedarfsnachweis: seen_count zeigt, wie oft ein fehlendes Thema
+--      tatsächlich gebraucht wurde - hohe Werte lohnen die Redaktion zuerst.
+--
+-- subject ist der Cache-Schlüssel des jeweiligen Bereichs: bei 'hafen' der
+-- port_name, bei 'schiff' der ship_name, bei 'kabine' das cabinLabel
+-- ("Kategorie · Deck N", siehe src/lib/cabin.ts). category ist das fehlende
+-- Einzelthema oder '*' für "für dieses Subjekt fehlt bislang alles".
+create table research_gaps (
+  id              uuid primary key default gen_random_uuid(),
+  scope           text not null check (scope in ('hafen', 'schiff', 'kabine')),
+  subject         text not null,
+  -- Nur bei scope 'kabine' befüllt: dieselbe Kabinenkategorie kann es auf
+  -- mehreren Schiffen geben, subject allein ist dort nicht eindeutig genug
+  -- für die Redaktion. Bewusst NICHT Teil des Unique-Keys (siehe unten) -
+  -- cabinLabel wird in ship_research ohnehin je Schiff gefiltert.
+  ship_name       text,
+  category        text not null,
+  -- Reise, bei der die Lücke zuletzt aufgefallen ist - rein informativ, damit
+  -- man beim Füllen weiß, wer darauf wartet. Kein Foreign Key mit cascade
+  -- nötig: die Lücke bleibt auch dann gültig, wenn genau diese Reise gelöscht
+  -- wird, denn der Hafen selbst fehlt weiterhin.
+  last_trip_id    uuid,
+  first_seen_at   timestamptz not null default now(),
+  last_seen_at    timestamptz not null default now(),
+  seen_count      int not null default 1,
+  attempts        int not null default 0,
+  last_attempt_at timestamptz,
+  -- Gesetzt, sobald das Thema tatsächlich in port_research/ship_research
+  -- gelandet ist. Zeilen werden nicht gelöscht, damit nachvollziehbar bleibt,
+  -- was wie lange gefehlt hat.
+  resolved_at     timestamptz
+);
+
+create unique index idx_research_gaps_key on research_gaps(scope, subject, category);
+create index idx_research_gaps_open on research_gaps(resolved_at, last_seen_at desc);
+
+-- Wie allowed_signup_emails: keine Policies. Lesen/Schreiben läuft
+-- ausschließlich über den Service-Role-Client (Recherche-Pipeline im
+-- Hintergrund, Admin-Endpunkt) - eine Betriebs-Tabelle geht normale
+-- Nutzer:innen nichts an.
+alter table research_gaps enable row level security;

@@ -1,27 +1,70 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { anthropic, RESEARCH_ENABLED, RESEARCH_MODEL } from "@/lib/anthropic";
+import { anthropic, RESEARCH_AUTO, RESEARCH_ENABLED, RESEARCH_MODEL } from "@/lib/anthropic";
 import { buildShipResearchPrompt, buildCabinResearchPrompt } from "@/lib/prompts";
-import { parseResearchFindings, computeCacheTtlDays } from "@/lib/research-schema";
+import { parseResearchFindings } from "@/lib/research-schema";
+import {
+  ALL_CATEGORIES,
+  loadAttempts,
+  markAttempted,
+  recordGaps,
+  resolveGaps,
+  withinAttemptLimit,
+  type GapScope,
+} from "@/lib/research-gaps";
 
 export type ShipResearchResult =
   | { ok: true; findings: unknown[] }
   | { ok: false; error: string };
+
+/**
+ * Entscheidet für Schiff/Kabine, ob ein kostenpflichtiger Recherche-Lauf
+ * stattfinden darf, und führt dabei die Lücken-Buchführung. Anders als beim
+ * Hafen gibt es hier keine Einzelthemen - für ein Schiff bzw. eine
+ * Kabinenkategorie liegt entweder ein Fundsatz vor oder gar keiner, daher
+ * ALL_CATEGORIES als Platzhalter.
+ */
+async function mayResearch(params: {
+  scope: GapScope;
+  subject: string;
+  shipName: string | null;
+  auto: boolean;
+}): Promise<{ allowed: true } | { allowed: false; reason: string | null }> {
+  const { scope, subject, shipName, auto } = params;
+
+  await recordGaps({ scope, subject, categories: [ALL_CATEGORIES], shipName });
+
+  if (!RESEARCH_ENABLED) {
+    // Bewusster Admin-Klick soll erfahren, warum nichts passiert; die
+    // Hintergrund-Automatik schweigt und lässt die Lücke einfach stehen.
+    return { allowed: false, reason: auto ? null : "Recherche ist aktuell deaktiviert." };
+  }
+
+  if (!auto) return { allowed: true };
+
+  if (!RESEARCH_AUTO) {
+    // Automatik aus: Lücke ist protokolliert, gefüllt wird sie redaktionell
+    // oder per bewusstem Klick im Admin-Bereich.
+    return { allowed: false, reason: null };
+  }
+
+  const attempts = await loadAttempts(scope, subject);
+  if (withinAttemptLimit([ALL_CATEGORIES], attempts).length === 0) {
+    console.warn(`Recherche (${scope}/${subject}): Versuchsobergrenze erreicht, Automatik überspringt.`);
+    return { allowed: false, reason: null };
+  }
+
+  await markAttempted({ scope, subject, categories: [ALL_CATEGORIES], shipName });
+  return { allowed: true };
+}
 
 async function runResearch(
   system: string,
   userMessage: string,
   logLabel: string
 ): Promise<{ ok: true; findings: ReturnType<typeof parseResearchFindings> } | { ok: false; error: string }> {
-  if (!RESEARCH_ENABLED) {
-    return { ok: false, error: "Recherche ist aktuell deaktiviert." };
-  }
-
   const response = await anthropic.messages.create({
     model: RESEARCH_MODEL,
     max_tokens: 16000,
-    // Strukturierte Extraktion nach Websuche statt tiefem Reasoning - "medium"
-    // spart Tokens gegenüber dem Default "high" ohne spürbaren Qualitätsverlust.
-    output_config: { effort: "medium" },
     system,
     tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 6 }],
     messages: [{ role: "user", content: userMessage }],
@@ -51,29 +94,42 @@ async function runResearch(
 }
 
 /**
- * Führt die Websuche-Recherche für ein Schiff aus und ersetzt die
- * gespeicherten allgemeinen Schiffsinfos (cabin_category IS NULL) für diesen
- * Schiffsnamen. Gemeinsam genutzt vom manuellen "Erneut recherchieren"-
- * Endpunkt und vom periodischen Refresh-Cron. Kabinenkategorie-spezifische
- * Funde (siehe researchAndSaveCabin) bleiben davon unberührt.
+ * Führt die Websuche-Recherche für ein Schiff aus, aber NUR, wenn für diesen
+ * Schiffsnamen noch KEINE allgemeinen Schiffsinfos (cabin_category IS NULL)
+ * vorhanden sind - vorhandene Funde bleiben unangetastet statt bei jedem
+ * Aufruf teuer neu recherchiert zu werden. Kabinenkategorie-spezifische Funde
+ * (siehe researchAndSaveCabin) bleiben davon ohnehin unberührt.
  */
 export async function researchAndSaveShip(
   supabase: SupabaseClient,
-  shipName: string
+  shipName: string,
+  options: { auto?: boolean } = {}
 ): Promise<ShipResearchResult> {
+  const auto = options.auto ?? false;
+
+  const { data: existing, error: existingError } = await supabase
+    .from("ship_research")
+    .select("*")
+    .eq("ship_name", shipName)
+    .is("cabin_category", null)
+    .order("sort_order", { ascending: true });
+  if (existingError) return { ok: false, error: existingError.message };
+  if ((existing ?? []).length > 0) {
+    await resolveGaps("schiff", shipName, [ALL_CATEGORIES]);
+    return { ok: true, findings: existing ?? [] };
+  }
+
+  const gate = await mayResearch({ scope: "schiff", subject: shipName, shipName: null, auto });
+  if (!gate.allowed) {
+    return gate.reason ? { ok: false, error: gate.reason } : { ok: true, findings: [] };
+  }
+
   const result = await runResearch(
     buildShipResearchPrompt(shipName),
     `Recherchiere Informationen zum Kreuzfahrtschiff "${shipName}".`,
     `Schiffsrecherche (${shipName})`
   );
   if (!result.ok) return result;
-
-  const { error: deleteError } = await supabase
-    .from("ship_research")
-    .delete()
-    .eq("ship_name", shipName)
-    .is("cabin_category", null);
-  if (deleteError) return { ok: false, error: deleteError.message };
 
   const rows = result.findings.map((f, i) => ({
     ship_name: shipName,
@@ -94,34 +150,49 @@ export async function researchAndSaveShip(
     .select();
   if (insertError) return { ok: false, error: insertError.message };
 
+  await resolveGaps("schiff", shipName, [ALL_CATEGORIES]);
   return { ok: true, findings: inserted ?? [] };
 }
 
 /**
- * Analog zu researchAndSaveShip, aber für eine konkret gebuchte
- * Kabinenkategorie. cabinLabel ist die reine Kategorie oder "Kategorie ·
- * Deck N" (siehe cabinLabel() in src/lib/cabin.ts) - geteilt über alle
- * Reisen mit derselben Schiff+Kategorie(+Deck)-Kombination. buildCabinResearchPrompt
- * parst das Deck selbst wieder aus dem Label heraus.
+ * Analog zu researchAndSaveShip (nur recherchieren, wenn noch nichts
+ * vorhanden ist), aber für eine konkret gebuchte Kabinenkategorie. cabinLabel
+ * ist die reine Kategorie oder "Kategorie · Deck N" (siehe cabinLabel() in
+ * src/lib/cabin.ts) - geteilt über alle Reisen mit derselben
+ * Schiff+Kategorie(+Deck)-Kombination. buildCabinResearchPrompt parst das
+ * Deck selbst wieder aus dem Label heraus.
  */
 export async function researchAndSaveCabin(
   supabase: SupabaseClient,
   shipName: string,
-  cabinLabel: string
+  cabinLabel: string,
+  options: { auto?: boolean } = {}
 ): Promise<ShipResearchResult> {
+  const auto = options.auto ?? false;
+
+  const { data: existing, error: existingError } = await supabase
+    .from("ship_research")
+    .select("*")
+    .eq("ship_name", shipName)
+    .eq("cabin_category", cabinLabel)
+    .order("sort_order", { ascending: true });
+  if (existingError) return { ok: false, error: existingError.message };
+  if ((existing ?? []).length > 0) {
+    await resolveGaps("kabine", cabinLabel, [ALL_CATEGORIES]);
+    return { ok: true, findings: existing ?? [] };
+  }
+
+  const gate = await mayResearch({ scope: "kabine", subject: cabinLabel, shipName, auto });
+  if (!gate.allowed) {
+    return gate.reason ? { ok: false, error: gate.reason } : { ok: true, findings: [] };
+  }
+
   const result = await runResearch(
     buildCabinResearchPrompt(shipName, cabinLabel),
     `Recherchiere Informationen zur Kabinenkategorie "${cabinLabel}" auf dem Kreuzfahrtschiff "${shipName}".`,
     `Kabinenrecherche (${shipName} / ${cabinLabel})`
   );
   if (!result.ok) return result;
-
-  const { error: deleteError } = await supabase
-    .from("ship_research")
-    .delete()
-    .eq("ship_name", shipName)
-    .eq("cabin_category", cabinLabel);
-  if (deleteError) return { ok: false, error: deleteError.message };
 
   const rows = result.findings.map((f, i) => ({
     ship_name: shipName,
@@ -142,41 +213,20 @@ export async function researchAndSaveCabin(
     .select();
   if (insertError) return { ok: false, error: insertError.message };
 
+  await resolveGaps("kabine", cabinLabel, [ALL_CATEGORIES]);
   return { ok: true, findings: inserted ?? [] };
 }
 
 /**
- * Recherchiert die allgemeinen Schiffsinfos nur, wenn kein aktueller
- * Cache-Treffer existiert (analog zu ensurePortResearched in
- * port-research.ts). Für den automatischen Anstoß beim Laden einer Reise
- * (/api/trips/[id]), damit Nutzer:innen keinen manuellen Trigger mehr
- * brauchen.
+ * Der Automatik-Weg beim Laden einer Reise (/api/trips/[id]). Mit
+ * RESEARCH_AUTO = false wird eine fehlende Schiffsrecherche nur als Lücke
+ * protokolliert, nicht ausgeführt - siehe mayResearch.
  */
 export async function ensureShipResearched(
   supabase: SupabaseClient,
   shipName: string
 ): Promise<ShipResearchResult> {
-  const { data: cached, error } = await supabase
-    .from("ship_research")
-    .select("*")
-    .eq("ship_name", shipName)
-    .is("cabin_category", null)
-    .order("sort_order", { ascending: true });
-  if (error) return { ok: false, error: error.message };
-
-  // TTL richtet sich nach der volatilsten Staleness-Einstufung im aktuell
-  // gecachten Satz (siehe computeCacheTtlDays) statt einer festen Frist -
-  // ein Satz aus überwiegend "zeitlos"-Funden (z. B. reiner Decksplan) muss
-  // so nicht alle 7 Tage blind neu recherchiert werden.
-  const ttlDays = computeCacheTtlDays((cached ?? []).map((r) => r.staleness));
-  const cutoff = new Date(Date.now() - ttlDays * 24 * 60 * 60 * 1000).toISOString();
-
-  const hasFreshRow = (cached ?? []).some(
-    (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
-  );
-  if (hasFreshRow) return { ok: true, findings: cached ?? [] };
-
-  return researchAndSaveShip(supabase, shipName);
+  return researchAndSaveShip(supabase, shipName, { auto: true });
 }
 
 /**
@@ -188,21 +238,5 @@ export async function ensureCabinResearched(
   shipName: string,
   cabinLabel: string
 ): Promise<ShipResearchResult> {
-  const { data: cached, error } = await supabase
-    .from("ship_research")
-    .select("*")
-    .eq("ship_name", shipName)
-    .eq("cabin_category", cabinLabel)
-    .order("sort_order", { ascending: true });
-  if (error) return { ok: false, error: error.message };
-
-  const ttlDays = computeCacheTtlDays((cached ?? []).map((r) => r.staleness));
-  const cutoff = new Date(Date.now() - ttlDays * 24 * 60 * 60 * 1000).toISOString();
-
-  const hasFreshRow = (cached ?? []).some(
-    (r) => typeof r.retrieved_at === "string" && r.retrieved_at >= cutoff
-  );
-  if (hasFreshRow) return { ok: true, findings: cached ?? [] };
-
-  return researchAndSaveCabin(supabase, shipName, cabinLabel);
+  return researchAndSaveCabin(supabase, shipName, cabinLabel, { auto: true });
 }

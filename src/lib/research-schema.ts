@@ -13,6 +13,7 @@ export type ResearchCategory =
   | "sehenswuerdigkeiten"
   | "schiffswissen"
   | "insider_tipps"
+  | "bord_abc"
   | "wetter_packen"
   | "sonstiges";
 

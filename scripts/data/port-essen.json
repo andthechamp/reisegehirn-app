@@ -1,0 +1,74 @@
+[
+  {
+    "port_name": "Kiel",
+    "title": "Kiel",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Hamburg",
+    "title": "Hamburg",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Kopenhagen",
+    "title": "Kopenhagen",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Invergordon",
+    "title": "Invergordon",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Belfast",
+    "title": "Belfast",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Cartagena",
+    "title": "Cartagena",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "La Romana",
+    "title": "La Romana",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Puerto Limon",
+    "title": "Puerto Limon",
+    "content": "",
+    "source_tier": "B",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  }
+]

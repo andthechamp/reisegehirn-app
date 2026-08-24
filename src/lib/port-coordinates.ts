@@ -27,9 +27,22 @@ async function delay(ms: number): Promise<void> {
  * ~15 km östlich der Stadt). Ein Ort/Stadt-Treffer (class "place") wird
  * daher bevorzugt, falls vorhanden.
  */
-async function geocodePortName(portName: string): Promise<PortCoordinate | null> {
+// Ohne regionale Eingrenzung liefert Nominatim für weltweit mehrdeutige
+// Hafennamen gern einen Treffer auf der falschen Seite der Erde zurück (z. B.
+// "La Romana" -> Spanien statt Dominikanische Republik, "Costa Maya" ->
+// Nicaragua statt Mexiko, "Puerto Limon" -> Kolumbien statt Costa Rica -
+// beobachtet an der Mittelamerika-Route). viewbox biast die Ergebnisse
+// Richtung der bereits bekannten Nachbarhäfen derselben Reise, schließt
+// andere Treffer aber nicht aus (bounded bewusst nicht gesetzt) - für den
+// ersten Hafen einer Reise (noch kein Anker) bleibt die Suche ungebiast.
+async function geocodePortName(portName: string, bias?: PortCoordinate): Promise<PortCoordinate | null> {
   const primaryName = portName.split("(")[0].trim();
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(primaryName)}&format=json&limit=5`;
+  const params = new URLSearchParams({ q: primaryName, format: "json", limit: "5" });
+  if (bias) {
+    const delta = 8; // Grad - grob Kontinent-Größenordnung, nur eine Präferenz
+    params.set("viewbox", [bias.lon - delta, bias.lat + delta, bias.lon + delta, bias.lat - delta].join(","));
+  }
+  const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
 
   const res = await fetch(url, { headers: { "User-Agent": NOMINATIM_USER_AGENT } });
   if (!res.ok) return null;
@@ -39,6 +52,13 @@ async function geocodePortName(portName: string): Promise<PortCoordinate | null>
   if (!best) return null;
 
   return { lat: Number(best.lat), lon: Number(best.lon) };
+}
+
+function centroid(coords: PortCoordinate[]): PortCoordinate | undefined {
+  if (coords.length === 0) return undefined;
+  const lat = coords.reduce((sum, c) => sum + c.lat, 0) / coords.length;
+  const lon = coords.reduce((sum, c) => sum + c.lon, 0) / coords.length;
+  return { lat, lon };
 }
 
 /**
@@ -74,7 +94,8 @@ export async function ensurePortCoordinates(
     isFirstRequest = false;
 
     try {
-      const coord = await geocodePortName(name);
+      const bias = centroid([...result.values()]);
+      const coord = await geocodePortName(name, bias);
       if (!coord) {
         console.error(`Geocoding ohne Treffer für Hafen "${name}".`);
         continue;

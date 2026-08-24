@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         trip_id: tripId,
         day_number: pc.day_number,
         call_date: pc.call_date,
-        port_name: pc.port_name,
+        port_name: pc.port_name?.trim() || (pc.is_sea_day ? "Seetag" : "Unbekannter Hafen"),
         arrival_time: pc.arrival_time,
         departure_time: pc.departure_time,
         is_sea_day: pc.is_sea_day,
@@ -98,9 +98,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Direkt nach dem erfolgreichen Hochladen alle Häfen der Reise auf
-    // vorhandenes Wissen prüfen und fehlende Recherche automatisch anstoßen,
-    // statt darauf zu warten, dass der/die Nutzer:in jeden Hafen einzeln
-    // anklickt. Erst hier registriert (nach allen Inserts), damit bei einem
+    // vorhandenes Wissen prüfen. Mit RESEARCH_AUTO = false (lib/anthropic.ts)
+    // wird dabei nichts kostenpflichtig nachrecherchiert - die fehlenden
+    // Themen werden protokolliert (research_gaps), damit sie im Admin-Bereich
+    // sichtbar sind und gefüllt werden können, bevor jemand die Reise öffnet.
+    // Wetterdaten und Hafenbilder kommen weiterhin sofort, die kosten nichts.
+    // Erst hier registriert (nach allen Inserts), damit bei einem
     // späteren Fehler (z.B. Mitreisende) keine Recherche für eine Reise
     // läuft, deren Speichern dem Nutzer als fehlgeschlagen gemeldet wird.
     // Läuft nach der Response weiter (after()) und nutzt daher den

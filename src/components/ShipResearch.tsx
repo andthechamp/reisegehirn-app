@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ResearchCard from "@/components/ResearchCard";
-import { SpinnerIcon } from "@/components/icons";
+import { SpinnerIcon, InfoIcon, ChevronRightIcon } from "@/components/icons";
 
 type Finding = TripContext["research"][number];
 
@@ -14,13 +14,26 @@ const CATEGORY_LABEL: Record<string, string> = {
 interface ShipResearchProps {
   tripId: string;
   initialFindings: Finding[];
-  // Der manuelle Trigger ist admin-only (siehe /api/research/ship) - für
-  // alle anderen Nutzer:innen läuft Recherche automatisch beim Laden der
-  // Reise im Hintergrund (siehe ensureShipResearched).
+  // Der Recherche-Trigger ist admin-only (siehe /api/research/ship). Seit
+  // RESEARCH_AUTO = false (lib/anthropic.ts) ist er der einzige Weg, der
+  // überhaupt noch einen Recherche-Lauf startet - fehlende Themen werden
+  // sonst nur als Lücke protokolliert und redaktionell gefüllt.
   isAdmin: boolean;
+  // Anzahl Bord-ABC-Themen (eigener Screen statt Cards in dieser Liste, siehe
+  // BordAbc.tsx - 36 Nachschlage-Themen würden die Schiffswissen-/
+  // Insider-Tipps-Cards sonst überfluten). undefined/0 blendet den
+  // Einstiegspunkt aus.
+  bordAbcCount?: number;
+  onOpenBordAbc?: () => void;
 }
 
-export default function ShipResearch({ tripId, initialFindings, isAdmin }: ShipResearchProps) {
+export default function ShipResearch({
+  tripId,
+  initialFindings,
+  isAdmin,
+  bordAbcCount = 0,
+  onOpenBordAbc,
+}: ShipResearchProps) {
   const [findings, setFindings] = useState<Finding[]>(initialFindings);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +89,7 @@ export default function ShipResearch({ tripId, initialFindings, isAdmin }: ShipR
         <p className="text-sm text-ink/50">
           {isAdmin
             ? "Noch keine Infos zu diesem Schiff recherchiert (Decksplan, Restaurants, Bordprogramm, Ausstattung, Gästestimmen & Insider-Tipps)."
-            : "Infos zu diesem Schiff werden im Hintergrund recherchiert (Decksplan, Restaurants, Bordprogramm, Ausstattung, Gästestimmen & Insider-Tipps) - bitte gleich noch einmal vorbeischauen."}
+            : "Für dieses Schiff sind noch keine Infos hinterlegt (Decksplan, Restaurants, Bordprogramm, Ausstattung, Gästestimmen & Insider-Tipps)."}
         </p>
       )}
 
@@ -89,6 +102,19 @@ export default function ShipResearch({ tripId, initialFindings, isAdmin }: ShipR
             categoryTone="amber"
           />
         ))}
+
+        {bordAbcCount > 0 && onOpenBordAbc && (
+          <button
+            onClick={onOpenBordAbc}
+            className="flex w-full items-center gap-3 rounded-r-[14px] border-l-[3px] border-stamp bg-card py-3 pl-3 pr-3 text-left shadow-sm"
+          >
+            <InfoIcon className="h-4 w-4 shrink-0 text-stamp" />
+            <span className="min-w-0 flex-1 text-[15px] font-semibold text-ink">
+              Bord-ABC <span className="font-normal text-ink/50">· {bordAbcCount} Themen</span>
+            </span>
+            <ChevronRightIcon className="h-4 w-4 shrink-0 text-ink/30" />
+          </button>
+        )}
       </div>
     </section>
   );

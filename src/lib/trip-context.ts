@@ -1,6 +1,7 @@
 import type { getSupabaseServerClient } from "@/lib/supabase";
 import type { SightItem } from "@/lib/research-schema";
 import { regionsForPortNames } from "@/lib/route-research";
+import { canonicalPortName, portNameVariants } from "@/lib/port-names";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServerClient>>;
 
@@ -157,14 +158,18 @@ export async function fetchTripContext(
   // dieser Reise - siehe port-research.ts. Ein Hafen kann in derselben Reise
   // mehrfach angelaufen werden (z. B. Übernachtung), daher pro passendem
   // port_call einen eigenen Eintrag erzeugen statt nur einen pro Hafenname.
+  // Schlüssel ist die kanonische Schreibweise (siehe lib/port-names.ts):
+  // gespeichertes Wissen kann unter einer anderen Variante desselben Hafens
+  // liegen als der Reiseverlauf sie schreibt, und würde sonst nicht gefunden.
   const portNameToCallIds = new Map<string, string[]>();
   for (const pc of portCalls ?? []) {
     if (pc.is_sea_day) continue;
-    const list = portNameToCallIds.get(pc.port_name as string) ?? [];
+    const key = canonicalPortName(pc.port_name as string);
+    const list = portNameToCallIds.get(key) ?? [];
     list.push(pc.id as string);
-    portNameToCallIds.set(pc.port_name as string, list);
+    portNameToCallIds.set(key, list);
   }
-  const portNames = [...portNameToCallIds.keys()];
+  const portNames = [...portNameToCallIds.keys()].flatMap(portNameVariants);
 
   const { data: portResearch, error: portResearchError } =
     portNames.length > 0
@@ -190,7 +195,7 @@ export async function fetchTripContext(
   if (routeResearchError) throw routeResearchError;
 
   const portResearchExpanded = (portResearch ?? []).flatMap((r) => {
-    const callIds = portNameToCallIds.get(r.port_name as string) ?? [];
+    const callIds = portNameToCallIds.get(canonicalPortName(r.port_name as string)) ?? [];
     return callIds.map((callId) => ({
       id: r.id as string,
       port_call_id: callId,

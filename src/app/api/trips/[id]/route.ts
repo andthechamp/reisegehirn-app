@@ -110,18 +110,18 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
       isAdmin = profile?.role === "admin";
     }
 
-    // Nutzer:innen können Recherche nicht mehr manuell anstoßen (siehe
-    // /api/research/ship|port|cabin, jetzt admin-only) - stattdessen prüft
-    // jedes Laden einer Reise selbst, was fehlt oder veraltet ist, und holt
-    // es im Hintergrund nach. ensureShipResearched/ensureCabinResearched/
-    // ensurePortResearched machen dabei selbst nur dann einen (kostenpflich-
-    // tigen) Anthropic-Aufruf, wenn kein aktueller Cache-Treffer existiert -
-    // ein Laden ohne Rückstand kostet also nur ein paar zusätzliche
-    // DB-Lesezugriffe. Läuft nach der Response weiter (after()) und nutzt
+    // Jedes Laden einer Reise prüft, was an Recherche fehlt. Mit
+    // RESEARCH_AUTO = false (lib/anthropic.ts) wird daraus KEIN
+    // kostenpflichtiger Anthropic-Aufruf mehr: fehlende Themen landen nur in
+    // research_gaps und damit in der Lückenliste im Admin-Bereich. Was hier
+    // weiterhin tatsächlich passiert, ist die kostenlose Anreicherung -
+    // Wetter/Packtipps aus Open-Meteo und nachgetragene Wikipedia-Bilder bei
+    // Sehenswürdigkeiten. Läuft nach der Response weiter (after()) und nutzt
     // daher den Admin-Client, da der request-gebundene Client nach dem
     // Response-Flush nicht mehr zuverlässig nutzbar ist (gleiches Muster wie
     // /api/confirm). Sequenziell, um die Anthropic-API nicht mit parallelen
-    // Suchrunden für dieselbe Reise zu überlasten.
+    // Suchrunden für dieselbe Reise zu überlasten, falls RESEARCH_AUTO
+    // wieder eingeschaltet wird.
     const shipName = context.trip.ship_name;
     const cabinLabels = distinctCabinLabels(context.bookings);
     const portsToCheck = context.port_calls.filter((pc) => !pc.is_sea_day);
@@ -286,7 +286,7 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
       trip_id: tripId,
       day_number: pc.day_number,
       call_date: pc.call_date,
-      port_name: pc.port_name,
+      port_name: pc.port_name?.trim() || (pc.is_sea_day ? "Seetag" : "Unbekannter Hafen"),
       arrival_time: pc.arrival_time,
       departure_time: pc.departure_time,
       is_sea_day: pc.is_sea_day,

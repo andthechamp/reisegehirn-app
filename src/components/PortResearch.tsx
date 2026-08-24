@@ -51,9 +51,10 @@ interface PortResearchProps {
   tripId: string;
   portCallId: string;
   initialFindings: Finding[];
-  // Der manuelle Trigger ist admin-only (siehe /api/research/port) - für
-  // alle anderen Nutzer:innen läuft Recherche automatisch beim Laden der
-  // Reise im Hintergrund (siehe ensurePortResearched).
+  // Der Recherche-Trigger ist admin-only (siehe /api/research/port). Seit
+  // RESEARCH_AUTO = false (lib/anthropic.ts) ist er der einzige Weg, der
+  // überhaupt noch einen Recherche-Lauf startet - fehlende Themen werden
+  // sonst nur als Lücke protokolliert und redaktionell gefüllt.
   isAdmin: boolean;
 }
 
@@ -117,7 +118,7 @@ export default function PortResearch({ tripId, portCallId, initialFindings, isAd
 
       {!isAdmin && findings.length === 0 && (
         <p className="text-xs text-ink/50">
-          Infos zu diesem Hafen werden im Hintergrund recherchiert - bitte gleich noch einmal vorbeischauen.
+          Für diesen Hafen sind noch keine Infos hinterlegt.
         </p>
       )}
 

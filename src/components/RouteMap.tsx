@@ -25,6 +25,8 @@ export interface RouteMapPort {
 
 interface RouteMapProps {
   ports: RouteMapPort[];
+  onSelectPort?: (port: RouteMapPort) => void;
+  selectedDayNumber?: number;
 }
 
 // Kein Verbindungslinie zwischen den Häfen: die kostenlosen Seerouten-
@@ -39,8 +41,17 @@ const DOT_COLOR: Record<RouteMapPort["state"], string> = {
   upcoming: "#2F6F6B",
 };
 
-export default function RouteMap({ ports }: RouteMapProps) {
+const SELECTED_RING = "0 0 0 3px rgba(11,37,69,0.4), 0 1px 3px rgba(0,0,0,0.35)";
+const DEFAULT_SHADOW = "0 1px 3px rgba(0,0,0,0.35)";
+
+export default function RouteMap({ ports, onSelectPort, selectedDayNumber }: RouteMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  // Hält die zuletzt übergebenen Callback-/Auswahl-Props für die Marker-
+  // Click-Handler bereit, ohne dass die Karte (siehe deps unten) bei jedem
+  // Render neu aufgebaut werden muss.
+  const onSelectPortRef = useRef(onSelectPort);
+  onSelectPortRef.current = onSelectPort;
+  const markerElsRef = useRef<Map<number, HTMLDivElement>>(new Map());
 
   useEffect(() => {
     if (!containerRef.current || ports.length === 0) return;
@@ -55,6 +66,8 @@ export default function RouteMap({ ports }: RouteMapProps) {
     map.addControl(new maplibregl.AttributionControl({ compact: true }));
     map.on("error", (e) => console.error("[RouteMap] maplibre error", e.error));
 
+    markerElsRef.current = new Map();
+
     // Marker hängen bewusst NICHT am "load"-Event - das wartet auf alle
     // Kacheln aller Quellen (inkl. der Vektor-Quelle für Straßen/
     // Beschriftungen) und kann bei einer lahmenden Quelle ausbleiben, obwohl
@@ -68,7 +81,7 @@ export default function RouteMap({ ports }: RouteMapProps) {
       el.style.borderRadius = "999px";
       el.style.background = DOT_COLOR[port.state];
       el.style.border = "2px solid white";
-      el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.35)";
+      el.style.boxShadow = port.day_number === selectedDayNumber ? SELECTED_RING : DEFAULT_SHADOW;
       el.style.display = "flex";
       el.style.alignItems = "center";
       el.style.justifyContent = "center";
@@ -77,7 +90,12 @@ export default function RouteMap({ ports }: RouteMapProps) {
       el.style.fontWeight = "700";
       el.style.fontSize = port.state === "today" ? "12px" : "10px";
       el.textContent = String(port.day_number);
+      if (onSelectPortRef.current) {
+        el.style.cursor = "pointer";
+        el.addEventListener("click", () => onSelectPortRef.current?.(port));
+      }
       new maplibregl.Marker({ element: el }).setLngLat([port.lon, port.lat]).addTo(map);
+      markerElsRef.current.set(port.day_number, el);
     }
 
     const bounds = new maplibregl.LngLatBounds();
@@ -87,6 +105,14 @@ export default function RouteMap({ ports }: RouteMapProps) {
     return () => map.remove();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Auswahl-Ring separat aktualisieren, statt die Karte (inkl. Zoom/Pan-
+  // Zustand) bei jedem Tageswechsel neu aufzubauen.
+  useEffect(() => {
+    for (const [dayNumber, el] of markerElsRef.current) {
+      el.style.boxShadow = dayNumber === selectedDayNumber ? SELECTED_RING : DEFAULT_SHADOW;
+    }
+  }, [selectedDayNumber]);
 
   if (ports.length === 0) return null;
 
