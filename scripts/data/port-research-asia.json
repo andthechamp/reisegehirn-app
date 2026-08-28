@@ -1,0 +1,362 @@
+[
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "1. Wiedervereinigungspalast (Independence Palace) – ehemaliger Präsidentenpalast Südvietnams\n2. Kriegsopfermuseum (War Remnants Museum) – bewegendes Museum zum Vietnamkrieg\n3. Notre-Dame-Kathedrale Saigon – französisch-kolonialer Backsteinbau im Zentrum\n4. Ben-Thanh-Markt – lebhafter zentraler Markt mit Streetfood\n5. Cu-Chi-Tunnel – weitläufiges Tunnelsystem aus dem Vietnamkrieg, ca. 70 km entfernt",
+    "items": [
+      {"name": "Wiedervereinigungspalast", "description": "Ehemaliger Präsidentenpalast Südvietnams"},
+      {"name": "War Remnants Museum", "description": "Bewegendes Museum zum Vietnamkrieg"},
+      {"name": "Notre-Dame-Kathedrale Saigon", "description": "Französisch-kolonialer Backsteinbau im Zentrum"},
+      {"name": "Ben-Thanh-Markt", "description": "Lebhafter zentraler Markt mit Streetfood"},
+      {"name": "Cu-Chi-Tunnel", "description": "Weitläufiges Tunnelsystem aus dem Vietnamkrieg, ca. 70 km entfernt"}
+    ],
+    "source_tier": "3",
+    "source_name": "pavlus.com / cruisesheet.com",
+    "source_url": "https://pavlus.com/ports/ho-chi-minh-city-phu-my-vietnam/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "Große Kreuzfahrtschiffe legen am Industriehafen Phu My an der Provinz Bà Rịa-Vũng Tàu an, da der Fluss zur Innenstadt von Ho-Chi-Minh-Stadt zu flach ist • Phu My liegt ca. 80 km (1,5-2,5 Std. Fahrzeit) von Ho-Chi-Minh-Stadt entfernt, Schiffe legen direkt am Kai an, kein Tenderbetrieb notwendig • Nur kleinere Schiffe können ausnahmsweise an einem der drei Piers direkt im Zentrum von Saigon anlegen (Nha Rong Port, Tan Thuan II Port oder Lotus Port), die Zuteilung erfolgt erst 24 Std. vor Ankunft",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisesheet.com",
+    "source_url": "https://www.whatsinport.com/Ho-Chi-Minh-City.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisecrocodile.com", "meinschiff.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "Mein Schiff (TUI Cruises) läuft Phu My regelmäßig im Rahmen von Südostasien-Kreuzfahrten an (u. a. auf der Route Südostasien und Vietnam ab Singapur bis Hongkong), Landausflüge nach Ho-Chi-Minh-Stadt werden über meinschiff.com angeboten",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / dreamlines.de",
+    "source_url": "https://www.meinschiff.com/de/haefen/phu-my-ho-chi-minh-stadt-vietnam-100003274",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "cruisecrocodile.com empfiehlt für den ca. 1,5-stündigen Transfer nach Ho-Chi-Minh-Stadt einen organisierten Transfer oder Schiffsausflug, da der Hafen selbst keinerlei touristische Infrastruktur bietet und die Distanz zu groß für ein spontanes Taxi ohne Vorabsprache ist • Alternativ liegt Vũng Tàu mit Strand nur ca. 33 km (45 Min.) entfernt und eignet sich als kürzeres Ausflugsziel",
+    "source_tier": "3",
+    "source_name": "cruisecrocodile.com",
+    "source_url": "https://www.cruisecrocodile.com/phu-my-cruise-port/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "Phu My ist ein reiner Industriehafen ohne fußläufig erreichbare Sehenswürdigkeiten, laut cruisesheet.com bestehen im unmittelbaren Umfeld nur Containerlager und Industrieanlagen • Ho-Chi-Minh-Stadt (ca. 80 km) ist selbstverständlich NICHT zu Fuß erreichbar, ein organisierter Transfer ist zwingend notwendig",
+    "source_tier": "2",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/ho-chi-minh",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "Klassiker der vietnamesischen Küche sind Phở (Nudelsuppe), Bánh Mì (Baguette-Sandwich mit vietnamesischer Füllung) und Gỏi Cuốn (frische Frühlingsrollen) • Der Ben-Thanh-Markt in Ho-Chi-Minh-Stadt bietet eine große Auswahl an Streetfood in zentraler Lage",
+    "source_tier": "3",
+    "source_name": "pavlus.com",
+    "source_url": "https://pavlus.com/ports/ho-chi-minh-city-phu-my-vietnam/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Phu My / Ho-Chi-Minh-Stadt",
+    "content": "Währung: Vietnamesischer Dong (VND) • Sprache: Vietnamesisch, Englisch in touristischen Gebieten verbreitet • Deutsche Staatsangehörige benötigen für Vietnam für touristische Aufenthalte bis 45 Tage kein Visum (Stand 2026, vor Reise prüfen) • Notrufnummer: 113 (Polizei), 115 (Rettung)",
+    "source_tier": "3",
+    "source_name": "pavlus.com",
+    "source_url": "https://pavlus.com/ports/ho-chi-minh-city-phu-my-vietnam/",
+    "staleness": "verfällt",
+    "tier_note": "Visumfreie Aufenthaltsdauer für Vietnam kann sich ändern, vor Reise stets aktuellen Stand prüfen."
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Chan May",
+    "content": "1. Kaiserstadt Hue (UNESCO-Weltkulturerbe) – ehemalige Kaiserresidenz mit Zitadelle, ca. 45-60 km entfernt\n2. Hoi An (UNESCO-Weltkulturerbe) – historische Handelsstadt mit Laternen und alten Häusern, ca. 70-75 km entfernt\n3. Da Nang & China Beach – moderne Stadt mit langem Sandstrand, näher am Hafen\n4. Hai-Van-Pass – malerische Bergstraße zwischen Hue und Da Nang\n5. Lang-Co-Strand – direkt neben dem Hafen gelegener Strandabschnitt",
+    "items": [
+      {"name": "Kaiserstadt Hue", "description": "UNESCO-Weltkulturerbe, ehemalige Kaiserresidenz mit Zitadelle"},
+      {"name": "Hoi An", "description": "UNESCO-Weltkulturerbe, historische Handelsstadt mit Laternen"},
+      {"name": "Da Nang & China Beach", "description": "Moderne Stadt mit langem Sandstrand, näher am Hafen"},
+      {"name": "Hai-Van-Pass", "description": "Malerische Bergstraße zwischen Hue und Da Nang"},
+      {"name": "Lang-Co-Strand", "description": "Direkt neben dem Hafen gelegener Strandabschnitt"}
+    ],
+    "source_tier": "2",
+    "source_name": "whatsinport.com / about2cruise.co.uk",
+    "source_url": "https://www.whatsinport.com/Chan-May.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Chan May",
+    "content": "Chan May ist ein Tiefwasser-Frachthafen in der Provinz Thua Thien Hue, ca. 45-64 km von Hue und ca. 45-75 km von Da Nang/Hoi An entfernt • Der Kai ist 480 Meter lang mit 12,5 Metern Tiefe, geeignet für Schiffe bis 362 Meter Länge • Schiffe legen direkt am Kai an (kein Tenderbetrieb), vom Anleger bis zum Hafentor sind es ca. 600 Meter (10 Minuten Fußweg)",
+    "source_tier": "2",
+    "source_name": "vietnamdrive.com / whatsinport.com",
+    "source_url": "https://www.vietnamdrive.com/chan-may-port-in-thua-thien-hue/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["about2cruise.co.uk", "cruiseweb.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Chan May",
+    "content": "Mein Schiff (TUI Cruises) läuft Chan May regelmäßig im Rahmen der Route Faszination Südostasien (ab/bis Singapur) an, Landausflüge nach Da Nang, Hue und Hoi An werden über meinschiff.com angeboten",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/haefen/chan-may-da-nang-vietnam-100008308",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Chan May",
+    "content": "about2cruise.co.uk weist darauf hin, dass Chan May Port ein reiner Arbeits-Frachthafen ohne Restaurants, medizinische Einrichtungen, WLAN oder Geldautomaten ist – Reisende sollten vorab Bargeld und ggf. eine lokale SIM-Karte besorgen • Für Hue (45-60 km) oder Da Nang/Hoi An (70-75 km) ist Taxi, privater Fahrer oder organisierte Tour zwingend notwendig",
+    "source_tier": "3",
+    "source_name": "about2cruise.co.uk",
+    "source_url": "https://about2cruise.co.uk/hue-chan-may-cruise-ship-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Chan May",
+    "content": "Vom Anleger bis zum Hafentor sind es ca. 600 Meter bzw. 10 Minuten Fußweg, danach ist aber außer Parkplätzen nichts Touristisches in der Nähe • Hue, Da Nang und Hoi An liegen alle deutlich außerhalb (45-75 km) und sind NICHT zu Fuß erreichbar",
+    "source_tier": "2",
+    "source_name": "vietnamdrive.com / about2cruise.co.uk",
+    "source_url": "https://www.vietnamdrive.com/chan-may-port-in-thua-thien-hue/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Chan May",
+    "content": "Die Region Hue ist berühmt für ihre kaiserliche Küche mit Bún Bò Huế (scharfe Rindfleisch-Nudelsuppe) als Spezialität, in Hoi An sind zudem Cao Lầu (Nudelgericht) und Bánh Mì besonders bekannt • Im Hafenareal selbst gibt es laut about2cruise.co.uk nur temporäre Souvenirstände, keine Restaurants",
+    "source_tier": "3",
+    "source_name": "about2cruise.co.uk",
+    "source_url": "https://about2cruise.co.uk/hue-chan-may-cruise-ship-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Chan May",
+    "content": "Währung: Vietnamesischer Dong (VND) • Sprache: Vietnamesisch, Englisch in touristischen Gebieten verbreitet • Deutsche Staatsangehörige benötigen für Vietnam für touristische Aufenthalte bis 45 Tage kein Visum (Stand 2026, vor Reise prüfen) • Notrufnummer: 113 (Polizei), 115 (Rettung) • Keine Geldautomaten/Wechselstuben im Hafenareal, Bargeld vorab besorgen",
+    "source_tier": "3",
+    "source_name": "about2cruise.co.uk",
+    "source_url": "https://about2cruise.co.uk/hue-chan-may-cruise-ship-port-guide/",
+    "staleness": "verfällt",
+    "tier_note": "Visumfreie Aufenthaltsdauer für Vietnam kann sich ändern, vor Reise stets aktuellen Stand prüfen."
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Halong-Bucht",
+    "content": "1. Halong-Bucht (UNESCO-Weltnaturerbe) – ca. 3.000 Kalksteininseln und Felsformationen im Golf von Tonkin\n2. Sung-Sot-Höhle (Höhle der Überraschungen) – eine der größten und beeindruckendsten Höhlen der Bucht\n3. Titop-Insel – Aussichtspunkt mit Panoramablick über die Bucht\n4. Schwimmendes Fischerdorf Cua Van – traditionelle Lebensweise auf dem Wasser\n5. Bai-Tu-Long-Bucht – ruhigere Nachbarbucht mit weniger Tourismus",
+    "items": [
+      {"name": "Halong-Bucht", "description": "UNESCO-Weltnaturerbe, ca. 3.000 Kalksteininseln im Golf von Tonkin"},
+      {"name": "Sung-Sot-Höhle", "description": "Eine der größten und beeindruckendsten Höhlen der Bucht"},
+      {"name": "Titop-Insel", "description": "Aussichtspunkt mit Panoramablick über die Bucht"},
+      {"name": "Cua Van", "description": "Schwimmendes Fischerdorf mit traditioneller Lebensweise auf dem Wasser"},
+      {"name": "Bai-Tu-Long-Bucht", "description": "Ruhigere Nachbarbucht mit weniger Tourismus"}
+    ],
+    "source_tier": "3",
+    "source_name": "whatsinport.com / indochina-junk.com",
+    "source_url": "https://www.whatsinport.com/Halong-Bay-Cai-Lan.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Halong-Bucht",
+    "content": "Seit November 2018 können große Kreuzfahrtschiffe direkt am neuen Hon Gai International Passenger Terminal anlegen (zuvor war ausschließlich Ankern mit Tenderbetrieb möglich) • Für internationale Anläufe im Rahmen von Port-of-Call-Routen wird zudem der Cai-Lan-Hafen bzw. das Halong International Cruise Port (Sun Port) in Bai Chay genutzt, betrieben von Global Ports Holding • Für Halong-Bucht-eigene Tagesausflüge mit Dschunken-Booten ist der Tuan Chau International Passenger Port der Hauptausgangspunkt, ca. 20 Minuten Taxifahrt vom Terminal entfernt",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / bhayacruises.com",
+    "source_url": "https://www.whatsinport.com/Halong-Bay-Cai-Lan.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["indochina-junk.com", "baithojunks.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Halong-Bucht",
+    "content": "Mein Schiff (TUI Cruises) läuft die Halong-Bucht regelmäßig im Rahmen der Route Südostasien und Vietnam (ab Singapur bis Hongkong) an, Landausflüge mit Dschunken-Bootstouren durch die Bucht werden über meinschiff.com angeboten",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / dreamlines.de",
+    "source_url": "https://www.dreamlines.de/kreuzfahrt/sudostasien-ab-singapur-singapur-auf-der-mein-schiff-6-16968380",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Halong-Bucht",
+    "content": "Für individuelle Bootstouren durch die Bucht empfiehlt sich der Tuan Chau International Passenger Port als Ausgangspunkt (ca. 20 Min. Taxifahrt vom Kreuzfahrtterminal) • Halbtages- und Ganztagestouren mit lokalen Dschunken-Anbietern sind auch spontan vor Ort buchbar, sollten aber wegen der Beliebtheit idealerweise vorab reserviert werden",
+    "source_tier": "3",
+    "source_name": "whatsinport.com / baithojunks.com",
+    "source_url": "https://baithojunks.com/guide-to-halong-bay-cruise-ports/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Halong-Bucht",
+    "content": "Am neuen Hon Gai International Passenger Terminal bzw. Halong International Cruise Port (Sun Port) in Bai Chay ist die touristische Umgebung mit Restaurants und dem Sunworld-Freizeitpark in Gehdistanz erreichbar • Für die eigentliche Bootstour durch die Halong-Bucht ist ein Transfer zum Tuan Chau Port notwendig, NICHT zu Fuß erreichbar",
+    "source_tier": "2",
+    "source_name": "bhayacruises.com",
+    "source_url": "https://bhayacruises.com/blog/halong-bay-port/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Halong-Bucht",
+    "content": "An Bord der Dschunken-Boote wird meist frischer Fisch und Meeresfrüchte aus der Bucht serviert, oft im Rahmen eines im Ausflugspreis inbegriffenen Mittagessens • In Bai Chay/Ha Long City gibt es zudem Streetfood-Stände mit vietnamesischen Klassikern wie Phở und Bánh Mì",
+    "source_tier": "3",
+    "source_name": "baithojunks.com",
+    "source_url": "https://baithojunks.com/guide-to-halong-bay-cruise-ports/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Halong-Bucht",
+    "content": "Währung: Vietnamesischer Dong (VND) • Sprache: Vietnamesisch, Englisch in touristischen Gebieten verbreitet • Deutsche Staatsangehörige benötigen für Vietnam für touristische Aufenthalte bis 45 Tage kein Visum (Stand 2026, vor Reise prüfen) • Notrufnummer: 113 (Polizei), 115 (Rettung)",
+    "source_tier": "3",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Halong-Bay-Cai-Lan.htm",
+    "staleness": "verfällt",
+    "tier_note": "Visumfreie Aufenthaltsdauer für Vietnam kann sich ändern, vor Reise stets aktuellen Stand prüfen."
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Hongkong",
+    "content": "1. Victoria Peak – Aussichtsberg mit Panoramablick über die Skyline, per Peak Tram erreichbar\n2. Victoria Harbour & Symphony of Lights – Hafenpromenade mit abendlicher Lichtshow\n3. Tempel Straße & Ladies' Market – belebte Märkte in Kowloon\n4. Big Buddha (Tian Tan Buddha) auf Lantau Island – riesige Buddha-Statue, per Seilbahn erreichbar\n5. Star Ferry – historische Fähre zwischen Hong Kong Island und Kowloon",
+    "items": [
+      {"name": "Victoria Peak", "description": "Aussichtsberg mit Panoramablick über die Skyline, per Peak Tram erreichbar"},
+      {"name": "Victoria Harbour", "description": "Hafenpromenade mit abendlicher Lichtshow Symphony of Lights"},
+      {"name": "Tempel Straße & Ladies' Market", "description": "Belebte Märkte in Kowloon"},
+      {"name": "Big Buddha", "description": "Riesige Buddha-Statue auf Lantau Island, per Seilbahn erreichbar"},
+      {"name": "Star Ferry", "description": "Historische Fähre zwischen Hong Kong Island und Kowloon"}
+    ],
+    "source_tier": "2",
+    "source_name": "chinahighlights.com / discoverhongkong.com",
+    "source_url": "https://www.chinahighlights.com/hong-kong/hong-kong-cruise-port.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Hongkong",
+    "content": "Es gibt zwei Kreuzfahrtterminals: Ocean Terminal in Tsim Sha Tsui (Kowloon), direkt im Herzen der Einkaufs- und Touristenzone gelegen, sowie Kai Tak Cruise Terminal am Gelände des ehemaligen Flughafens, das auch Mega-Schiffe bis 220.000 BRZ aufnehmen kann (2 Schiffe bis 360 m gleichzeitig) • Kai Tak liegt ca. 10 km von den Hauptstadtvierteln entfernt und ist weniger zentral als Ocean Terminal",
+    "source_tier": "1",
+    "source_name": "discoverhongkong.com / chinahighlights.com",
+    "source_url": "https://www.discoverhongkong.com/eng/place-to-go/travel.guide-kai-tak-cruise-terminal.html",
+    "staleness": "zeitlos",
+    "confirmed_by": ["kaitakcruiseterminal.com.hk", "cruisecrocodile.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Hongkong",
+    "content": "Mein Schiff (TUI Cruises) läuft Hongkong regelmäßig als Endhafen der Route Südostasien und Vietnam (ab Singapur) an, mit Übernachtaufenthalt im Hafen • Landausflüge werden über meinschiff.com angeboten, u. a. zum Victoria Peak und Bootstouren im Hafen",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/trips/14-naechte-suedostasien-und-vietnam-ab-singapurbis-hongkong-MSS2706SEE",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Hongkong",
+    "content": "Vom Ocean Terminal aus ist die Nathan Road mit Shopping und Streetfood direkt zu Fuß erreichbar, ebenso die Star Ferry zum Hong Kong Island • Vom Kai Tak Terminal aus ist ein Taxi oder die MTR-Anbindung (ca. 45 Minuten mit dem Flughafentaxi ab Terminal, ca. 16 Min. vom Bahnhof Hung Hom) notwendig, um in die Hauptviertel zu gelangen",
+    "source_tier": "2",
+    "source_name": "chinahighlights.com",
+    "source_url": "https://www.chinahighlights.com/hong-kong/hong-kong-cruise-port.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Hongkong",
+    "content": "Ocean Terminal liegt direkt im Herzen von Tsim Sha Tsui, alle Hauptattraktionen (Nathan Road, Star Ferry, Kunstmuseum) sind in wenigen Gehminuten erreichbar • Kai Tak Cruise Terminal liegt dagegen ca. 10 km von den Hauptvierteln entfernt, hier ist Taxi oder MTR zwingend notwendig",
+    "source_tier": "1",
+    "source_name": "kaitakcruiseterminal.com.hk",
+    "source_url": "https://www.kaitakcruiseterminal.com.hk/passenger-info/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Hongkong",
+    "content": "Klassiker der Hongkonger Küche sind Dim Sum (kleine Teigtaschen und Häppchen), Char Siu (gegrilltes Schweinefleisch) und Wonton-Nudelsuppe • Streetfood-Märkte wie die Temple Street Night Market bieten eine große Auswahl an günstigen lokalen Gerichten",
+    "source_tier": "3",
+    "source_name": "chinahighlights.com",
+    "source_url": "https://www.chinahighlights.com/hong-kong/hong-kong-cruise-port.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Hongkong",
+    "content": "Währung: Hongkong-Dollar (HKD) • Sprache: Kantonesisch, Englisch weit verbreitet • Deutsche Staatsangehörige benötigen für Hongkong (Sonderverwaltungszone Chinas) für touristische Aufenthalte bis 90 Tage kein Visum, unabhängig von den Visabestimmungen für das übrige China • Notrufnummer: 999",
+    "source_tier": "3",
+    "source_name": "chinahighlights.com",
+    "source_url": "https://www.chinahighlights.com/hong-kong/hong-kong-cruise-port.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Busan",
+    "content": "1. Gamcheon Culture Village – bunte, hangelegene Häusersiedlung, oft Santorini Koreas genannt\n2. Haeundae Beach – bekanntester Stadtstrand Busans\n3. Jagalchi-Fischmarkt – größter Fischmarkt Koreas direkt am Hafen\n4. Beomeosa-Tempel – bedeutender buddhistischer Bergtempel\n5. Busan Tower im Yongdusan-Park – Aussichtsturm mit Panoramablick über die Stadt",
+    "items": [
+      {"name": "Gamcheon Culture Village", "description": "Bunte, hangelegene Häusersiedlung, Santorini Koreas"},
+      {"name": "Haeundae Beach", "description": "Bekanntester Stadtstrand Busans"},
+      {"name": "Jagalchi-Fischmarkt", "description": "Größter Fischmarkt Koreas direkt am Hafen"},
+      {"name": "Beomeosa-Tempel", "description": "Bedeutender buddhistischer Bergtempel"},
+      {"name": "Busan Tower", "description": "Aussichtsturm im Yongdusan-Park mit Panoramablick"}
+    ],
+    "source_tier": "3",
+    "source_name": "cruisesheet.com / alwayspacktissues.com",
+    "source_url": "https://cruisesheet.com/port/busan",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Busan",
+    "content": "Kreuzfahrtschiffe legen am Busan Port International Cruise Terminal an, mit traditionellem koreanischem Empfang durch Tanz und Musik • Der Terminal liegt zwar relativ nah am Stadtzentrum, aber laut cruisesheet.com nicht direkt in Gehdistanz zu den touristischen Hauptvierteln • Busan ist Südkoreas zweitgrößte Stadt und größter Seehafen",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisesheet.com",
+    "source_url": "https://www.whatsinport.com/Busan.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Busan",
+    "content": "Busan wird von zahlreichen internationalen Reedereien im Rahmen von Ostasien-Kreuzfahrten angelaufen; Landausflüge werden typischerweise zum Gamcheon Culture Village, Haeundae Beach und Jagalchi-Fischmarkt angeboten",
+    "source_tier": "3",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/busan",
+    "staleness": "saisonal",
+    "tier_note": "Keine direkte meinschiff.com-Hafenseite für Busan gefunden; ob TUI Cruises den Hafen aktuell regelmäßig anläuft, konnte nicht zweifelsfrei bestätigt werden."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Busan",
+    "content": "alwayspacktissues.com empfiehlt für einen Tag in Busan Nampodong zum Shoppen sowie den riesigen Gukje-Markt für Kleidung • Vom Terminal aus ist ein Taxi oder die Busan-Metro die gängigste Option, um Gamcheon Culture Village oder Haeundae Beach zu erreichen",
+    "source_tier": "3",
+    "source_name": "alwayspacktissues.com",
+    "source_url": "https://www.alwayspacktissues.com/post/attractions-in-busan",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Busan",
+    "content": "Der Busan Port International Cruise Terminal liegt nahe am Stadtzentrum, ist aber laut cruisesheet.com nicht direkt in Gehdistanz zu den touristischen Hauptvierteln wie Nampodong oder Haeundae Beach • Für die meisten Attraktionen wird Taxi oder Metro empfohlen",
+    "source_tier": "2",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/busan",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Busan",
+    "content": "Busan gilt als Zentrum für die frischesten Meeresfrüchte Koreas, u. a. am Jagalchi-Fischmarkt direkt am Hafen • Typisch sind zudem Dwaeji Gukbap (Schweinefleisch-Reissuppe) und Ssiat Hotteok (gefüllte, frittierte Pfannkuchen), beides Busan-Spezialitäten",
+    "source_tier": "3",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/busan",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Busan",
+    "content": "Währung: Südkoreanischer Won (KRW) • Sprache: Koreanisch, Englisch in touristischen Gebieten begrenzt verbreitet • Deutsche Staatsangehörige benötigen für Südkorea kein Visum für touristische Aufenthalte bis 90 Tage, allerdings ist seit 2023 eine K-ETA-Genehmigung (Korea Electronic Travel Authorization) vor Einreise erforderlich (Stand prüfen, da Regelungen für bestimmte Nationalitäten zeitweise ausgesetzt wurden) • Notrufnummer: 112 (Polizei), 119 (Feuerwehr/Rettung)",
+    "source_tier": "3",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/busan",
+    "staleness": "verfällt",
+    "tier_note": "K-ETA-Bestimmungen ändern sich häufiger, vor Reise stets aktuellen Stand prüfen."
+  }
+]

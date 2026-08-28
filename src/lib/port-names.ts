@@ -22,6 +22,23 @@ const PORT_NAME_GROUPS: string[][] = [
   ["Montego Bay (Jamaika)", "Montego Bay"],
   ["Ocho Rios (Jamaika)", "Ocho Rios"],
   ["Coxen Hole (Roatan)", "Roatán", "Roatan"],
+  ["Alesund", "Ålesund"],
+  ["Geiranger (Geirangerfjord)", "Geiranger"],
+  ["Abu Dhabi (VAE)", "Abu Dhabi"],
+  ["Agadir (Marokko)", "Agadir"],
+  ["Busan (Südkorea)", "Busan"],
+  ["Doha (Katar)", "Doha"],
+  ["Dubai (VAE)", "Dubai"],
+  ["Durban (Südafrika)", "Durban"],
+  ["Honningsvåg (Nordkap)", "Honningsvåg"],
+  ["Kapstadt (Südafrika)", "Kapstadt"],
+  ["Khasab (Oman)", "Khasab"],
+  ["Osaka (Japan)", "Osaka"],
+  ["Sir Bani Yas (VAE)", "Sir Bani Yas"],
+  ["Tanger (Marokko)", "Tanger"],
+  ["Tokio (Japan)", "Tokio"],
+  // "Cartagena" (Kolumbien) und "Cartagena (Spanien)" bleiben ABSICHTLICH
+  // getrennt - siehe Kommentar oben, das ist der Musterfall dafür.
 ];
 
 const VARIANTS_BY_NAME = new Map<string, string[]>();

@@ -35,6 +35,23 @@ const PORT_NAME_GROUPS: string[][] = [
   ["Montego Bay (Jamaika)", "Montego Bay"],
   ["Ocho Rios (Jamaika)", "Ocho Rios"],
   ["Coxen Hole (Roatan)", "Roatán", "Roatan"],
+  ["Alesund", "Ålesund"],
+  ["Geiranger (Geirangerfjord)", "Geiranger"],
+  ["Abu Dhabi (VAE)", "Abu Dhabi"],
+  ["Agadir (Marokko)", "Agadir"],
+  ["Busan (Südkorea)", "Busan"],
+  ["Doha (Katar)", "Doha"],
+  ["Dubai (VAE)", "Dubai"],
+  ["Durban (Südafrika)", "Durban"],
+  ["Honningsvåg (Nordkap)", "Honningsvåg"],
+  ["Kapstadt (Südafrika)", "Kapstadt"],
+  ["Khasab (Oman)", "Khasab"],
+  ["Osaka (Japan)", "Osaka"],
+  ["Sir Bani Yas (VAE)", "Sir Bani Yas"],
+  ["Tanger (Marokko)", "Tanger"],
+  ["Tokio (Japan)", "Tokio"],
+  // "Cartagena" (Kolumbien) und "Cartagena (Spanien)" bleiben ABSICHTLICH
+  // getrennt - zwei echte, verschiedene Häfen (siehe src/lib/port-names.ts).
 ];
 const CANONICAL_BY_NAME = new Map<string, string>();
 for (const group of PORT_NAME_GROUPS) {
@@ -52,11 +69,21 @@ interface Row {
 }
 
 async function main() {
-  const { data: rows, error } = await supabase
-    .from("port_research")
-    .select("id, port_name, category, content, retrieved_at, curated")
-    .order("retrieved_at", { ascending: true });
-  if (error) throw error;
+  // Seitenweise laden statt einem einzelnen .select(): Supabase deckelt eine
+  // Antwort standardmäßig auf 1000 Zeilen, port_research hat längst mehr -
+  // ohne Paginierung blieben die zuletzt recherchierten Häfen komplett
+  // ungeprüft, weil sie hinter der 1000er-Grenze lagen.
+  const rows: Row[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data: page, error } = await supabase
+      .from("port_research")
+      .select("id, port_name, category, content, retrieved_at, curated")
+      .order("retrieved_at", { ascending: true })
+      .range(from, from + 999);
+    if (error) throw error;
+    rows.push(...((page ?? []) as Row[]));
+    if (!page || page.length < 1000) break;
+  }
 
   // Fall 1: wortidentischer Inhalt unter zwei Namensvarianten desselben
   // Hafens (siehe oben, z. B. Montego Bay-Fall).

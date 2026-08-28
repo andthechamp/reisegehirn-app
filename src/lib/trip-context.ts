@@ -58,6 +58,10 @@ export interface TripContext {
     source_tier: string;
     source_name: string | null;
     source_url: string | null;
+    // Optional: kurze Begründung/Einschränkung zur Tier-Einstufung, siehe
+    // TIER_SYSTEM_RULE in prompts.ts (z. B. "nur durch eine Tier-3-Quelle
+    // belegt, nicht bestätigt").
+    tier_note: string | null;
     staleness: string;
     // true = stammt aus einer geteilten Tabelle (ship_research/port_research),
     // nicht aus der trip-gebundenen research_findings - für diese Einträge
@@ -207,6 +211,7 @@ export async function fetchTripContext(
       source_tier: r.source_tier,
       source_name: r.source_name,
       source_url: r.source_url,
+      tier_note: (r.tier_note as string | null) ?? null,
       staleness: r.staleness,
       shared: true,
     }));
@@ -261,6 +266,7 @@ export async function fetchTripContext(
         source_tier: r.source_tier,
         source_name: r.source_name,
         source_url: r.source_url,
+        tier_note: (r.tier_note as string | null) ?? null,
         staleness: r.staleness,
         shared: true,
       })),
@@ -275,6 +281,7 @@ export async function fetchTripContext(
         source_tier: r.source_tier,
         source_name: r.source_name,
         source_url: r.source_url,
+        tier_note: (r.tier_note as string | null) ?? null,
         staleness: r.staleness,
         shared: false,
       })),

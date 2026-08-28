@@ -309,7 +309,7 @@ export function buildWeatherFinding(portName: string, callDate: string, data: We
     category: "wetter_packen" as const,
     title: `${portName}: Wetter im ${monthName} & Packtipps`,
     content: bullets.map((b) => `• ${b}`).join(" "),
-    source_tier: "A" as const,
+    source_tier: "1" as const,
     source_name: "Open-Meteo (historische Wetterdaten" + (forecast ? " & Vorhersage" : "") + ")",
     source_url: "https://open-meteo.com",
     staleness: "saisonal" as const,

@@ -73,6 +73,16 @@ export default function TripHero({
     ? nonSeaPortCalls.filter((pc) => pc.call_date === highlightedPortCall.call_date)
     : [];
 
+  const highlightLabel = !highlightedPortCall
+    ? "Reise beendet"
+    : (() => {
+        const delta = daysBetween(todayStr, highlightedPortCall.call_date);
+        if (delta < 0) return "Letzter Hafen";
+        if (delta === 0) return "Heute";
+        if (delta === 1) return "Morgen";
+        return "Nächster Hafen";
+      })();
+
   const calloutText =
     highlightedDatePorts.length <= 1
       ? hasExcursion(highlightedPortCall?.id ?? "")
@@ -222,7 +232,7 @@ export default function TripHero({
         )}
 
         <div className="rounded-[14px] border border-ink/12 bg-card p-4">
-          <p className="font-mono text-[9.5px] uppercase tracking-[.16em] text-ink/45">Morgen</p>
+          <p className="font-mono text-[9.5px] uppercase tracking-[.16em] text-ink/45">{highlightLabel}</p>
           {highlightedPortCall ? (
             <>
               <p className="mt-1 font-medium text-ink">

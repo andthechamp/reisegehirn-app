@@ -665,3 +665,59 @@ create index idx_research_gaps_open on research_gaps(resolved_at, last_seen_at d
 -- Hintergrund, Admin-Endpunkt) - eine Betriebs-Tabelle geht normale
 -- Nutzer:innen nichts an.
 alter table research_gaps enable row level security;
+
+-- ------------------------------------------------------------
+-- Quellenqualität: Tier-1/2/3-System statt A/B/C (26.08.2026)
+--
+-- Ersetzt die frühere grobe A/B/C-Skala (siehe TIER_SYSTEM_RULE in
+-- src/lib/prompts.ts für die vollständige Definition inkl. Domain-
+-- Beispielen): Tier 1 = offizielle Quelle (Reederei/Hafenbehörde/
+-- Tourismusamt), Tier 2 = strukturiertes Fachportal (feste Felder pro Hafen,
+-- mehrfach abgeglichen), Tier 3 = persönlicher Blog/Forum/Bewertungsportal -
+-- die frühere B/C-Grenze war zu grob, sie hat z. B. deutschsprachige
+-- Reiseblogs (tatsächlich Tier 3) und strukturierte englischsprachige
+-- Fachportale (Tier 2) in denselben Topf geworfen.
+--
+-- tier_note/confirmed_by sind bewusst optional (meist NULL): tier_note trägt
+-- eine kurze Begründung/Einschränkung, wenn eine Einstufung nicht
+-- selbsterklärend ist (z. B. "nur durch eine Tier-3-Quelle belegt, nicht
+-- bestätigt"); confirmed_by listet weitere Quellennamen, die denselben Fakt
+-- unabhängig bestätigen, wenn die Verifikationsregel eine
+-- Zwei-Quellen-Bestätigung verlangt (source_name bleibt die Hauptquelle).
+--
+-- Bestehende Zeilen werden 1:1 auf die neue Wertemenge abgebildet (A->1,
+-- B->2, C->3) - das ist eine reine Werte-Konvertierung, KEINE inhaltliche
+-- Neubewertung nach den schärferen neuen Tier-Kriterien (die grenzt z. B.
+-- viele bisher als "B" geführte deutschsprachige Reiseblogs klar als Tier 3
+-- ein). Bereits geseedete Häfen werden schrittweise redaktionell mit
+-- korrekt eingestuften Inhalten überschrieben (seedShared() in den
+-- scripts/seed-port-research-batch*.ts-Skripten löscht+ersetzt ohnehin
+-- curated=false-Zeilen pro Hafen).
+-- Reihenfolge ist wichtig: die alte Constraint MUSS runter, BEVOR die Werte
+-- auf '1'/'2'/'3' umgeschrieben werden - sonst verletzt das UPDATE selbst
+-- noch die alte check(source_tier in ('A','B','C')), die zu diesem
+-- Zeitpunkt ja noch aktiv ist (in der Praxis beim ersten Anlauf dieser
+-- Migration genau so aufgetreten).
+alter table research_findings add column tier_note text;
+alter table research_findings add column confirmed_by text[];
+alter table ship_research add column tier_note text;
+alter table ship_research add column confirmed_by text[];
+alter table port_research add column tier_note text;
+alter table port_research add column confirmed_by text[];
+alter table route_research add column tier_note text;
+alter table route_research add column confirmed_by text[];
+
+alter table research_findings drop constraint research_findings_source_tier_check;
+alter table ship_research drop constraint ship_research_source_tier_check;
+alter table port_research drop constraint port_research_source_tier_check;
+alter table route_research drop constraint route_research_source_tier_check;
+
+update research_findings set source_tier = case source_tier when 'A' then '1' when 'B' then '2' when 'C' then '3' else source_tier end;
+update ship_research set source_tier = case source_tier when 'A' then '1' when 'B' then '2' when 'C' then '3' else source_tier end;
+update port_research set source_tier = case source_tier when 'A' then '1' when 'B' then '2' when 'C' then '3' else source_tier end;
+update route_research set source_tier = case source_tier when 'A' then '1' when 'B' then '2' when 'C' then '3' else source_tier end;
+
+alter table research_findings add constraint research_findings_source_tier_check check (source_tier in ('1', '2', '3'));
+alter table ship_research add constraint ship_research_source_tier_check check (source_tier in ('1', '2', '3'));
+alter table port_research add constraint port_research_source_tier_check check (source_tier in ('1', '2', '3'));
+alter table route_research add constraint route_research_source_tier_check check (source_tier in ('1', '2', '3'));

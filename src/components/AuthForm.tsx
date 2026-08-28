@@ -57,7 +57,7 @@ export default function AuthForm({ mode, heroImageUrl }: AuthFormProps) {
   }
 
   return (
-    <div className="relative -mx-6 -mt-12 min-h-[calc(100vh-53px)] overflow-hidden bg-gradient-to-br from-[#7a6552] via-[#4a3f34] to-logbook text-[#F7F1E6]">
+    <div className="relative -mx-6 -mt-12 min-h-[calc(100vh-53px)] overflow-hidden bg-gradient-to-br from-[#7a6552] via-[#4a3f34] to-logbook text-[#F7F1E6] lg:mx-0 lg:mt-0">
       {heroImageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={heroImageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
@@ -73,13 +73,13 @@ export default function AuthForm({ mode, heroImageUrl }: AuthFormProps) {
       {/* Eigener positionierter Wrapper statt flex direkt auf dem Hero-Container:
           Foto und Verlauf sind sonst Flex-Items wie dieser Inhalt und landen
           trotz negativem z-index über dem eigenen Gradient-Hintergrund. */}
-      <div className="relative flex min-h-[calc(100vh-53px)] flex-col px-6 pb-10 pt-8">
-        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[.22em] text-[#F7F1E6]/90">
+      <div className="relative flex min-h-[calc(100vh-53px)] flex-col px-6 pb-10 pt-8 lg:items-center lg:justify-center lg:px-10">
+        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[.22em] text-[#F7F1E6]/90 lg:absolute lg:left-10 lg:top-8">
           <AnchorIcon className="h-5 w-5" />
           Reisegehirn
         </div>
 
-        <div className="mt-auto">
+        <div className="mt-auto lg:mt-0 lg:w-full lg:max-w-md lg:rounded-[24px] lg:border lg:border-[#F7F1E6]/15 lg:bg-[#23201B]/40 lg:px-10 lg:py-10 lg:shadow-2xl lg:backdrop-blur-[2px]">
         <p className="font-mono text-[11px] uppercase tracking-[.18em] text-[#F7F1E6]/70">
           {mode === "login" ? "Logbuch Nr. 4" : "Erste Eintragung"}
         </p>

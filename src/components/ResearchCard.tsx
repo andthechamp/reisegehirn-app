@@ -8,9 +8,9 @@ import { ChevronDownIcon, iconForFinding } from "@/components/icons";
 type Finding = TripContext["research"][number];
 
 const SOURCE_TIER_LABEL: Record<string, string> = {
-  A: "offizielle Quelle",
-  B: "Portal",
-  C: "Forum/Blog",
+  "1": "offizielle Quelle",
+  "2": "Fachportal",
+  "3": "Forum/Blog",
 };
 
 interface ResearchCardProps {
@@ -87,6 +87,7 @@ export default function ResearchCard({
               )}{" "}
               ({SOURCE_TIER_LABEL[f.source_tier] ?? f.source_tier})
               {f.staleness === "verfällt" && " · kann veraltet sein"}
+              {f.tier_note && ` · ${f.tier_note}`}
             </p>
           )}
         </div>

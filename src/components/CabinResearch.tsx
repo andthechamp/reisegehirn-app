@@ -63,6 +63,7 @@ export default function CabinResearch({ tripId, groups, initialFindings, isAdmin
             source_tier: r.source_tier as string,
             source_name: (r.source_name as string | null) ?? null,
             source_url: (r.source_url as string | null) ?? null,
+            tier_note: (r.tier_note as string | null) ?? null,
             staleness: r.staleness as string,
             shared: true,
           })),

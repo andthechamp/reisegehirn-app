@@ -51,11 +51,15 @@ interface PageLookupResult {
   title: string;
   articleUrl: string | null;
   thumbnailUrl: string | null;
+  // Kurzer Klartext-Auszug der Einleitung - dient NUR der Disambiguierung
+  // gleichnamiger Artikel (siehe matchesCity in lookupWikipediaImageUncached),
+  // nicht der Anzeige.
+  extract: string | null;
 }
 
-async function fetchPageInfo(params: URLSearchParams): Promise<PageLookupResult | null> {
+async function fetchPageInfo(params: URLSearchParams, lang: "de" | "en" = "de"): Promise<PageLookupResult | null> {
   try {
-    const res = await fetch(`https://de.wikipedia.org/w/api.php?${params.toString()}`, {
+    const res = await fetch(`https://${lang}.wikipedia.org/w/api.php?${params.toString()}`, {
       headers: { "User-Agent": "reisegehirn-app/1.0 (Sehenswuerdigkeiten-Bildsuche)" },
     });
     if (!res.ok) return null;
@@ -65,6 +69,7 @@ async function fetchPageInfo(params: URLSearchParams): Promise<PageLookupResult 
       title?: string;
       fullurl?: string;
       thumbnail?: { source?: string };
+      extract?: string;
     }>;
     const page = pages[0];
     if (!page || "missing" in page) return null;
@@ -74,7 +79,12 @@ async function fetchPageInfo(params: URLSearchParams): Promise<PageLookupResult 
     // für Foto-Hintergründe (Hero, Tageskarten) unbrauchbar, daher verwerfen.
     const thumbnailUrl = page.thumbnail?.source ?? null;
     const isPhoto = thumbnailUrl ? !/\.svg\b/i.test(thumbnailUrl) : false;
-    return { title: page.title ?? "", articleUrl: page.fullurl ?? null, thumbnailUrl: isPhoto ? thumbnailUrl : null };
+    return {
+      title: page.title ?? "",
+      articleUrl: page.fullurl ?? null,
+      thumbnailUrl: isPhoto ? thumbnailUrl : null,
+      extract: page.extract ?? null,
+    };
   } catch {
     return null;
   }
@@ -95,6 +105,19 @@ function coreName(name: string): string {
 function titleLooksRelated(title: string, query: string): boolean {
   const core = coreName(query);
   return core.length > 0 && title.toLowerCase().includes(core);
+}
+
+// Viele Sehenswürdigkeiten-Namen sind stadtübergreifend mehrdeutig (z. B.
+// "Alter Botanischer Garten" gibt es als eigenständigen Wikipedia-Artikel
+// sowohl für Tübingen als auch für andere Städte) - ein exakter Titeltreffer
+// ALLEIN beweist also nicht, dass der Artikel zum recherchierten Hafen
+// gehört. Ohne diesen Check hätte Kiel fälschlich das Tübinger Foto bekommen.
+// Prüft daher, ob der Hafenname im Artikeltitel oder in der Einleitung
+// auftaucht - reicht ohne portCore (kein Kontext übergeben) automatisch durch.
+function matchesCity(result: Pick<PageLookupResult, "title" | "extract">, portCore: string | null): boolean {
+  if (!portCore) return true;
+  const haystack = `${result.title} ${result.extract ?? ""}`.toLowerCase();
+  return haystack.includes(portCore);
 }
 
 /**
@@ -142,52 +165,159 @@ function ttlCache<T>(hasResult: (v: T) => boolean) {
 
 const imageCache = ttlCache<WikipediaImageResult>((v) => v.url !== null);
 
-export async function lookupWikipediaImage(name: string, thumbSize = 400): Promise<WikipediaImageResult> {
-  const cacheKey = `${name}::${thumbSize}`;
+// portName ist optional (siehe matchesCity) - Aufrufer ohne Stadtkontext
+// (z. B. ship-photos.ts für Schiffsnamen, die nicht mehrdeutig sind) bleiben
+// unverändert.
+export async function lookupWikipediaImage(
+  name: string,
+  thumbSize = 400,
+  portName?: string
+): Promise<WikipediaImageResult> {
+  const cacheKey = `${name}::${thumbSize}::${portName ?? ""}`;
   const cached = imageCache.get(cacheKey);
   if (cached) return cached;
 
-  const result = await lookupWikipediaImageUncached(name, thumbSize);
+  const result = await lookupWikipediaImageUncached(name, thumbSize, portName);
   imageCache.set(cacheKey, result);
   return result;
 }
 
-async function lookupWikipediaImageUncached(name: string, thumbSize: number): Promise<WikipediaImageResult> {
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Abstand zwischen den bis zu vier Wikipedia-Anfragen EINER Sehenswürdigkeit
+// (DE exakt/fuzzy, EN exakt/fuzzy) - ohne diese Pause feuert eine einzelne
+// Sehenswürdigkeit ohne deutschen Artikel vier Anfragen praktisch
+// gleichzeitig ab, was Wikipedias anonymes Rate-Limit auch bei insgesamt
+// niedrigem Gesamtaufkommen auslöst (der Burst zählt, nicht nur die Summe).
+const WIKIPEDIA_REQUEST_GAP_MS = 400;
+
+async function lookupWikipediaImageUncached(
+  name: string,
+  thumbSize: number,
+  portName?: string
+): Promise<WikipediaImageResult> {
   const commonParams = {
     action: "query",
-    prop: "pageimages|info",
+    prop: "pageimages|info|extracts",
     piprop: "thumbnail",
     pithumbsize: String(thumbSize),
     inprop: "url",
+    exintro: "1",
+    explaintext: "1",
+    exchars: "600",
     format: "json",
   };
+  const portCore = portName ? coreName(portName) : null;
+  // Für den Disambiguierungs-Titel ("Alter Botanischer Garten (Kiel)") die
+  // Original-Schreibweise verwenden, nicht coreName() (der ist lowercase und
+  // für den Vergleich gedacht, nicht für einen Wikipedia-Titel).
+  const portDisplayName = portName ? portName.split("(")[0].trim() : null;
 
-  const exact = await fetchPageInfo(
-    new URLSearchParams({ ...commonParams, titles: name, redirects: "1" })
-  );
-  if (exact?.thumbnailUrl) {
-    return { url: exact.thumbnailUrl, source: "wikipedia", articleUrl: exact.articleUrl };
+  let fallbackArticleUrl: string | null = null;
+  let isFirstRequest = true;
+  const throttledFetch = async (params: URLSearchParams, lang: "de" | "en") => {
+    if (!isFirstRequest) await sleep(WIKIPEDIA_REQUEST_GAP_MS);
+    isFirstRequest = false;
+    return fetchPageInfo(params, lang);
+  };
+
+  // Erst Deutsch (liefert die "Mehr erfahren"-Links auf Deutsch), dann
+  // Englisch als zweiter Versuch: viele Sehenswürdigkeiten außerhalb
+  // deutschsprachiger Länder haben schlicht keinen deutschen Artikel, aber
+  // einen englischen mit Foto (z. B. "St Anne's Cathedral" in Belfast) - ohne
+  // diesen Fallback blieb ein Großteil internationaler Ziele bildlos, obwohl
+  // Wikipedia das Bild längst hätte.
+  for (const lang of ["de", "en"] as const) {
+    const exact = await throttledFetch(new URLSearchParams({ ...commonParams, titles: name, redirects: "1" }), lang);
+    fallbackArticleUrl = fallbackArticleUrl ?? exact?.articleUrl ?? null;
+    if (exact?.thumbnailUrl) {
+      if (matchesCity(exact, portCore)) {
+        return { url: exact.thumbnailUrl, source: "wikipedia", articleUrl: exact.articleUrl };
+      }
+      // Exakter Titeltreffer, aber Artikel gehört erkennbar zu einer anderen
+      // Stadt (z. B. "Alter Botanischer Garten" -> Tübingen statt Kiel) -
+      // Wikipedia disambiguiert solche Fälle oft über einen Klammerzusatz
+      // ("Alter Botanischer Garten (Kiel)"), also gezielt danach fragen,
+      // bevor auf die Volltextsuche zurückgefallen wird.
+      if (portDisplayName) {
+        const disambiguated = await throttledFetch(
+          new URLSearchParams({ ...commonParams, titles: `${name} (${portDisplayName})`, redirects: "1" }),
+          lang
+        );
+        fallbackArticleUrl = fallbackArticleUrl ?? disambiguated?.articleUrl ?? null;
+        if (disambiguated?.thumbnailUrl) {
+          return { url: disambiguated.thumbnailUrl, source: "wikipedia", articleUrl: disambiguated.articleUrl };
+        }
+      }
+    }
+
+    // Auch wenn der exakte Treffer existiert, aber nur ein Wappen/eine Flagge
+    // liefert (isPhoto-Filter in fetchPageInfo hat thumbnailUrl auf null
+    // gesetzt): trotzdem die Volltextsuche versuchen, die oft einen
+    // fotografischeren Artikel findet (z. B. "Geirangerfjord" statt
+    // "Geiranger (Geirangerfjord)").
+    const fuzzy = await throttledFetch(
+      new URLSearchParams({ ...commonParams, generator: "search", gsrsearch: name, gsrlimit: "1" }),
+      lang
+    );
+    fallbackArticleUrl = fallbackArticleUrl ?? fuzzy?.articleUrl ?? null;
+    if (fuzzy?.thumbnailUrl && titleLooksRelated(fuzzy.title, name) && matchesCity(fuzzy, portCore)) {
+      return { url: fuzzy.thumbnailUrl, source: "wikipedia", articleUrl: fuzzy.articleUrl };
+    }
   }
 
-  // Auch wenn der exakte Treffer existiert, aber nur ein Wappen/eine Flagge
-  // liefert (isPhoto-Filter in fetchPageInfo hat thumbnailUrl auf null
-  // gesetzt): trotzdem die Volltextsuche versuchen, die oft einen
-  // fotografischeren Artikel findet (z. B. "Geirangerfjord" statt "Geiranger
-  // (Geirangerfjord)").
-  const fuzzy = await fetchPageInfo(
-    new URLSearchParams({ ...commonParams, generator: "search", gsrsearch: name, gsrlimit: "1" })
-  );
-  if (fuzzy?.thumbnailUrl && titleLooksRelated(fuzzy.title, name)) {
-    return { url: fuzzy.thumbnailUrl, source: "wikipedia", articleUrl: fuzzy.articleUrl };
-  }
-
-  return { url: null, source: null, articleUrl: exact?.articleUrl ?? fuzzy?.articleUrl ?? null };
+  return { url: null, source: null, articleUrl: fallbackArticleUrl };
 }
 
 // Fallback-Link für eine Sehenswürdigkeit ohne Wikipedia-Artikel - immer
 // verfügbar, damit "Mehr erfahren" nie ins Leere läuft.
 export function googleSearchUrl(query: string): string {
   return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+}
+
+export interface SightImageResult {
+  url: string | null;
+  source: "wikipedia" | "wikimedia_commons" | null;
+  articleUrl: string | null;
+  // Nur bei source "wikimedia_commons" gesetzt (CC-BY-SA-Namensnennungspflicht).
+  attribution: string | null;
+}
+
+/**
+ * Bildsuche für eine einzelne Sehenswürdigkeit: erst das Titelbild ihres
+ * eigenen Wikipedia-Artikels (lookupWikipediaImage - zuverlässigste Quelle,
+ * aber viele Sehenswürdigkeiten ohne eigenen Artikel liefern hier nichts),
+ * sonst als zweiten Versuch eine Commons-weite Fotosuche (searchCommonsPhoto -
+ * findet auch dann ein Bild, wenn kein Wikipedia-Artikel existiert, aber
+ * jemand ein Foto mit dem Namen auf Commons hochgeladen hat). Der Hafenname
+ * fließt bewusst NICHT mit in die Commons-Suchanfrage ein: searchCommonsPhoto()
+ * verlangt, dass der gefundene Dateiname den gesamten Suchbegriff als
+ * zusammenhängenden String enthält (siehe expectedCore dort) - ein
+ * angehängter Hafenname wie "Montego Bay" taucht in Dateinamen wie
+ * "DoctorsCaveBeach.jpeg" nie wortwörtlich auf und hätte jeden Treffer
+ * verworfen.
+ */
+export async function lookupSightImage(name: string, portName?: string): Promise<SightImageResult> {
+  const wiki = await lookupWikipediaImage(name, 400, portName);
+  if (wiki.url) return { url: wiki.url, source: "wikipedia", articleUrl: wiki.articleUrl, attribution: null };
+
+  // Abstand zur vorangegangenen Wikipedia-Anfrage, aus demselben Grund wie
+  // WIKIPEDIA_REQUEST_GAP_MS oben - Commons läuft unter derselben
+  // Wikimedia-Infrastruktur.
+  await sleep(WIKIPEDIA_REQUEST_GAP_MS);
+  const commons = await searchCommonsPhoto(name, 900, portName ? coreName(portName) : undefined);
+  if (commons) {
+    return {
+      url: commons.url,
+      source: "wikimedia_commons",
+      articleUrl: wiki.articleUrl,
+      attribution: commons.attribution,
+    };
+  }
+
+  return { url: null, source: null, articleUrl: wiki.articleUrl, attribution: null };
 }
 
 export interface CommonsPhotoResult {
@@ -218,17 +348,28 @@ const commonsCache = ttlCache<CommonsPhotoResult | null>((v) => v !== null);
  * für volle Foto-Hintergründe) und liefert die Attribution mit, da Commons-
  * Fotos anders als offizielle Wikipedia-Titelbilder meist CC BY-SA sind.
  */
-export async function searchCommonsPhoto(query: string, thumbWidth = 900): Promise<CommonsPhotoResult | null> {
-  const cacheKey = `${query}::${thumbWidth}`;
+// portCore: siehe matchesCity - wird NICHT in gsrsearch aufgenommen (bricht
+// den Dateiname-Abgleich, siehe Kommentar an lookupSightImage), sondern
+// filtert erst die gefundenen Kandidaten über deren Beschreibung/Kategorien.
+export async function searchCommonsPhoto(
+  query: string,
+  thumbWidth = 900,
+  portCore?: string
+): Promise<CommonsPhotoResult | null> {
+  const cacheKey = `${query}::${thumbWidth}::${portCore ?? ""}`;
   const cached = commonsCache.get(cacheKey);
   if (cached !== undefined) return cached;
 
-  const result = await searchCommonsPhotoUncached(query, thumbWidth);
+  const result = await searchCommonsPhotoUncached(query, thumbWidth, portCore);
   commonsCache.set(cacheKey, result);
   return result;
 }
 
-async function searchCommonsPhotoUncached(query: string, thumbWidth: number): Promise<CommonsPhotoResult | null> {
+async function searchCommonsPhotoUncached(
+  query: string,
+  thumbWidth: number,
+  portCore?: string
+): Promise<CommonsPhotoResult | null> {
   try {
     const params = new URLSearchParams({
       action: "query",
@@ -261,16 +402,38 @@ async function searchCommonsPhotoUncached(query: string, thumbWidth: number): Pr
     // abstreifen, sonst würde kaum ein Dateiname exakt "hellesylt hafen"
     // enthalten (siehe titleLooksRelated/resolvePortPhoto).
     const expectedCore = coreName(query.replace(/\s+Hafen$/i, ""));
+    // Commons-Dateinamen trennen Wörter fast nie durch Leerzeichen
+    // ("DoctorsCaveBeach.jpeg", "Doctors-Cave-Beach.jpg") - ein Vergleich mit
+    // Leerzeichen im Suchbegriff würde daher fast jeden echten Treffer
+    // verwerfen. Leerzeichen/Bindestriche/Unterstriche vor dem Vergleich auf
+    // beiden Seiten entfernen.
+    const normalize = (s: string) => s.toLowerCase().replace(/[\s\-_]+/g, "");
+    const expectedCoreNormalized = normalize(expectedCore);
 
-    const candidates = pages
+    let candidates = pages
       .map((p) => ({ title: p.title ?? "", info: p.imageinfo?.[0] }))
       .filter(
         (c) =>
           c.info?.thumburl &&
           !BLOCKED_TITLE_WORDS.test(c.title) &&
-          (expectedCore.length === 0 || c.title.toLowerCase().includes(expectedCore))
+          (expectedCoreNormalized.length === 0 || normalize(c.title).includes(expectedCoreNormalized))
       );
     if (candidates.length === 0) return null;
+
+    // Ein Dateiname, der den Sehenswürdigkeitsnamen enthält, garantiert nicht
+    // die richtige Stadt (z. B. "Alter Botanischer Garten" existiert auf
+    // Commons für mehrere Städte) - bei bekanntem Hafen daher zusätzlich über
+    // Bildbeschreibung/Kategorien verifizieren. Kein Kandidat bestätigt die
+    // Stadt -> lieber gar kein Bild als ein falsches (siehe matchesCity).
+    if (portCore) {
+      const cityConfirmed = candidates.filter((c) => {
+        const meta = c.info!.extmetadata ?? {};
+        const haystack = `${c.title} ${meta.ImageDescription?.value ?? ""} ${meta.Categories?.value ?? ""}`.toLowerCase();
+        return haystack.includes(portCore);
+      });
+      if (cityConfirmed.length === 0) return null;
+      candidates = cityConfirmed;
+    }
 
     const landscape = candidates.find((c) => (c.info!.width ?? 0) >= (c.info!.height ?? 1));
     const chosen = landscape ?? candidates[0];

@@ -17,7 +17,12 @@ export type ResearchCategory =
   | "wetter_packen"
   | "sonstiges";
 
-export type SourceTier = "A" | "B" | "C";
+// Tier 1 = offizielle Quelle (Reederei, Hafenbehörde, offizielle Tourismusseite)
+// Tier 2 = strukturiertes Fachportal (feste Felder pro Hafen, mehrfach abgeglichen)
+// Tier 3 = persönlicher Blog/Forum/Bewertungsplattform
+// Siehe TIER_SYSTEM_RULE in prompts.ts für die vollständige Definition inkl.
+// Domain-Beispielen - ersetzt das frühere A/B/C-Schema (Stand 26.08.2026).
+export type SourceTier = "1" | "2" | "3";
 export type Staleness = "zeitlos" | "saisonal" | "verfällt";
 export type ImageSource = "wikimedia_commons" | "wikipedia";
 
@@ -61,6 +66,11 @@ export interface SightItem {
   // Link für "Mehr erfahren" - Wikipedia-Artikel falls vorhanden, sonst eine
   // Google-Suche als Fallback (siehe lookupWikipediaImage/googleSearchUrl).
   article_url: string | null;
+  // Nur bei image_source "wikimedia_commons" gesetzt (CC-BY-SA-
+  // Namensnennungspflicht, siehe searchCommonsPhoto) - Wikipedia-Titelbilder
+  // brauchen keine gesonderte Zuschreibung, analog zur bestehenden Praxis bei
+  // Schiffs-/Hafenfotos (siehe ship-photos.ts).
+  attribution: string | null;
 }
 
 export interface ResearchFinding {
@@ -72,6 +82,16 @@ export interface ResearchFinding {
   source_tier: SourceTier;
   source_name: string | null;
   source_url: string | null;
+  // Optional: kurze Begründung/Einschränkung zur Tier-Einstufung, z. B. "nur
+  // durch eine Tier-3-Quelle belegt, nicht bestätigt" oder "Kernaussage durch
+  // Tier 1 gestützt, Detail X nur durch Tier 3". Bewusst optional - nur
+  // gesetzt, wenn eine Einschränkung tatsächlich relevant ist, kein
+  // Pflichtfeld für jeden Eintrag.
+  tier_note?: string | null;
+  // Optional: weitere Quellennamen (nicht die Haupt-source_name), die
+  // denselben Fakt unabhängig bestätigen - v. a. relevant, wenn die
+  // Verifikationsregel eine Zwei-Quellen-Bestätigung verlangt.
+  confirmed_by?: string[] | null;
   staleness: Staleness;
 }
 
@@ -103,7 +123,7 @@ const VALID_CATEGORIES: ResearchCategory[] = [
   "wetter_packen",
   "sonstiges",
 ];
-const VALID_SOURCE_TIERS: SourceTier[] = ["A", "B", "C"];
+const VALID_SOURCE_TIERS: SourceTier[] = ["1", "2", "3"];
 const VALID_STALENESS: Staleness[] = ["zeitlos", "saisonal", "verfällt"];
 const VALID_IMAGE_SOURCES: ImageSource[] = ["wikimedia_commons", "wikipedia"];
 
@@ -119,7 +139,8 @@ function isSightItem(item: unknown): item is SightItem {
     // schlicht nicht vorhanden (undefined).
     (i.image_url === undefined || i.image_url === null || typeof i.image_url === "string") &&
     (i.image_source === undefined || i.image_source === null || VALID_IMAGE_SOURCES.includes(i.image_source as ImageSource)) &&
-    (i.article_url === undefined || i.article_url === null || typeof i.article_url === "string")
+    (i.article_url === undefined || i.article_url === null || typeof i.article_url === "string") &&
+    (i.attribution === undefined || i.attribution === null || typeof i.attribution === "string")
   );
 }
 
@@ -134,6 +155,10 @@ function isResearchFinding(item: unknown): item is ResearchFinding {
     VALID_STALENESS.includes(f.staleness as Staleness) &&
     (f.source_name === null || typeof f.source_name === "string") &&
     (f.source_url === null || typeof f.source_url === "string") &&
+    (f.tier_note === undefined || f.tier_note === null || typeof f.tier_note === "string") &&
+    (f.confirmed_by === undefined ||
+      f.confirmed_by === null ||
+      (Array.isArray(f.confirmed_by) && f.confirmed_by.every((c) => typeof c === "string"))) &&
     (f.items === undefined || (Array.isArray(f.items) && f.items.every(isSightItem)))
   );
 }

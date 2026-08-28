@@ -89,17 +89,19 @@ export default function PortDaySwiper({
   }
 
   return (
-    <div className="space-y-3 lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-6 lg:space-y-0">
+    <div className="space-y-3">
       {mapPorts.length > 0 && (
-        <div className="hidden h-[420px] overflow-hidden rounded-[18px] border border-ink/12 lg:sticky lg:top-6 lg:block">
-          <RouteMap
-            ports={mapPorts}
-            selectedDayNumber={active.day_number}
-            onSelectPort={(p) => {
-              const i = portCalls.findIndex((pc) => pc.day_number === p.day_number);
-              if (i >= 0) goTo(i);
-            }}
-          />
+        <div className="hidden lg:block lg:mx-auto lg:max-w-3xl">
+          <div className="h-[420px] overflow-hidden rounded-[18px] border border-ink/12">
+            <RouteMap
+              ports={mapPorts}
+              selectedDayNumber={active.day_number}
+              onSelectPort={(p) => {
+                const i = portCalls.findIndex((pc) => pc.day_number === p.day_number);
+                if (i >= 0) goTo(i);
+              }}
+            />
+          </div>
         </div>
       )}
 
@@ -141,10 +143,10 @@ export default function PortDaySwiper({
         key={active.id}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative overflow-hidden rounded-[18px] border border-ink/12 bg-card text-sm text-ink/80"
+        className="relative overflow-hidden rounded-[18px] border border-ink/12 bg-card text-sm text-ink/80 lg:mx-auto lg:max-w-3xl"
       >
         {photoUrl ? (
-          <div className="relative h-[150px] w-full">
+          <div className="relative h-[150px] w-full lg:h-[280px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={photoUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />

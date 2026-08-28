@@ -1,0 +1,507 @@
+[
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Singapur",
+    "content": "1. Marina Bay Sands & Gardens by the Bay – ikonisches Hotel mit Skypark und futuristischer Gartenlandschaft\n2. Merlion Park – Wahrzeichen der Stadt, halb Löwe halb Fisch, an der Marina Bay\n3. Chinatown & Little India – bunte, kulturell geprägte Stadtviertel\n4. Sentosa Island – Freizeitinsel mit Stränden und Universal Studios Singapore\n5. Raffles Hotel – historisches Kolonialhotel, Geburtsort des Singapore Sling",
+    "items": [
+      {"name": "Marina Bay Sands & Gardens by the Bay", "description": "Ikonisches Hotel mit Skypark und futuristischer Gartenlandschaft"},
+      {"name": "Merlion Park", "description": "Wahrzeichen der Stadt, halb Löwe halb Fisch, an der Marina Bay"},
+      {"name": "Chinatown & Little India", "description": "Bunte, kulturell geprägte Stadtviertel"},
+      {"name": "Sentosa Island", "description": "Freizeitinsel mit Stränden und Universal Studios Singapore"},
+      {"name": "Raffles Hotel", "description": "Historisches Kolonialhotel, Geburtsort des Singapore Sling"}
+    ],
+    "source_tier": "2",
+    "source_name": "whatsinport.com / sailawaze.com",
+    "source_url": "https://www.whatsinport.com/Singapore.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Singapur",
+    "content": "Es gibt zwei Kreuzfahrtterminals: das Marina Bay Cruise Centre Singapore (MBCCS), 61 Marina Coastal Drive, für große internationale Kreuzfahrtschiffe, sowie das ältere Singapore Cruise Centre (SCC) am HarbourFront/Sentosa, das v. a. für Regionalfähren und kleinere Schiffe genutzt wird • Singapur ist häufig Start-/Endhafen (Turnaround) für Mein Schiff-Südostasienrouten • Der Hafen ist 24/7 ganzjährig zugänglich",
+    "source_tier": "2",
+    "source_name": "royalcaribbean.com / whatsinport.com",
+    "source_url": "https://www.royalcaribbean.com/faq/questions/driving-directions-port-singapore",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com", "sailawaze.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Singapur",
+    "content": "Mein Schiff (TUI Cruises) nutzt Singapur regelmäßig als Start-/Endhafen für Südostasien-Kreuzfahrten (u. a. Mein Schiff 5 und 6 auf 14-59-nächtigen Routen) • Landausflüge werden über meinschiff.com angeboten, u. a. Stadtrundfahrten zu Marina Bay Sands und Sentosa Island",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / berge-meer.de",
+    "source_url": "https://www.meinschiff.com/de/haefen/penang-malaysia-1545",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Singapur",
+    "content": "Singapur gilt als eine der sichersten und am einfachsten auf eigene Faust zu bereisenden Städte Asiens, dank hervorragender MRT-U-Bahn und günstiger Taxis • Ein Halbtagesausflug zu Gardens by the Bay, Marina Bay Sands und Chinatown ist gut per MRT machbar",
+    "source_tier": "3",
+    "source_name": "sailawaze.com",
+    "source_url": "https://sailawaze.com/uk/destinations/asia/singapore-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Singapur",
+    "content": "Vom Marina Bay Cruise Centre sind Gardens by the Bay und Marina Bay Sands in ca. 15-20 Gehminuten erreichbar • Vom Singapore Cruise Centre (HarbourFront) ist Sentosa Island über eine Fußgängerbrücke bzw. Kabelbahn direkt angebunden",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Singapore.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Singapur",
+    "content": "Nationalgericht ist Hainanese Chicken Rice, weitere Klassiker sind Laksa (würzige Kokos-Nudelsuppe), Chili Crab und Satay • Hawker Centres wie Maxwell Food Centre oder Lau Pa Sat bieten preisgünstiges, authentisches Streetfood aus chinesischer, malaiischer und indischer Küche",
+    "source_tier": "3",
+    "source_name": "sailawaze.com",
+    "source_url": "https://sailawaze.com/uk/destinations/asia/singapore-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Singapur",
+    "content": "Währung: Singapur-Dollar (SGD) • Sprache: Englisch, Mandarin, Malaiisch, Tamil (alle Amtssprachen) • Deutsche Staatsangehörige benötigen für touristische Aufenthalte bis 90 Tage kein Visum • Notrufnummer: 999 (Polizei), 995 (Feuerwehr/Rettung) • Strenge Gesetze beachten: Kaugummi-Import ist eingeschränkt, hohe Strafen für Müll und Rauchen in bestimmten Zonen",
+    "source_tier": "3",
+    "source_name": "sailawaze.com",
+    "source_url": "https://sailawaze.com/uk/destinations/asia/singapore-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Penang",
+    "content": "1. George Town (UNESCO-Weltkulturerbe) – historisches Kolonialviertel mit Streetart und Tempeln\n2. Kek Lok Si Tempel – größter buddhistischer Tempel Malaysias mit Pagode der 10.000 Buddhas\n3. Penang Hill – Aussichtsberg (830 m), per Standseilbahn erreichbar\n4. Clan Jetties – über 100 Jahre alte Stelzenhaussiedlungen, UNESCO-Weltkulturerbe\n5. Fort Cornwallis – historisches britisches Fort direkt an der Küste",
+    "items": [
+      {"name": "George Town", "description": "Historisches Kolonialviertel mit Streetart und Tempeln, UNESCO-Weltkulturerbe"},
+      {"name": "Kek Lok Si Tempel", "description": "Größter buddhistischer Tempel Malaysias mit Pagode der 10.000 Buddhas"},
+      {"name": "Penang Hill", "description": "Aussichtsberg (830 m), per Standseilbahn erreichbar"},
+      {"name": "Clan Jetties", "description": "Über 100 Jahre alte Stelzenhaussiedlungen, UNESCO-Weltkulturerbe"},
+      {"name": "Fort Cornwallis", "description": "Historisches britisches Fort direkt an der Küste"}
+    ],
+    "source_tier": "3",
+    "source_name": "anja-unterwegs.de / cruisesheet.com",
+    "source_url": "https://www.anja-unterwegs.de/kf-archiv/asien-februar-2016-ms-1/penang/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Penang",
+    "content": "Kreuzfahrtschiffe legen an der Swettenham Pier Cruise Terminal (SPCT) in George Town an, direkt im Herzen der Stadt • Der Terminal kann bis zu 4 Schiffe gleichzeitig aufnehmen (2 große, 1 kleines, 1 mittleres) und gilt als geschichtsträchtiges Gebäude (ursprünglich 1904 eröffnet) • Bei mehreren Schiffen im Hafen kann auf Reede geankert und getendert werden, dann ist eine Rückkehr zum Schiff nur zu festen Zeiten möglich",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / cruisemapper.com",
+    "source_url": "https://www.meinschiff.com/de/haefen/penang-malaysia-1545",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisesheet.com", "onpenang.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Penang",
+    "content": "Mein Schiff (TUI Cruises) läuft Penang regelmäßig im Rahmen von Südostasien-Kreuzfahrten an (u. a. Mein Schiff 6 auf der Großen Weltentdecker-Route und Mein Schiff \"Faszination Südostasien\"), buchbar über meinschiff.com",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/haefen/penang-malaysia-1545",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Penang",
+    "content": "micdotravel.blog empfiehlt für Landausflüge auf eigene Faust den Anbieter \"Meine Landausflüge\" • sonnenscheinholidays.com nennt Taxi als schnellste, aber teuerste Option (ab RM50/Std. für ein 4-Sitzer-Taxi) sowie den lokalen Rapid-Penang-Bus (RM2) ab der Haltestelle Pengkalan Weld, ca. 10 Gehminuten vom Schiff • Für den Penang Botanischen Garten (Linie 10, 42 Min.) oder Penang Hill (Linie 204, 50 Min.) sind Busfahrten möglich, aber zeitaufwendig",
+    "source_tier": "3",
+    "source_name": "sonnenscheinholidays.com / micdotravel.blog",
+    "source_url": "https://www.sonnenscheinholidays.com/penang-ausfluumlge-kreuzfahrt-tipps/penang-ausfluge-fur-kreuzfahrer",
+    "staleness": "verfällt",
+    "tier_note": "Preise/Busverbindungen Stand 2019, können sich geändert haben."
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Penang",
+    "content": "Der Swettenham Pier liegt mitten im Zentrum von George Town, praktisch alle Hauptsehenswürdigkeiten (Fort Cornwallis, Streetart, Clan Jetties) sind zu Fuß erreichbar • Bei Tenderbetrieb (mehrere Schiffe im Hafen) ist man ebenfalls zentral am Pier, jedoch mit festen Rückkehrzeiten",
+    "source_tier": "2",
+    "source_name": "onpenang.com / benanddavid.cruises",
+    "source_url": "https://onpenang.com/penang-cruise-port-guide-everything-you-need-to-know/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Penang",
+    "content": "Penang gilt als kulinarische Hauptstadt Malaysias: Char Kway Teow (gebratene Reisnudeln), Assam Laksa (saure Fischnudelsuppe) und Nasi Kandar sind Klassiker • Streetfood-Stände entlang der Chulia Street und am Gurney Drive Hawker Centre sind beliebte Anlaufpunkte",
+    "source_tier": "3",
+    "source_name": "cruisesheet.com / benanddavid.cruises",
+    "source_url": "https://cruisesheet.com/port/penang",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Penang",
+    "content": "Währung: Malaysischer Ringgit (MYR) • Sprache: Malaiisch, Englisch weit verbreitet • Deutsche Staatsangehörige benötigen für Malaysia kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 999",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de",
+    "source_url": "https://meine-landausfluege.de/langkawi-kreuzfahrt-ausfluege/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "1. Petronas Twin Towers – ikonische Zwillingstürme, ehemals höchstes Gebäude der Welt\n2. Batu Höhlen – hinduistischer Tempelkomplex in Kalksteinhöhlen, ca. 13 km nördlich von KL\n3. Merdeka Square – historischer Platz mit kolonialer Architektur im Zentrum von KL\n4. Chinatown Kuala Lumpur (Petaling Street) – lebhaftes Marktviertel\n5. KL Tower (Menara Kuala Lumpur) – Fernsehturm mit Aussichtsplattform",
+    "items": [
+      {"name": "Petronas Twin Towers", "description": "Ikonische Zwillingstürme, ehemals höchstes Gebäude der Welt"},
+      {"name": "Batu Höhlen", "description": "Hinduistischer Tempelkomplex in Kalksteinhöhlen, ca. 13 km nördlich von KL"},
+      {"name": "Merdeka Square", "description": "Historischer Platz mit kolonialer Architektur im Zentrum von KL"},
+      {"name": "Chinatown Kuala Lumpur", "description": "Lebhaftes Marktviertel an der Petaling Street"},
+      {"name": "KL Tower", "description": "Fernsehturm mit Aussichtsplattform"}
+    ],
+    "source_tier": "3",
+    "source_name": "pavlus.com",
+    "source_url": "https://pavlus.com/ports/kuala-lumpur-port-klang/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "Kreuzfahrtschiffe legen am Port Klang Cruise Centre (Westport, Pulau Indah) an, Malaysias größtem Seehafen, ca. 6 km südwestlich von Klang Town und ca. 38 km südwestlich von Kuala Lumpur • Der Kreuzfahrtterminal wurde 1995 eröffnet und verfügt über 3 Liegeplätze • Die Fahrt nach Kuala Lumpur dauert je nach Verkehr ca. 1 Stunde",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com / meinschiff.com",
+    "source_url": "https://www.cruisemapper.com/ports/klang-port-1436",
+    "staleness": "zeitlos",
+    "confirmed_by": ["whatsinport.com", "pavlus.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "Mein Schiff (TUI Cruises) läuft Port Klang regelmäßig im Rahmen von Südostasien- und Weltreise-Routen an (u. a. Mein Schiff 6 auf der Route \"Indischer Ozean mit Mauritius\" ab Kapstadt bis Singapur), buchbar über meinschiff.com",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/haefen/port-klang-kuala-lumpur-malaysia-1028",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "Da Port Klang laut whatsinport.com ein \"drab, industrial port\" ohne eigene touristische Infrastruktur ist, empfiehlt sich für Kuala Lumpur (ca. 1 Std. Fahrzeit) ein Taxi, privater Fahrer oder organisierte Tour • Individuelle Erkundung von Port Klang selbst lohnt sich kaum, das Hauptziel ist immer die Weiterfahrt nach KL",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Port-Kelang.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "Port Klang selbst bietet außerhalb des Terminals kaum fußläufig erreichbare Attraktionen (Industriehafen) • Kuala Lumpur (ca. 38 km, ca. 1 Std. Fahrzeit) ist NICHT zu Fuß erreichbar, Taxi oder Bus ist zwingend notwendig",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Port-Kelang.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "Nasi Lemak (Kokosreis mit Sambal, Erdnüssen und Ei) gilt als Nationalgericht Malaysias, in KL zudem Bak Kut Teh (Kräuter-Rippchensuppe, Klang gilt als Ursprungsort des Gerichts) und Roti Canai • Petaling Street in Chinatown bietet vielfältiges Streetfood",
+    "source_tier": "3",
+    "source_name": "pavlus.com",
+    "source_url": "https://pavlus.com/ports/kuala-lumpur-port-klang/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Kelang/Kuala Lumpur",
+    "content": "Währung: Malaysischer Ringgit (MYR) • Sprache: Malaiisch, Englisch weit verbreitet • Deutsche Staatsangehörige benötigen für Malaysia kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 999",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de",
+    "source_url": "https://meine-landausfluege.de/langkawi-kreuzfahrt-ausfluege/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Langkawi",
+    "content": "1. Kilim Karst Geoforest Park – Mangrovenlandschaft mit Kalksteinformationen, per Boot erkundbar\n2. Langkawi Sky Bridge – gebogene Hängebrücke auf dem Gunung Mat Cincang mit Panoramablick\n3. Pantai Cenang – bekanntester Strand der Insel\n4. Unterwasserwelt Langkawi (Underwater World) – großes Aquarium\n5. Seeadler-Beobachtung im Kilim-Fluss – Wahrzeichen der Insel (\"Langkawi\" bedeutet \"Insel der bräunlich-roten Adler\")",
+    "items": [
+      {"name": "Kilim Karst Geoforest Park", "description": "Mangrovenlandschaft mit Kalksteinformationen, per Boot erkundbar"},
+      {"name": "Langkawi Sky Bridge", "description": "Gebogene Hängebrücke mit Panoramablick"},
+      {"name": "Pantai Cenang", "description": "Bekanntester Strand der Insel"},
+      {"name": "Underwater World", "description": "Großes Aquarium auf der Insel"},
+      {"name": "Seeadler-Beobachtung", "description": "Wahrzeichen der Insel im Kilim-Fluss"}
+    ],
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de / forum.pooldeck24.de",
+    "source_url": "https://meine-landausfluege.de/langkawi-kreuzfahrt-ausfluege/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Langkawi",
+    "content": "Es gibt zwei Terminals: die Langkawi Cruise Terminal (Star Cruises Jetty, 370 m, tiefes Wasser für große Schiffe) und Porto Malai (200 m, für kleinere Schiffe), beide am südöstlichen bzw. südwestlichen Ende der Insel bei Kuah • Der Terminal gehört der asiatischen Reederei Star Cruises, wird aber auch von anderen Reedereien wie Mein Schiff und AIDA genutzt",
+    "source_tier": "2",
+    "source_name": "about2cruise.co.uk / meine-landausfluege.de",
+    "source_url": "https://about2cruise.co.uk/langkawi-cruise-ship-port-guide/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisesheet.com", "cruisemapper.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Langkawi",
+    "content": "Mein Schiff (TUI Cruises) läuft Langkawi regelmäßig im Rahmen von Südostasien-Kreuzfahrten an, mit Terminen 2026/27 direkt über meinschiff.com buchbar • Ein beliebter TUI-Ausflug ist die Bootstour \"Mit dem Boot durch die Natur\" durch den Kilim Karst Geoforest Park (Berichten zufolge ca. 65 Euro/Person, inkl. Seeadler-Beobachtung und Fledermaushöhle)",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / forum.pooldeck24.de",
+    "source_url": "https://www.meinschiff.com/de/haefen/langkawi-malaysia-10008809",
+    "staleness": "verfällt",
+    "tier_note": "Ausflugspreis aus Forumsbericht 2019, kann sich geändert haben."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Langkawi",
+    "content": "seereiseplanung-kreuzfahrten.de weist darauf hin, dass es praktisch keinen öffentlichen Nahverkehr auf Langkawi gibt • Für individuelle Erkundung empfiehlt sich Taxi oder Mietwagen zum Kilim Karst Geoforest Park oder zur Langkawi Sky Bridge • Für organisierte Alternativen wird \"Meine Landausflüge\" mit kleinen Gruppen und Hafenabholung empfohlen",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de / whatsinport.com",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/langkawi-auf-eigene-faust/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Langkawi",
+    "content": "Der Star-Cruises-Jetty liegt ca. 8 Meilen (13 km) westlich von Kuah, dem Hauptort der Insel, ein Fußweg ist nicht praktikabel • Da es praktisch keinen öffentlichen Nahverkehr gibt, ist Taxi, Mietwagen oder organisierte Tour die einzige realistische Option, um die Insel zu erkunden",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Langkawi.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Langkawi",
+    "content": "Wie im übrigen Malaysia sind Nasi Lemak, Laksa und frischer Fisch typisch, auf Langkawi zudem Gulai Ikan Parang (würziges Fischcurry) • Die Insel ist zudem eine Duty-Free-Zone, was günstige Preise für Alkohol und Schokolade bedeutet",
+    "source_tier": "3",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/langkawi-island-malaysia-port-488",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Langkawi",
+    "content": "Währung: Malaysischer Ringgit (MYR) • Sprache: Malaiisch, Englisch weit verbreitet • Deutsche Staatsangehörige benötigen für Malaysia kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 999 • Stromspannung: 240V, 50Hz (wie im übrigen Malaysia)",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de / about2cruise.co.uk",
+    "source_url": "https://meine-landausfluege.de/langkawi-kreuzfahrt-ausfluege/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Phuket",
+    "content": "1. Patong Beach – bekanntester und lebhaftester Strand der Insel mit Nachtleben\n2. Big Buddha Phuket – 45 m hohe weiße Buddha-Statue mit Panoramablick\n3. Old Phuket Town – historisches Viertel mit sino-portugiesischer Architektur\n4. Wat Chalong – bedeutendster buddhistischer Tempel der Insel\n5. Phi Phi Inseln – vorgelagerte Trauminseln, per Bootsausflug erreichbar",
+    "items": [
+      {"name": "Patong Beach", "description": "Bekanntester und lebhaftester Strand der Insel"},
+      {"name": "Big Buddha Phuket", "description": "45 m hohe weiße Buddha-Statue mit Panoramablick"},
+      {"name": "Old Phuket Town", "description": "Historisches Viertel mit sino-portugiesischer Architektur"},
+      {"name": "Wat Chalong", "description": "Bedeutendster buddhistischer Tempel der Insel"},
+      {"name": "Phi Phi Inseln", "description": "Vorgelagerte Trauminseln, per Bootsausflug erreichbar"}
+    ],
+    "source_tier": "2",
+    "source_name": "celebritycruises.com / shoreexcursions.asia",
+    "source_url": "https://www.celebritycruises.com/ports/phuket",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Phuket",
+    "content": "Phuket hat KEINEN zentralen Kreuzfahrthafen: In der Trockenzeit (November-April) ankern Schiffe meist vor Patong Bay und tendern Passagiere direkt zum Patong Beach Road (ca. 1,5 km Tenderfahrt) • In der Regenzeit (Mai-Oktober) legen Schiffe stattdessen am Ao Makham Deep Sea Port an der Ostküste an, ca. 8 km von Phuket Town entfernt, dort auch ganzjährig für sehr große Schiffe • Bei Übernachtaufenthalten wird oft zunächst nach Patong getendert und später zum Ao Makham Dock verlegt",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com / shoreexcursions.asia",
+    "source_url": "https://www.shoreexcursions.asia/phuket-cruise-port-guide/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["whatsinport.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Phuket",
+    "content": "Mein Schiff (TUI Cruises) läuft Phuket im Rahmen von Südostasien-Kreuzfahrten an, Landausflüge werden über meinschiff.com angeboten, u. a. Bootsausflüge zu den Phi-Phi-Inseln und Tempelbesichtigungen",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de",
+    "source_url": "https://meine-landausfluege.de/",
+    "staleness": "saisonal",
+    "tier_note": "Keine direkte meinschiff.com-Hafenseite für Phuket separat verifiziert, Ausflugsangebot nach allgemein üblichem Reedereiangebot plausibilisiert."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Phuket",
+    "content": "Vom Ao-Makham-Dock aus ist Phuket Town in ca. 20 Minuten Taxifahrt erreichbar, Taxis oder Bemos (lokale Sammeltaxis) stehen an der Pier bereit • Bei Ankern vor Patong Bay landet man direkt am belebten Strand, von dort ist Phuket Town ebenfalls per Taxi (ca. 20 Min.) erreichbar",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Phuket.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Phuket",
+    "content": "Bei Tenderbetrieb nach Patong Bay (Trockenzeit) landet man direkt am Patong Beach Road, mitten im touristischen Zentrum mit vielen Restaurants und Shops zu Fuß erreichbar • Beim Ao-Makham-Dock (Regenzeit) ist Phuket Town (ca. 8 km) NICHT zu Fuß erreichbar, Taxi wird benötigt",
+    "source_tier": "2",
+    "source_name": "shoreexcursions.asia / cruisemapper.com",
+    "source_url": "https://www.shoreexcursions.asia/phuket-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Phuket",
+    "content": "Phuket ist bekannt für seine Mischung aus thailändischer und Peranakan-Küche (sino-portugiesischer Einfluss): Moo Hong (geschmortes Schweinefleisch), Pad Thai und frische Meeresfrüchte sind typisch • Old Phuket Town bietet zahlreiche Streetfood-Stände mit lokalen Spezialitäten",
+    "source_tier": "3",
+    "source_name": "celebritycruises.com",
+    "source_url": "https://www.celebritycruises.com/ports/phuket",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Phuket",
+    "content": "Währung: Thailändischer Baht (THB) • Sprache: Thailändisch, Englisch in touristischen Gebieten verbreitet • Deutsche Staatsangehörige benötigen für Thailand kein Visum für touristische Aufenthalte bis 60 Tage (Stand 2026, vor Reise prüfen) • Notrufnummer: 191 (Polizei), 1155 (Tourist Police)",
+    "source_tier": "3",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Phuket.htm",
+    "staleness": "verfällt",
+    "tier_note": "Visumfreie Aufenthaltsdauer für Thailand kann sich ändern, vor Reise stets aktuellen Stand prüfen."
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Ko Samui",
+    "content": "1. Big Buddha Temple (Wat Phra Yai) – markante goldene Buddha-Statue auf einer kleinen Insel\n2. Chaweng Beach – bekanntester und belebtester Strand der Insel\n3. Fisherman's Village (Bophut) – historisches Fischerdorf mit Boutiquen und Restaurants\n4. Hin Ta Hin Yai (Grandma and Grandpa Rocks) – bekannte, natürlich geformte Felsformationen\n5. Ang Thong National Marine Park – vorgelagerter Archipel, per Bootsausflug erreichbar",
+    "items": [
+      {"name": "Big Buddha Temple", "description": "Markante goldene Buddha-Statue auf einer kleinen Insel"},
+      {"name": "Chaweng Beach", "description": "Bekanntester und belebtester Strand der Insel"},
+      {"name": "Fisherman's Village (Bophut)", "description": "Historisches Fischerdorf mit Boutiquen und Restaurants"},
+      {"name": "Hin Ta Hin Yai", "description": "Bekannte, natürlich geformte Felsformationen"},
+      {"name": "Ang Thong National Marine Park", "description": "Vorgelagerter Archipel, per Bootsausflug erreichbar"}
+    ],
+    "source_tier": "3",
+    "source_name": "bucketlistguides.com / cruisesheet.com",
+    "source_url": "https://bucketlistguides.com/koh-samui-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Ko Samui",
+    "content": "Ko Samui ist ein reiner Tender-Hafen ohne Tiefwasserterminal – Schiffe ankern ca. 1-2 Meilen vor der Küste im Golf von Thailand, Passagiere werden per Tenderboot zum Nathon Pier an der Westküste gebracht • Der Stadtkern von Nathon ist vom Landepier in ca. 10-15 Gehminuten erreichbar",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisesheet.com",
+    "source_url": "https://www.whatsinport.com/Koh-Samui.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["bucketlistguides.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Ko Samui",
+    "content": "Mein Schiff (TUI Cruises) läuft Ko Samui im Rahmen von Südostasien-Kreuzfahrten an, Landausflüge werden über meinschiff.com angeboten, u. a. Bootsausflüge in den Ang Thong National Marine Park und Tempelbesichtigungen",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de",
+    "source_url": "https://meine-landausfluege.de/",
+    "staleness": "saisonal",
+    "tier_note": "Keine direkte meinschiff.com-Hafenseite für Ko Samui separat verifiziert, Ausflugsangebot nach allgemein üblichem Reedereiangebot plausibilisiert."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Ko Samui",
+    "content": "bucketlistguides.com empfiehlt, sich vorab über die genaue Tenderzeit-Strategie zu informieren, da Ko Samui ein \"100% Anker- und Tenderhafen\" ist • Taxis und Marktstände in Nathon akzeptieren laut Reiseberichten selten Kartenzahlung, Bargeld in Thailändischen Baht wird empfohlen • Für Chaweng Beach oder den Big Buddha Temple ist ein Taxi ab Nathon Pier notwendig",
+    "source_tier": "3",
+    "source_name": "bucketlistguides.com",
+    "source_url": "https://bucketlistguides.com/koh-samui-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Ko Samui",
+    "content": "Vom Nathon Pier ist der kleine Ort Nathon in ca. 10-15 Minuten zu Fuß erreichbar • Die touristischen Hauptziele wie Chaweng Beach oder der Big Buddha Temple liegen auf der anderen Seite der Insel und sind NICHT zu Fuß erreichbar, Taxi wird benötigt",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Koh-Samui.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Ko Samui",
+    "content": "Wie im übrigen Thailand sind Pad Thai, Tom Yum Goong (scharf-saure Garnelensuppe) und frische Meeresfrüchte typisch • Im Fisherman's Village (Bophut) gibt es zahlreiche gehobene Restaurants mit Meerblick, in Nathon eher einfache, lokale Küche",
+    "source_tier": "3",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/ko-samui",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Ko Samui",
+    "content": "Währung: Thailändischer Baht (THB) • Sprache: Thailändisch, Englisch in touristischen Gebieten verbreitet • Deutsche Staatsangehörige benötigen für Thailand kein Visum für touristische Aufenthalte bis 60 Tage (Stand 2026, vor Reise prüfen) • Notrufnummer: 191 (Polizei), 1155 (Tourist Police)",
+    "source_tier": "3",
+    "source_name": "bucketlistguides.com",
+    "source_url": "https://bucketlistguides.com/koh-samui-cruise-port-guide/",
+    "staleness": "verfällt",
+    "tier_note": "Visumfreie Aufenthaltsdauer für Thailand kann sich ändern, vor Reise stets aktuellen Stand prüfen."
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Laem Chabang / Bangkok",
+    "content": "1. Wat Phra Kaew & Grand Palace – prunkvoller Königspalast mit Tempel des Smaragd-Buddhas\n2. Wat Arun (Tempel der Morgenröte) – markanter Tempel am Chao-Phraya-Fluss\n3. Wat Pho – Tempel des liegenden Buddhas, einer der größten Tempelkomplexe Bangkoks\n4. Chatuchak Weekend Market – einer der größten Märkte Asiens\n5. Chao Phraya Fluss – Bootsfahrten entlang der Kanäle (Khlongs) Bangkoks",
+    "items": [
+      {"name": "Wat Phra Kaew & Grand Palace", "description": "Prunkvoller Königspalast mit Tempel des Smaragd-Buddhas"},
+      {"name": "Wat Arun", "description": "Markanter Tempel der Morgenröte am Chao-Phraya-Fluss"},
+      {"name": "Wat Pho", "description": "Tempel des liegenden Buddhas, einer der größten Tempelkomplexe Bangkoks"},
+      {"name": "Chatuchak Weekend Market", "description": "Einer der größten Märkte Asiens"},
+      {"name": "Chao Phraya Fluss", "description": "Bootsfahrten entlang der Kanäle (Khlongs) Bangkoks"}
+    ],
+    "source_tier": "2",
+    "source_name": "shoreexcursions.asia / whatsinport.com",
+    "source_url": "https://www.shoreexcursions.asia/laem-chabang-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Laem Chabang / Bangkok",
+    "content": "Die meisten (v. a. großen) Kreuzfahrtschiffe legen in Laem Chabang an, Thailands größtem Hafen, ca. 119 km bzw. 1,5-2 Std. Fahrzeit von Bangkok entfernt • Laem Chabang selbst bietet laut whatsinport.com \"nichts zu bieten\" (reiner Industriehafen) • Nur kleinere Schiffe können ausnahmsweise am Klong Toey Port direkt im Herzen Bangkoks anlegen",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / shoreexcursions.asia",
+    "source_url": "https://www.whatsinport.com/Bangkok.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["excursionmania.com", "tripadvisor.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Laem Chabang / Bangkok",
+    "content": "Mein Schiff (TUI Cruises) läuft Laem Chabang im Rahmen von Südostasien-Kreuzfahrten an, Landausflüge nach Bangkok werden über meinschiff.com angeboten, meist als Ganztagesausflug wegen der langen Anfahrt (Grand Palace, Wat Pho, Bootsfahrt)",
+    "source_tier": "3",
+    "source_name": "shoreexcursions.asia",
+    "source_url": "https://www.shoreexcursions.asia/laem-chabang-cruise-port-guide/",
+    "staleness": "saisonal",
+    "tier_note": "Keine direkte meinschiff.com-Hafenseite für Laem Chabang separat verifiziert, Ausflugsangebot nach allgemein üblichem Reedereiangebot plausibilisiert."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Laem Chabang / Bangkok",
+    "content": "shoreexcursions.asia empfiehlt für einen Bangkok-Tagesausflug ab Laem Chabang vorab organisierten Transport oder eine geplante Landausflugstour, da die Distanz (ca. 119 km, 1,5-2 Std.) sowie der dichte Bangkok-Verkehr eine gute Zeitplanung erfordern • Alternativ kann man näher an Laem Chabang bleiben und Pattaya (kürzere Distanz) besuchen",
+    "source_tier": "3",
+    "source_name": "shoreexcursions.asia",
+    "source_url": "https://www.shoreexcursions.asia/laem-chabang-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Laem Chabang / Bangkok",
+    "content": "Laem Chabang selbst bietet keinerlei fußläufig erreichbare Sehenswürdigkeiten, es handelt sich um einen reinen Industrie-/Frachthafen • Bangkok (ca. 119 km) ist selbstverständlich NICHT zu Fuß erreichbar, ein Transfer von 1,5-2 Stunden ist erforderlich",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / shoreexcursions.asia",
+    "source_url": "https://www.whatsinport.com/Bangkok.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Laem Chabang / Bangkok",
+    "content": "In Bangkok sind Pad Thai, Tom Yum Goong, Som Tam (grüner Papayasalat) und Mango Sticky Rice absolute Klassiker • Streetfood-Viertel wie Chinatown (Yaowarat Road) oder der Chatuchak Market bieten eine riesige Auswahl an authentischem Essen",
+    "source_tier": "3",
+    "source_name": "shoreexcursions.asia",
+    "source_url": "https://www.shoreexcursions.asia/laem-chabang-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Laem Chabang / Bangkok",
+    "content": "Währung: Thailändischer Baht (THB) • Sprache: Thailändisch, Englisch in touristischen Gebieten verbreitet • Deutsche Staatsangehörige benötigen für Thailand kein Visum für touristische Aufenthalte bis 60 Tage (Stand 2026, vor Reise prüfen) • Notrufnummer: 191 (Polizei), 1155 (Tourist Police) • Beste Reisezeit laut excursionmania.com sind die kühleren Monate November bis Februar",
+    "source_tier": "3",
+    "source_name": "excursionmania.com",
+    "source_url": "https://www.excursionmania.com/ttd/940/cruise-port-laem-chabang-blg-940",
+    "staleness": "verfällt",
+    "tier_note": "Visumfreie Aufenthaltsdauer für Thailand kann sich ändern, vor Reise stets aktuellen Stand prüfen."
+  }
+]

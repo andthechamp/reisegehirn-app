@@ -1,0 +1,358 @@
+[
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Kapstadt",
+    "content": "1. Tafelberg – Wahrzeichen Kapstadts, per Seilbahn erreichbar\n2. Robben Island – ehemaliges Gefängnis von Nelson Mandela, per Fähre erreichbar\n3. V&A Waterfront – lebhafte Hafenpromenade mit Shopping und Restaurants\n4. Kap der Guten Hoffnung – südwestlichster Punkt Afrikas, ca. 1 Std. entfernt\n5. Bo-Kaap – bunt bemaltes historisches Malaienviertel im Zentrum",
+    "items": [
+      {"name": "Tafelberg", "description": "Wahrzeichen Kapstadts, per Seilbahn erreichbar"},
+      {"name": "Robben Island", "description": "Ehemaliges Gefängnis von Nelson Mandela, per Fähre erreichbar"},
+      {"name": "V&A Waterfront", "description": "Lebhafte Hafenpromenade mit Shopping und Restaurants"},
+      {"name": "Kap der Guten Hoffnung", "description": "Südwestlichster Punkt Afrikas, ca. 1 Std. entfernt"},
+      {"name": "Bo-Kaap", "description": "Bunt bemaltes historisches Malaienviertel im Zentrum"}
+    ],
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/landausfluege/suedafrika",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Kapstadt",
+    "content": "Schiffe legen am E-Berth im Duncan Dock an, ideal gelegen in Gehdistanz zur kulturell reichen Innenstadt und direkt vor der Tür der weltberühmten V&A Waterfront mit erstklassigen Shops, Restaurants, Hotels und Unterhaltungsangeboten • Der Terminal bietet kostenloses WLAN, einen Kaffeestand, Touristeninfo, Food Court, Bar und Restaurant für Abendessen • Kein Tenderbetrieb notwendig, Hop-on/Hop-off-Busse halten direkt am Terminal",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / thesharonicles.com",
+    "source_url": "https://www.whatsinport.com/Cape-Town.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisesheet.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Kapstadt",
+    "content": "Mein Schiff (TUI Cruises) läuft Kapstadt seit Juni 2024 regelmäßig als Startpunkt 14-tägiger Safari-Kreuzfahrten nach Südafrika und Namibia an (Mein Schiff 5), mit bis zu drei im Reisepreis inbegriffenen Landausflügen • Kapstadt ist zugleich Ausgangs-/Zielhafen für die Route Indischer Ozean mit Mauritius und Teil der Großen Weltentdecker-Route",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / kreuzfahrtpiraten.de",
+    "source_url": "https://www.kreuzfahrtpiraten.de/mein-schiff-suedafrika/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Kapstadt",
+    "content": "kreuzfahrtpiraten.de berichtet, dass sich in Kapstadt v. a. das Umland lohnt: Weingutbesichtigungen nördlich der Stadt, Ausflüge zum Kap der Guten Hoffnung oder eine exklusive Safari mit Lodge-Übernachtung nahe Port Elizabeth • Die V&A Waterfront und Bo-Kaap sind gut zu Fuß erreichbar, für den Tafelberg empfiehlt sich die Seilbahn (separates Ticket)",
+    "source_tier": "3",
+    "source_name": "kreuzfahrtpiraten.de",
+    "source_url": "https://www.kreuzfahrtpiraten.de/mein-schiff-suedafrika/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Kapstadt",
+    "content": "Der Kreuzfahrtterminal liegt in Gehdistanz zur kulturell reichen Innenstadt und direkt vor der V&A Waterfront – eine der fußgängerfreundlichsten Anlegesituationen weltweit • Für den Tafelberg oder das Kap der Guten Hoffnung ist ein Transfer (Taxi, Bus oder organisierte Tour) notwendig",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / thesharonicles.com",
+    "source_url": "https://www.thesharonicles.com/2022/03/a-guide-to-cape-town-cruise-port.html",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Kapstadt",
+    "content": "Typisch südafrikanisch sind Boerewors (gewürzte Grillwurst), Biltong (luftgetrocknetes Trockenfleisch, ähnlich Beef Jerky) und Bobotie (Hackfleischauflauf mit Curry-Note) • Der V&A Waterfront Food Market und Mouille Point sind bekannt für gegrillte Boerewors bei traditionellen Braai-Grillfesten",
+    "source_tier": "3",
+    "source_name": "getyourguide.com / tourlane.de",
+    "source_url": "https://www.getyourguide.com/de-de/explorer/south-africa-ttd169050/food-in-south-africa/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Kapstadt",
+    "content": "Währung: Südafrikanischer Rand (ZAR) • Sprache: Englisch, Afrikaans, Xhosa (11 Amtssprachen insgesamt) • Deutsche Staatsangehörige benötigen für Südafrika kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 10111 (Polizei), 10177 (Rettung) • Kreuzfahrtsaison in Südafrika ist v. a. November bis Mai (südliche Sommerhalbjahr)",
+    "source_tier": "3",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/durban-port-90",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "1. Donkin Reserve – kleiner Park mit Pyramide und Leuchtturm im Zentrum\n2. Addo Elephant National Park – bedeutender Nationalpark mit Elefanten, ca. 70 km entfernt\n3. Route 67 – 67 Kunstwerke zur Erinnerung an Nelson Mandelas 67 Jahre öffentliches Wirken\n4. Nelson Mandela Bay Stadium – modernes Fußballstadion der WM 2010\n5. Strände von Algoa Bay – lange Sandstrände direkt an der Stadt",
+    "items": [
+      {"name": "Donkin Reserve", "description": "Kleiner Park mit Pyramide und Leuchtturm im Zentrum"},
+      {"name": "Addo Elephant National Park", "description": "Bedeutender Nationalpark mit Elefanten, ca. 70 km entfernt"},
+      {"name": "Route 67", "description": "67 Kunstwerke zur Erinnerung an Nelson Mandelas öffentliches Wirken"},
+      {"name": "Nelson Mandela Bay Stadium", "description": "Modernes Fußballstadion der WM 2010"},
+      {"name": "Algoa Bay Strände", "description": "Lange Sandstrände direkt an der Stadt"}
+    ],
+    "source_tier": "1",
+    "source_name": "meinschiff.com / kreuzfahrtpiraten.de",
+    "source_url": "https://www.meinschiff.com/de/haefen/gqeberha-ehem-port-elizabeth-suedafrika-1608",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "Schiffe legen direkt am Commercial Quay im Hafen von Gqeberha (ehem. Port Elizabeth) an, einem funktionalen Arbeitshafen ohne repräsentativen Terminalbau – die Zollabwicklung erfolgt an Bord • Der hügelige Stadtkern ist per kurzer Taxifahrt erreichbar, ein Fußweg wird nicht empfohlen • Kein Tenderbetrieb notwendig",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / about2cruise.co.uk",
+    "source_url": "https://www.whatsinport.com/Port-Elizabeth.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisesheet.com", "cruiseweb.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "Mein Schiff (TUI Cruises) läuft Gqeberha regelmäßig im Rahmen der Südafrika-Namibia-Safari-Kreuzfahrten sowie der Route Indischer Ozean mit Mauritius an, mit ein bis zwei Tagen Liegezeit • kreuzfahrtpiraten.de beschreibt eine Küstenfahrt mit anschließender Stadtbesichtigung inklusive Donkin Reserve als einen der drei inklusiven TUI-Landausflüge",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / kreuzfahrtpiraten.de",
+    "source_url": "https://www.meinschiff.com/de/haefen/gqeberha-ehem-port-elizabeth-suedafrika-1608",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "kreuzfahrtpiraten.de berichtet von einer exklusiven Safari mit Übernachtung in einer luxuriösen Lodge bei Gqeberha als besonderes TUI-Highlight • Für den Addo Elephant National Park (ca. 70 km, ca. 1 Std. Fahrzeit) empfiehlt sich Taxi, Mietwagen oder organisierte Safari-Tour",
+    "source_tier": "3",
+    "source_name": "kreuzfahrtpiraten.de",
+    "source_url": "https://www.kreuzfahrtpiraten.de/mein-schiff-suedafrika/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "Ein Fußweg vom Hafen in die Stadt wird laut whatsinport.com NICHT empfohlen, da der Stadtkern hügelig ist und die Distanz für Fußgänger unangenehm sein kann • Eine kurze Taxifahrt zum Donkin Reserve oder ins Zentrum wird stattdessen empfohlen (ca. 2-3 km)",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisesheet.com",
+    "source_url": "https://www.whatsinport.com/Port-Elizabeth.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "Wie im übrigen Südafrika sind Boerewors, Biltong und Bunny Chow (mit Curry gefülltes Brot, ursprünglich aus Durban) verbreitet • In der Innenstadt und am Strand gibt es zahlreiche Cafés und Fischrestaurants mit Blick auf die Algoa Bay",
+    "source_tier": "3",
+    "source_name": "getyourguide.com",
+    "source_url": "https://www.getyourguide.com/de-de/explorer/south-africa-ttd169050/food-in-south-africa/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Port Elizabeth (Gqeberha)",
+    "content": "Währung: Südafrikanischer Rand (ZAR) • Sprache: Englisch, Afrikaans, Xhosa • Deutsche Staatsangehörige benötigen für Südafrika kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 10111 (Polizei), 10177 (Rettung) • Die Stadt wurde 2021 offiziell von Port Elizabeth in Gqeberha umbenannt",
+    "source_tier": "3",
+    "source_name": "solentrichardscruiseblog.com",
+    "source_url": "https://solentrichardscruiseblog.com/2021/04/10/one-way-to-do-port-elizabeth-south-africa/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Durban",
+    "content": "1. uShaka Marine World – großer Themenpark mit Aquarium und Wasserrutschen\n2. Victoria Street Market – lebhafter Markt mit Gewürzen und Kunsthandwerk\n3. Golden Mile – lange Strandpromenade entlang des Indischen Ozeans\n4. Moses Mabhida Stadium – markantes Fußballstadion mit Aussichtsplattform (SkyCar)\n5. Botanischer Garten Durban – einer der ältesten botanischen Gärten Afrikas",
+    "items": [
+      {"name": "uShaka Marine World", "description": "Großer Themenpark mit Aquarium und Wasserrutschen"},
+      {"name": "Victoria Street Market", "description": "Lebhafter Markt mit Gewürzen und Kunsthandwerk"},
+      {"name": "Golden Mile", "description": "Lange Strandpromenade entlang des Indischen Ozeans"},
+      {"name": "Moses Mabhida Stadium", "description": "Markantes Fußballstadion mit Aussichtsplattform (SkyCar)"},
+      {"name": "Botanischer Garten Durban", "description": "Einer der ältesten botanischen Gärten Afrikas"}
+    ],
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/landausfluege/suedafrika",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Durban",
+    "content": "Durban ist der größte und meistbefahrene Hafen Subsahara-Afrikas mit aktuell drei Kreuzfahrtterminals: Nelson Mandela Cruise Terminal (eröffnet 2023), KwaZulu Cruise Terminal (eröffnet 2021) und dem City Terminal (teilweise überdachtes Lagerhaus, betrieben von MSC) • Der Nelson Mandela Cruise Terminal liegt an der Point Waterfront direkt am Hafeneingang • Durbans Kreuzfahrtsaison ist v. a. November bis Mai (Winter der südlichen Hemisphäre)",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com / cruisesheet.com",
+    "source_url": "https://www.cruisemapper.com/ports/durban-port-90",
+    "staleness": "zeitlos",
+    "confirmed_by": ["whatsinport.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Durban",
+    "content": "Mein Schiff (TUI Cruises) beschreibt Durban als Südafrikas Küstenparadies mit Landausflügen zum Victoria Street Market und uShaka Marine World, buchbar über meinschiff.com im Rahmen der Südafrika-Kreuzfahrten",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/landausfluege/suedafrika",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Durban",
+    "content": "Vom Nelson Mandela Cruise Terminal an der Point Waterfront ist die Golden Mile Strandpromenade in kurzer Gehdistanz erreichbar • Für den Victoria Street Market oder das Moses Mabhida Stadium empfiehlt sich Taxi, da diese etwas weiter im Stadtzentrum liegen",
+    "source_tier": "3",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/durban",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Durban",
+    "content": "Der Nelson Mandela Cruise Terminal an der Point Waterfront liegt in Gehdistanz zur Golden Mile und dem uShaka Marine World • Für weiter im Zentrum gelegene Ziele wie den Victoria Street Market wird Taxi empfohlen",
+    "source_tier": "2",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/durban",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Durban",
+    "content": "Durban gilt als Geburtsort des Bunny Chow (mit Curry gefülltes ausgehöhltes Brot, ursprünglich von der indischstämmigen Bevölkerung der Stadt geprägt) • Der Victoria Street Market ist ein guter Ort, um Gewürze und indisch-südafrikanische Curry-Spezialitäten zu probieren",
+    "source_tier": "3",
+    "source_name": "getyourguide.com / tourlane.de",
+    "source_url": "https://www.tourlane.de/afrika/suedafrika/nationalgerichte/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Durban",
+    "content": "Währung: Südafrikanischer Rand (ZAR) • Sprache: Englisch, Zulu, Afrikaans • Deutsche Staatsangehörige benötigen für Südafrika kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 10111 (Polizei), 10177 (Rettung) • Durbans Kreuzfahrtsaison konzentriert sich auf die Monate November bis Mai",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/durban-port-90",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Walvis Bay",
+    "content": "1. Walvis Bay Lagune – Naturschutzgebiet mit rosa gefärbten Flamingokolonien\n2. Namib-Wüste & Dune 7 – eine der höchsten Sanddünen Namibias, ca. 10 km entfernt\n3. Swakopmund – deutsch geprägte Kolonialstadt mit Fachwerkbauten, ca. 30 km entfernt\n4. Sandwich Harbour – spektakuläre Dünen direkt am Atlantik, per Geländewagen erreichbar\n5. Bootstouren zur Robben- und Delfinbeobachtung ab Walvis Bay",
+    "items": [
+      {"name": "Walvis Bay Lagune", "description": "Naturschutzgebiet mit rosa gefärbten Flamingokolonien"},
+      {"name": "Namib-Wüste & Dune 7", "description": "Eine der höchsten Sanddünen Namibias, ca. 10 km entfernt"},
+      {"name": "Swakopmund", "description": "Deutsch geprägte Kolonialstadt mit Fachwerkbauten, ca. 30 km entfernt"},
+      {"name": "Sandwich Harbour", "description": "Spektakuläre Dünen direkt am Atlantik, per Geländewagen erreichbar"},
+      {"name": "Robben-/Delfinbeobachtung", "description": "Bootstouren ab Walvis Bay"}
+    ],
+    "source_tier": "3",
+    "source_name": "cruise-arabia.com / cruisedig.com",
+    "source_url": "https://cruise-arabia.com/2023/09/13/cruise-port-focus-walvis-bay-namibia/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Walvis Bay",
+    "content": "Kreuzfahrtschiffe legen direkt am Hafen von Walvis Bay an, betrieben von Namport, mit einem eigenen Kreuzfahrt-Liegeplatz innerhalb des Frachthafens • Kein Tenderbetrieb notwendig, aber da es sich um ein gesichertes Industrieareal handelt, ist ein freier Fußweg vom Schiff in die Stadt generell NICHT erlaubt – Shuttles und Taxis bringen Gäste zum Hafentor und weiter in die Stadt (ca. 1 Meile/1,6 km bzw. 3-4 km je nach Quelle)",
+    "source_tier": "2",
+    "source_name": "cruisesheet.com / whatsinport.com",
+    "source_url": "https://cruisesheet.com/port/walvis-bay",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisedig.com", "cruise-arabia.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Walvis Bay",
+    "content": "Mein Schiff (TUI Cruises) läuft Walvis Bay im Rahmen der Südafrika-Namibia-Safari-Kreuzfahrten mit ein bis zwei Tagen Liegezeit an, mit inklusiven Landausflügen u. a. in die Namib-Wüste oder nach Swakopmund, buchbar über meinschiff.com",
+    "source_tier": "1",
+    "source_name": "meinschiff.com / kreuzfahrtpiraten.de",
+    "source_url": "https://www.kreuzfahrtpiraten.de/mein-schiff-suedafrika/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Walvis Bay",
+    "content": "Für Dune 7 (ca. 10 km) oder Swakopmund (ca. 30 km) empfiehlt sich Taxi, Mietwagen oder organisierte Tour, da öffentlicher Nahverkehr begrenzt ist • Für Sandwich Harbour ist wegen des schwierigen Geländes ausschließlich eine geführte Geländewagen-Tour möglich",
+    "source_tier": "3",
+    "source_name": "cruisedig.com",
+    "source_url": "https://cruisedig.com/walvis-bay-cruise-port-guide-gateway-namibias-desert-and-ocean-wonders",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Walvis Bay",
+    "content": "Da der Hafen ein gesichertes Industrieareal ist, ist freies Gehen vom Schiff in die Stadt generell nicht erlaubt – Shuttles/Taxis bringen Gäste zum Hafentor (ca. 1,6-4 km je nach Quelle), von dort ist das Zentrum in wenigen Gehminuten erreichbar",
+    "source_tier": "2",
+    "source_name": "cruisesheet.com",
+    "source_url": "https://cruisesheet.com/port/walvis-bay",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Walvis Bay",
+    "content": "Namibia hat durch die deutsche Kolonialgeschichte eine besondere kulinarische Mischung: Bratwurst, Sauerkraut und deutsches Bier finden sich in Swakopmund neben afrikanischen Klassikern wie Kapana (gegrilltes Straßenfleisch) und Oshifima (Maisbrei)",
+    "source_tier": "3",
+    "source_name": "cruise-arabia.com",
+    "source_url": "https://cruise-arabia.com/2023/09/13/cruise-port-focus-walvis-bay-namibia/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Walvis Bay",
+    "content": "Währung: Namibia-Dollar (NAD, 1:1 an ZAR gekoppelt), Südafrikanischer Rand wird ebenfalls akzeptiert • Sprache: Englisch (Amtssprache), Afrikaans und Deutsch weit verbreitet • Deutsche Staatsangehörige benötigen für Namibia kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 10111 (Polizei)",
+    "source_tier": "3",
+    "source_name": "cruisedig.com",
+    "source_url": "https://cruisedig.com/walvis-bay-cruise-port-guide-gateway-namibias-desert-and-ocean-wonders",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Colombo",
+    "content": "1. Gangaramaya-Tempel – bedeutender buddhistischer Tempel mit Museum\n2. Galle Face Green – große Freizeitfläche direkt am Meer mit Streetfood-Ständen\n3. Pettah-Markt – lebhaftes, chaotisches Marktviertel hinter dem Hafen\n4. Independence Memorial Hall – Denkmal zur Unabhängigkeit Sri Lankas\n5. Red Mosque (Jami Ul-Alfar) – markante rot-weiß gestreifte Moschee im Zentrum",
+    "items": [
+      {"name": "Gangaramaya-Tempel", "description": "Bedeutender buddhistischer Tempel mit Museum"},
+      {"name": "Galle Face Green", "description": "Große Freizeitfläche direkt am Meer mit Streetfood-Ständen"},
+      {"name": "Pettah-Markt", "description": "Lebhaftes, chaotisches Marktviertel hinter dem Hafen"},
+      {"name": "Independence Memorial Hall", "description": "Denkmal zur Unabhängigkeit Sri Lankas"},
+      {"name": "Red Mosque", "description": "Markante rot-weiß gestreifte Moschee im Zentrum"}
+    ],
+    "source_tier": "2",
+    "source_name": "cruisekingdom.co.uk / getyourguide.com",
+    "source_url": "https://cruisekingdom.co.uk/cruise-ports/191-colombo-sri_lanka",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Colombo",
+    "content": "Kreuzfahrtschiffe legen am Queen Elizabeth Pier in Colombo an, ca. 15 Gehminuten vom Stadtzentrum entfernt • Taxis stehen am Pier bereit, können auch über Plattformen wie Knopka Transport oder MyTransfers vorab reserviert werden • Kein Tenderbetrieb notwendig",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Colombo.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisekingdom.co.uk"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Colombo",
+    "content": "Mein Schiff (TUI Cruises) läuft Colombo regelmäßig im Rahmen von Weltreise- und Indischer-Ozean-Routen an (u. a. Mein Schiff 6 auf der 59-nächtigen Großen Weltentdecker-Route ab Las Palmas bis Singapur, sowie der 25-nächtigen Route Indischer Ozean mit Mauritius ab Kapstadt bis Singapur), buchbar über meinschiff.com",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/haefen/colombo-sri-lanka-415",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Colombo",
+    "content": "Ein Cruise-Critic-Nutzer plant für einen Ausflug von Colombo aus die Südküste und den Yala-Nationalpark, Rückfahrt über die Teeplantagen – ein Hinweis darauf, dass Colombo ein guter Ausgangspunkt für längere Ausflüge ins Inselinnere ist, sofern die Liegezeit ausreicht • Für kürzere Aufenthalte ist die direkte Erkundung von Galle Face Green und Pettah zu Fuß bzw. per Taxi ausreichend",
+    "source_tier": "3",
+    "source_name": "boards.cruisecritic.com",
+    "source_url": "https://boards.cruisecritic.com/topic/2553324-cruise-port-in-colombo-sri-lanka/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Colombo",
+    "content": "Vom Queen Elizabeth Pier ist das Stadtzentrum in ca. 15 Gehminuten erreichbar, Pettah-Markt und Galle Face Green liegen in ähnlicher Entfernung • Für weiter entfernte Ziele wie den Gangaramaya-Tempel wird Taxi empfohlen",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Colombo.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Colombo",
+    "content": "Klassiker der sri-lankischen Küche sind Kottu Roti (gehacktes Roti mit Gemüse/Fleisch), Hoppers (Schalenpfannkuchen aus Reismehl) und Rice & Curry mit zahlreichen kleinen Beilagen • Streetfood findet sich besonders am Pettah-Markt und Galle Face Green, empfehlenswerte Restaurants sind u. a. The Curry Leaf und Fortaleza",
+    "source_tier": "3",
+    "source_name": "getyourguide.com / buch-deine-reise.de",
+    "source_url": "https://www.getyourguide.com/de-de/explorer/colombo-ttd112/street-food-in-colombo/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Colombo",
+    "content": "Währung: Sri-Lanka-Rupie (LKR) • Sprache: Singhalesisch, Tamil, Englisch weit verbreitet • Deutsche Staatsangehörige benötigen für Sri Lanka ein elektronisches Visum (ETA), das vorab online beantragt werden muss • Notrufnummer: 119 (Polizei), 110 (Feuerwehr)",
+    "source_tier": "3",
+    "source_name": "cruisekingdom.co.uk",
+    "source_url": "https://cruisekingdom.co.uk/cruise-ports/191-colombo-sri_lanka",
+    "staleness": "verfällt",
+    "tier_note": "ETA-Bestimmungen für Sri Lanka können sich ändern, vor Reise stets aktuellen Stand prüfen."
+  }
+]

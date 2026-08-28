@@ -1,9 +1,11 @@
-// Trägt die fehlende Kategorie 'essen' für die acht Häfen nach, die in echten
-// Reisen gebucht sind und als einziges Pflichtthema noch Essen vermissen
-// (Stand 22.08.2026 - Liste kam aus scripts/scan-research-gaps.ts). Die frühen
-// Seed-Chargen (batch2-6) hatten diese Kategorie nie enthalten; genau deshalb
-// hat die alte Automatik für jeden dieser Häfen bei JEDEM Laden einer Reise
-// einen neuen Websuche-Lauf gestartet.
+// Trägt die fehlende Kategorie 'essen' für Häfen nach, die schon andere
+// Pflichtthemen haben und nur noch Essen vermissen (Liste kommt aus
+// scripts/scan-research-gaps.ts). Die frühen Seed-Chargen (batch2-6) hatten
+// diese Kategorie nie enthalten; genau deshalb hat die alte Automatik für
+// jeden dieser Häfen bei JEDEM Laden einer Reise einen neuen Websuche-Lauf
+// gestartet. Häfen ohne jedes Pflichtthema (komplett neue Häfen) gehören
+// NICHT hierher, sondern in eine vollständige Recherche nach dem
+// batch*-Muster.
 //
 // UNTERSCHIED ZU DEN BATCH-SKRIPTEN: Dieses Skript ist rein additiv. Die
 // batch*-Skripte löschen vor dem Einfügen alle curated=false-Zeilen des
@@ -40,7 +42,7 @@ if (!url || !key) {
 }
 const supabase = createClient(url, key);
 
-type SourceTier = "A" | "B" | "C";
+type SourceTier = "1" | "2" | "3";
 type Staleness = "zeitlos" | "saisonal" | "verfällt";
 
 interface EssenEintrag {
@@ -69,7 +71,7 @@ function pruefe(e: EssenEintrag): string | null {
   if (!e.port_name?.trim()) return "port_name fehlt";
   if (!e.content?.trim()) return null; // absichtlich leer = noch nicht gefüllt
   if (!e.source_name?.trim()) return "source_name fehlt (woher stammt der Tipp?)";
-  if (!["A", "B", "C"].includes(e.source_tier)) return `source_tier "${e.source_tier}" ungültig`;
+  if (!["1", "2", "3"].includes(e.source_tier)) return `source_tier "${e.source_tier}" ungültig`;
   if (!["zeitlos", "saisonal", "verfällt"].includes(e.staleness)) return `staleness "${e.staleness}" ungültig`;
   return null;
 }

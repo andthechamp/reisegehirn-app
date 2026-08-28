@@ -40,6 +40,7 @@ export default function RouteResearch({ findings }: RouteResearchProps) {
               source_tier: f.source_tier,
               source_name: f.source_name,
               source_url: f.source_url,
+              tier_note: null,
               staleness: f.staleness,
               shared: true,
             }}

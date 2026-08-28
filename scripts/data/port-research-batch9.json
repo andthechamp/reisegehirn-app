@@ -1,0 +1,376 @@
+[
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Palma de Mallorca",
+    "content": "1. Kathedrale La Seu – gotische Kathedrale hoch über dem Meer.\n2. Palau de l'Almudaina – ehemaliger maurischer Palast.\n3. Altstadt mit Plaza Mayor und Passeig des Born – Flanierboulevard.\n4. Sa Llotja – gotische Börsenhalle nahe dem Yachthafen.\n5. Viertel Santa Catalina – trendiges Szeneviertel mit Markthalle.",
+    "source_tier": "3",
+    "source_name": "AIDA / Tripadvisor",
+    "source_url": "https://aida.de/hafen/palma",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Kathedrale La Seu", "description": "Gotische Kathedrale hoch über dem Meer." },
+      { "name": "Palau de l'Almudaina", "description": "Ehemaliger maurischer Palast." },
+      { "name": "Plaza Mayor & Passeig des Born", "description": "Flanierboulevard der Altstadt." },
+      { "name": "Sa Llotja", "description": "Gotische Börsenhalle nahe dem Yachthafen." },
+      { "name": "Santa Catalina", "description": "Trendiges Szeneviertel mit Markthalle." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Palma de Mallorca",
+    "content": "PRÄZISIERT: Palma hat sechs Terminals in zwei Gruppen: Estació Marítima 1-4 (Poniente/Paraires-Kai, Hauptbereich, ca. 3,5-5 km/10-20 Min. Taxi zur Kathedrale) und Estació Marítima 5-6 (Dique del Oeste, weiter westlich am äußeren Wellenbrecher, ca. 6-7 km, für Ausweich-/Großschiffe) • WICHTIGE AKTUALISIERUNG: Die Balearen-Regierung hat im März 2026 eine Reduzierung der zugelassenen Kreuzfahrttouristenzahl während der Hauptsaison angekündigt.",
+    "source_tier": "2",
+    "source_name": "cruiseports.co / bucketlistguides.com",
+    "source_url": "https://cruiseports.co/palma-de-mallorca-cruise-port/",
+    "staleness": "zeitlos",
+    "tier_note": "AKTUALISIERT am 26.08. - Kreuzfahrt-Besucherbeschraenkung fuer Hauptsaison 2026 angekuendigt",
+    "confirmed_by": ["cruisemapper.com"]
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Palma de Mallorca",
+    "content": "Von EM 1-4 sind es 4-6 km (10-20 Min. Taxi, 15-25 Min. Bus, 45-60 Min. Fußweg am Wasser) zur Kathedrale/Altstadt • Von EM 5-6 sind es 6-7 km (15-20 Min. Taxi), Fußweg wird nicht empfohlen • 2026 neuer elektrischer Wasserbus (Bus Nàutic) als zusätzliche Option.",
+    "source_tier": "2",
+    "source_name": "cruiseports.co / bucketlistguides.com",
+    "source_url": "https://bucketlistguides.com/can-you-explore-palma-de-mallorca-without-an-excursion/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Palma de Mallorca",
+    "content": "Beliebte Optionen: Stadtbesichtigung mit Kathedrale La Seu und Altstadt • Historische Bahn nach Sóller durch die Serra de Tramuntana • Tropfsteinhöhlen Cuevas del Drach • Strandtag an Illetas oder Cala Major.",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/mallorca-auf-eigene-faust/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Palma de Mallorca",
+    "content": "• Währung: Euro (€) • Sprache: Spanisch/Katalanisch (Mallorquí) • Balearen, Spanien • AKTUALISIERT: Wegen Overtourism-Debatte hat die Balearen-Regierung für die Hauptsaison 2026 eine Reduzierung der Kreuzfahrtpassagierzahlen angekündigt (Details/Umsetzung noch zu prüfen).",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/palma-de-mallorca-port-77",
+    "staleness": "saisonal",
+    "tier_note": "AKTUALISIERT am 26.08. - konkrete Umsetzungsdetails der Besucherbeschraenkung noch nicht recherchiert"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Barcelona",
+    "content": "1. Sagrada Família – unvollendete Basilika von Antoni Gaudí.\n2. La Rambla & Barri Gòtic – Boulevard und gotisches Viertel.\n3. Park Güell – farbenfroher, von Gaudí gestalteter Park.\n4. Mercat de la Boqueria – lebhafte Markthalle nahe der Rambla.\n5. Casa Batlló – ikonisches Gaudí-Gebäude am Passeig de Gràcia.",
+    "source_tier": "3",
+    "source_name": "AIDA / Dreamlines",
+    "source_url": "https://www.dreamlines.de/blog/kreuzfahrt-reiseziele/barcelona-top10-highlights/",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Sagrada Família", "description": "Unvollendete Basilika von Antoni Gaudí." },
+      { "name": "La Rambla & Barri Gòtic", "description": "Boulevard und gotisches Viertel." },
+      { "name": "Park Güell", "description": "Farbenfroher, von Gaudí gestalteter Park." },
+      { "name": "Mercat de la Boqueria", "description": "Lebhafte Markthalle nahe der Rambla." },
+      { "name": "Casa Batlló", "description": "Ikonisches Gaudí-Gebäude am Passeig de Gràcia." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Barcelona",
+    "content": "AKTUALISIERT: Barcelona hat 7 Terminals (A, B, C, D-Palacruceros, E-Helix, MSC am Adossat-Kai sowie WTCB am Barcelona-Kai) • Terminal WTCB wird laut US-News-Quelle Ende 2026 geschlossen, alle Schiffe werden dann zum Adossat-Kai verlegt • Neues, exklusives „MSC Terminal H“ 2025 eröffnet (31-Jahres-Konzession bis 2056) • Distanz zum Zentrum ca. 1-2,5 Meilen je nach Terminal, T-3-Portbus-Shuttle verbindet Hafen und Stadt.",
+    "source_tier": "2",
+    "source_name": "travel.usnews.com / cruisemapper.com",
+    "source_url": "https://travel.usnews.com/features/barcelona-spain-cruise-port-guide",
+    "staleness": "zeitlos",
+    "tier_note": "AKTUALISIERT am 26.08. - WTCB-Terminal schliesst Ende 2026, neues MSC-Terminal H seit 2025"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Barcelona",
+    "content": "Vom zentrumsnächsten Terminal (Port Vell) ist die Rambla in ca. 10 Gehminuten erreichbar • Von den Adossat-Kai-Terminals (A-MSC) sind es je nach genauer Lage 1-2,5 Meilen – Shuttlebus (T-3 Portbus) oder Taxi empfohlen.",
+    "source_tier": "2",
+    "source_name": "travel.usnews.com / whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Barcelona.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Barcelona",
+    "content": "Beliebte Optionen: Besichtigung der Sagrada Família (Zeitfenster-Ticket vorab buchen) • Spaziergang durch Park Güell • Bummel durch Barri Gòtic und Rambla • Tagesausflug ins Kloster Montserrat.",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/barcelona-auf-eigene-faust/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Barcelona",
+    "content": "• Währung: Euro (€) • Sprache: Spanisch/Katalanisch • WICHTIGE AKTUALISIERUNG: Seit Juli 2026 hat die Stadt Barcelona die kommunale Kreuzfahrtgebühr für Aufenthalte unter 12 Stunden auf 24 € erhöht, zzgl. 6 € regionaler Steuer (insgesamt 30 €/Person) – diese Gebühren sind meist bereits im Reisepreis enthalten, sollten aber bei kurzen Zwischenstopps bekannt sein.",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/barcelona-port-82",
+    "staleness": "verfällt",
+    "tier_note": "AKTUALISIERT am 26.08. - Kreuzfahrtgebuehr im Juli 2026 deutlich erhoeht"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Valencia",
+    "content": "1. Ciudad de las Artes y las Ciencias – futuristischer Wissenschafts- und Kulturkomplex.\n2. Kathedrale von Valencia – gotische Kathedrale mit Glockenturm Miguelete.\n3. Lonja de la Seda – gotische Seidenbörse, UNESCO-Weltkulturerbe.\n4. Mercado Central – große Markthalle im Jugendstil.\n5. Jardín del Turia – Stadtpark im ehemaligen Flussbett.",
+    "source_tier": "3",
+    "source_name": "kreuzfahrt-kompass.com / visitvalencia.com",
+    "source_url": "https://www.kreuzfahrt-kompass.com/ausfluege/valencia.html",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Ciudad de las Artes y las Ciencias", "description": "Futuristischer Wissenschafts- und Kulturkomplex." },
+      { "name": "Kathedrale von Valencia", "description": "Gotische Kathedrale mit Glockenturm Miguelete." },
+      { "name": "Lonja de la Seda", "description": "Gotische Seidenbörse, UNESCO-Weltkulturerbe." },
+      { "name": "Mercado Central", "description": "Große Markthalle im Jugendstil." },
+      { "name": "Jardín del Turia", "description": "Stadtpark im ehemaligen Flussbett." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Valencia",
+    "content": "Kreuzfahrtschiffe legen an den Kais Transversal und Poniente an, unmittelbar am Eingang des Hafens gelegen – kein Durchqueren des Handelshafens nötig, direkter Zugang zu den Hauptstraßen • Betreiber Valenciaport, ca. 4-6 km vom Stadtzentrum entfernt.",
+    "source_tier": "1",
+    "source_name": "valenciaport.com (offizieller Hafenbetreiber)",
+    "source_url": "https://www.valenciaport.com/en/business/cruises/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com", "adventourbegins.com"]
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Valencia",
+    "content": "Der Hafen ist nicht fußläufig zum Zentrum (4-6 km) – ÖPNV-Kombination aus Metro (Linie 3/5) und Bus oder direktes Taxi (ca. 20-30 Min.) nötig • Bei entfernteren Liegeplätzen im Hafen kostenloser Shuttle zum Hafenausgang.",
+    "source_tier": "2",
+    "source_name": "adventourbegins.com / visitvalencia.com",
+    "source_url": "https://adventourbegins.com/valencia-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Valencia",
+    "content": "Beliebte Optionen: Besuch der Ciudad de las Artes y las Ciencias mit Oceanogràfic • Bummel durch die Altstadt mit Kathedrale • Strandtag an der Playa de las Arenas • Bootstour auf der Lagune Albufera.",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/valencia-auf-eigene-faust/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Valencia",
+    "content": "• Währung: Euro (€) • Sprache: Spanisch/Valencianisch • Region: Valencianische Gemeinschaft • Bis 2026 im Ausbau: neues Terminal Europa mit Kapazität für die größten Kreuzfahrtschiffe (bis 360 m).",
+    "source_tier": "2",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/valencia-port-678",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Cartagena (Spanien)",
+    "content": "1. Teatro Romano – gut erhaltenes römisches Theater aus dem 1. Jahrhundert v. Chr.\n2. Castillo de la Concepción – Festung aus dem 11. Jahrhundert.\n3. Rathaus (Palacio Consistorial) – Gebäude mit weißer Marmorfassade am Hafen.\n4. Gran Hotel – markantes Jugendstilgebäude.\n5. Punische Ausgrabungen & Stadtmauer – über 2200-jährige Geschichte der Stadt.",
+    "source_tier": "3",
+    "source_name": "kreuzfahrertipps.de / Bestager-Reiseblog",
+    "source_url": "https://www.kreuzfahrertipps.de/mittelmeer/cartagena/",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Teatro Romano", "description": "Gut erhaltenes römisches Theater aus dem 1. Jahrhundert v. Chr." },
+      { "name": "Castillo de la Concepción", "description": "Festung aus dem 11. Jahrhundert." },
+      { "name": "Rathaus (Palacio Consistorial)", "description": "Gebäude mit weißer Marmorfassade am Hafen." },
+      { "name": "Gran Hotel", "description": "Markantes Jugendstilgebäude." },
+      { "name": "Punische Ausgrabungen & Stadtmauer", "description": "Über 2200-jährige Geschichte der Stadt." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Cartagena (Spanien)",
+    "content": "Kreuzfahrtschiffe legen am Pier Alfonso XII Cruise Terminal an, ca. 1.000 Fuß (ca. 300 m) vom Stadtzentrum entfernt, direkt neben dem Yachtclub Real Club de Regatas • Zweiter, seltener genutzter Anleger Muelle de la Curra erfordert Shuttle.",
+    "source_tier": "1",
+    "source_name": "cruisecritic.com / celebritycruises.com",
+    "source_url": "https://www.cruisecritic.com/find-a-cruise/port-cartagena-spain",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com", "adventourbegins.com"]
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Cartagena (Spanien)",
+    "content": "Vom Hauptanleger sind es nur 5-10 Gehminuten zum historischen Zentrum, das Naval-Museum liegt direkt am Weg • Nahezu alle Sehenswürdigkeiten sind fußläufig, Cartagena gilt laut Tier-1-Quelle als sehr einfach eigenständig zu erkunden.",
+    "source_tier": "1",
+    "source_name": "celebritycruises.com / adventourbegins.com",
+    "source_url": "https://www.celebritycruises.com/ports/cartagena-spain",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Cartagena (Spanien)",
+    "content": "Beliebte Optionen: Besichtigung des Teatro Romano und Castillo de la Concepción • Spaziergang durch die historische Altstadt • Strandtag an der Cala Cortina.",
+    "source_tier": "3",
+    "source_name": "Bestager-Reiseblog",
+    "source_url": "https://bestager-reiseblog.de/ein-fantastischer-tag-in-cartagena/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Cartagena (Spanien)",
+    "content": "• Währung: Euro (€) • Sprache: Spanisch • Region: Murcia • Nicht alle Geschäfte/Restaurants akzeptieren Kreditkarten, Bargeld empfehlenswert.",
+    "source_tier": "1",
+    "source_name": "cruisecritic.com",
+    "source_url": "https://www.cruisecritic.com/find-a-cruise/port-cartagena-spain",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Málaga",
+    "content": "1. Alcazaba – maurische Festung mit Gärten und Panoramablick.\n2. Castillo de Gibralfaro – Burganlage oberhalb der Alcazaba.\n3. Kathedrale von Málaga – unvollendetes Renaissance-Bauwerk.\n4. Museo Picasso & Geburtshaus – Museen zu Pablo Picasso.\n5. Muelle Uno – moderne Hafenpromenade mit Geschäften.",
+    "source_tier": "3",
+    "source_name": "AIDA / seetours.de",
+    "source_url": "https://aida.de/hafen/malaga",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Alcazaba", "description": "Maurische Festung mit Gärten und Panoramablick." },
+      { "name": "Castillo de Gibralfaro", "description": "Burganlage oberhalb der Alcazaba." },
+      { "name": "Kathedrale von Málaga", "description": "Unvollendetes Renaissance-Bauwerk." },
+      { "name": "Museo Picasso & Geburtshaus", "description": "Museen zu Pablo Picasso." },
+      { "name": "Muelle Uno", "description": "Moderne Hafenpromenade mit Geschäften." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Málaga",
+    "content": "Málaga ist ein reiner Liegehafen (kein Tendern): Kleinere/Luxusschiffe legen an Muelle Uno/Palmeral (nahe der Altstadt, 5-10 Min. zu Fuß) an, größere Schiffe (MSC, Royal Caribbean, Costa u. a.) an Terminal A/B am Muelle de Levante (2,5 km, 25-35 Min. Fußweg oder Taxi ca. 6-8 €) • Betreiber puertomalaga.com.",
+    "source_tier": "1",
+    "source_name": "puertomalaga.com (offizieller Hafenbetreiber)",
+    "source_url": "https://www.puertomalaga.com/en/access/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com", "cruiseports.org"]
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Málaga",
+    "content": "Von Muelle Uno/Palmeral ist die Altstadt in 5-10 Minuten zu Fuß erreichbar • Von Terminal A/B (Muelle de Levante) sind es 25-35 Min. am Hafenweg entlang oder eine kurze Taxifahrt – viele Reedereien bieten kostenlose Shuttles zur Plaza de la Marina an.",
+    "source_tier": "2",
+    "source_name": "cruiseports.org / cruisecrocodile.com",
+    "source_url": "https://cruiseports.org/ports/malaga",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Málaga",
+    "content": "Beliebte Optionen: Tagesausflug zur Alhambra in Granada (nur bei langer Liegezeit, 9+ Std. empfohlen) • Fahrt nach Marbella und Puerto Banús • Höhlen von Nerja • Ausflug zu den „weißen Dörfern“ Andalusiens.",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/malaga-auf-eigene-faust/",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Málaga",
+    "content": "• Währung: Euro (€) • Sprache: Spanisch • Region: Andalusien • Málaga gilt als zweitwichtigster Kreuzfahrthafen Spaniens.",
+    "source_tier": "3",
+    "source_name": "elkeskreuzfahrten.de",
+    "source_url": "https://www.elkeskreuzfahrten.de/mittelmeer/m%C3%A1laga/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Ibiza",
+    "content": "1. Dalt Vila – UNESCO-geschützte, ummauerte Altstadt.\n2. Kathedrale Santa Maria d'Eivissa – Kathedrale aus dem 14. Jahrhundert.\n3. Yachthafen & Promenade – Geschäfte und Bars am Wasser.\n4. Es Vedrà – markante Felseninsel vor der Südwestküste.\n5. Playa d'en Bossa – bekannter Strand nahe der Inselhauptstadt.",
+    "source_tier": "3",
+    "source_name": "AIDA / meine-landausfluege.de",
+    "source_url": "https://aida.de/hafen/ibiza",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Dalt Vila", "description": "UNESCO-geschützte, ummauerte Altstadt." },
+      { "name": "Kathedrale Santa Maria d'Eivissa", "description": "Kathedrale aus dem 14. Jahrhundert." },
+      { "name": "Yachthafen & Promenade", "description": "Geschäfte und Bars am Wasser." },
+      { "name": "Es Vedrà", "description": "Markante Felseninsel vor der Südwestküste." },
+      { "name": "Playa d'en Bossa", "description": "Bekannter Strand nahe der Inselhauptstadt." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Ibiza",
+    "content": "Die meisten großen/mittelgroßen Schiffe legen am Botafoc-Pier (auch Passeig Marítim) an, gegenüber der Altstadt gelegen (ca. 3,5 km) • Kleinere Schiffe können am Levante-Kai innerhalb des Haupthafens direkt bei der Altstadtmauer anlegen (fußläufig) • Tendern ist unüblich, kann aber bei Vollbelegung vorkommen.",
+    "source_tier": "2",
+    "source_name": "adventourbegins.com / cruisedig.com",
+    "source_url": "https://www.adventourbegins.com/port-of-ibiza-cruise-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Ibiza",
+    "content": "Vom Botafoc-Pier sind es ca. 3,5 km bis zur Altstadt – Shuttlebus, Taxi oder das „City Boat“ (alle 15 Min., 4-6 € pro Strecke, Anlegestelle 200 m vom Terminal) werden empfohlen • Legt das Schiff direkt am Levante-Kai an, beginnt die Altstadt sofort.",
+    "source_tier": "2",
+    "source_name": "cruisedig.com / whatsinport.com",
+    "source_url": "https://cruisedig.com/ports/ibiza-spain",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Ibiza",
+    "content": "Beliebte Optionen: Bootstour/Ausflug zur Bucht Cala Port des Torrent • Strandtag am Playa d'en Bossa • Spaziergang durch Dalt Vila mit Kathedrale und Stadtmauern.",
+    "source_tier": "3",
+    "source_name": "MSC Cruises",
+    "source_url": "https://www.msccruises.de/hafen/ibiza",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Ibiza",
+    "content": "• Währung: Euro (€) • Sprache: Spanisch/Katalanisch • Balearen, Spanien • Die Insel ist neben dem Nachtleben auch für ihre UNESCO-geschützte Altstadt bekannt.",
+    "source_tier": "3",
+    "source_name": "kreuzfahrertipps.de",
+    "source_url": "https://www.kreuzfahrertipps.de/mittelmeer/ibiza/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Marseille",
+    "content": "1. Vieux Port – historischer Alter Hafen mit Fischmarkt.\n2. Notre-Dame de la Garde – Basilika hoch über der Stadt.\n3. Le Panier – ältestes Hafenviertel mit engen Gassen.\n4. MuCEM – modernes Museum direkt am Wasser.\n5. Calanques-Nationalpark – spektakuläre Kalksteinbuchten südlich der Stadt.",
+    "source_tier": "3",
+    "source_name": "ahoi-schiff.de / AIDA",
+    "source_url": "https://www.ahoi-schiff.de/reiseziele/frankreich/marseille",
+    "staleness": "zeitlos",
+    "items": [
+      { "name": "Vieux Port", "description": "Historischer Alter Hafen mit Fischmarkt." },
+      { "name": "Notre-Dame de la Garde", "description": "Basilika hoch über der Stadt." },
+      { "name": "Le Panier", "description": "Ältestes Hafenviertel mit engen Gassen." },
+      { "name": "MuCEM", "description": "Modernes Museum direkt am Wasser." },
+      { "name": "Calanques-Nationalpark", "description": "Spektakuläre Kalksteinbuchten südlich der Stadt." }
+    ]
+  },
+  {
+    "category": "anleger",
+    "title": "Marseille",
+    "content": "Die meisten (v. a. großen) Schiffe legen am Marseille Provence Cruise Terminal (MPCT, Môle Léon Gourret, Gate 4) an, sechs Terminals A-F, Kapazität für sechs Großschiffe gleichzeitig, ca. 7-8 km vom Vieux-Port entfernt • Kleinere Schiffe/Expeditionsschiffe können näher am Zentrum an La Joliette anlegen (ca. 15 Gehminuten zum Vieux-Port) • Homeport für MSC, Costa, AIDA u. a.",
+    "source_tier": "1",
+    "source_name": "marseille-tourisme.com (offizielle Tourismusseite) / Grand Port Maritime de Marseille",
+    "source_url": "https://www.marseille-tourisme.com/en/organize-your-stay/practical-information/access-to-marseille-cruise-port/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com", "adventourbegins.com", "anchorsup.com"]
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Marseille",
+    "content": "Von MPCT ist ein Fußweg NICHT praktikabel (7-8 km, 60-90 Min. an unattraktiven Hauptstraßen) – kostenloser Shuttle des Hafenbetreibers verkehrt alle 20 Minuten zum Vieux-Port, alternativ RTM-Bus oder Taxi (ca. 17-25 €) • Von La Joliette ist ein Fußweg (20-30 Min.) hingegen gut machbar.",
+    "source_tier": "1",
+    "source_name": "marseille-tourisme.com",
+    "source_url": "https://www.marseille-tourisme.com/en/organize-your-stay/practical-information/access-to-marseille-cruise-port/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["anchorsup.com", "adventourbegins.com"]
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Marseille",
+    "content": "Beliebte Optionen: Bootstour zu den Calanques südlich der Stadt • Besuch von Notre-Dame de la Garde • Tagesausflug nach Aix-en-Provence oder Cassis • Spaziergang durch Le Panier.",
+    "source_tier": "3",
+    "source_name": "ahoi-schiff.de",
+    "source_url": "https://www.ahoi-schiff.de/reiseziele/frankreich/marseille",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "praktisches",
+    "title": "Marseille",
+    "content": "• Währung: Euro (€) • Sprache: Französisch • Region: Provence • Marseille ist Frankreichs größter Seehafen und wichtiger Homeport für Mittelmeerkreuzfahrten (MSC, Costa, AIDA, Royal Caribbean, Norwegian, Princess).",
+    "source_tier": "1",
+    "source_name": "cruisealert.com",
+    "source_url": "https://cruisealert.com/content/port-guide/marseille-provence-france",
+    "staleness": "saisonal"
+  }
+]

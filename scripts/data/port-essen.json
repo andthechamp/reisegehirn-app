@@ -1,36 +1,45 @@
 [
   {
-    "port_name": "Kiel",
-    "title": "Kiel",
+    "port_name": "Aarhus",
+    "title": "Aarhus",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
   },
   {
-    "port_name": "Hamburg",
-    "title": "Hamburg",
+    "port_name": "Ajaccio (Korsika)",
+    "title": "Ajaccio (Korsika)",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
   },
   {
-    "port_name": "Kopenhagen",
-    "title": "Kopenhagen",
+    "port_name": "Akureyri",
+    "title": "Akureyri",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
   },
   {
-    "port_name": "Invergordon",
-    "title": "Invergordon",
+    "port_name": "Arrecife (Lanzarote)",
+    "title": "Arrecife (Lanzarote)",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Barcelona",
+    "title": "Barcelona",
+    "content": "",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
@@ -39,7 +48,43 @@
     "port_name": "Belfast",
     "title": "Belfast",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Bilbao",
+    "title": "Bilbao",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Bordeaux / Pauillac",
+    "title": "Bordeaux / Pauillac",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Bremerhaven",
+    "title": "Bremerhaven",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Cagliari (Sardinien)",
+    "title": "Cagliari (Sardinien)",
+    "content": "",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
@@ -48,7 +93,223 @@
     "port_name": "Cartagena",
     "title": "Cartagena",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Cartagena (Spanien)",
+    "title": "Cartagena (Spanien)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Civitavecchia / Rom",
+    "title": "Civitavecchia / Rom",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Danzig (Gdynia)",
+    "title": "Danzig (Gdynia)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Dover",
+    "title": "Dover",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Dublin (Dún Laoghaire)",
+    "title": "Dublin (Dún Laoghaire)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Dubrovnik",
+    "title": "Dubrovnik",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Funchal (Madeira)",
+    "title": "Funchal (Madeira)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Geiranger",
+    "title": "Geiranger",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Göteborg",
+    "title": "Göteborg",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Hamburg",
+    "title": "Hamburg",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Helsinki",
+    "title": "Helsinki",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Heraklion (Kreta)",
+    "title": "Heraklion (Kreta)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Honningsvåg (Nordkap)",
+    "title": "Honningsvåg (Nordkap)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Ibiza",
+    "title": "Ibiza",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Invergordon",
+    "title": "Invergordon",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Istanbul",
+    "title": "Istanbul",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Katakolon / Olympia",
+    "title": "Katakolon / Olympia",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Kiel",
+    "title": "Kiel",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Klaipėda",
+    "title": "Klaipėda",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Kopenhagen",
+    "title": "Kopenhagen",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Korfu",
+    "title": "Korfu",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Kotor (Montenegro)",
+    "title": "Kotor (Montenegro)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Kristiansand",
+    "title": "Kristiansand",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Kusadasi / Ephesos",
+    "title": "Kusadasi / Ephesos",
+    "content": "",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
@@ -57,7 +318,187 @@
     "port_name": "La Romana",
     "title": "La Romana",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "La Spezia / Cinque Terre",
+    "title": "La Spezia / Cinque Terre",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Las Palmas de Gran Canaria",
+    "title": "Las Palmas de Gran Canaria",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Le Havre",
+    "title": "Le Havre",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Leixões (Porto)",
+    "title": "Leixões (Porto)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Leknes (Lofoten)",
+    "title": "Leknes (Lofoten)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Lissabon",
+    "title": "Lissabon",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Livorno / Florenz",
+    "title": "Livorno / Florenz",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Longyearbyen (Spitzbergen)",
+    "title": "Longyearbyen (Spitzbergen)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Marseille",
+    "title": "Marseille",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Mindelo (São Vicente, Kapverden)",
+    "title": "Mindelo (São Vicente, Kapverden)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Molde",
+    "title": "Molde",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Mykonos",
+    "title": "Mykonos",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Málaga",
+    "title": "Málaga",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Neapel",
+    "title": "Neapel",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Oslo",
+    "title": "Oslo",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Palermo (Sizilien)",
+    "title": "Palermo (Sizilien)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Palma de Mallorca",
+    "title": "Palma de Mallorca",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Piräus / Athen",
+    "title": "Piräus / Athen",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Ponta Delgada (São Miguel, Azoren)",
+    "title": "Ponta Delgada (São Miguel, Azoren)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Praia (Santiago, Kapverden)",
+    "title": "Praia (Santiago, Kapverden)",
+    "content": "",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"
@@ -66,7 +507,178 @@
     "port_name": "Puerto Limon",
     "title": "Puerto Limon",
     "content": "",
-    "source_tier": "B",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Puerto del Rosario (Fuerteventura)",
+    "title": "Puerto del Rosario (Fuerteventura)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Reykjavik",
+    "title": "Reykjavik",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Rhodos",
+    "title": "Rhodos",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Riga",
+    "title": "Riga",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Rostock-Warnemünde",
+    "title": "Rostock-Warnemünde",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Rotterdam",
+    "title": "Rotterdam",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Santa Cruz de Tenerife",
+    "title": "Santa Cruz de Tenerife",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Santorin",
+    "title": "Santorin",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Split (Kroatien)",
+    "title": "Split (Kroatien)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "St. Peter Port (Guernsey)",
+    "title": "St. Peter Port (Guernsey)",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Stockholm",
+    "title": "Stockholm",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Tallinn",
+    "title": "Tallinn",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Triest",
+    "title": "Triest",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Tromsø",
+    "title": "Tromsø",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Trondheim",
+    "title": "Trondheim",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Valencia",
+    "title": "Valencia",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Venedig",
+    "title": "Venedig",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Visby",
+    "title": "Visby",
+    "content": "",
+    "source_tier": "2",
+    "source_name": "",
+    "source_url": "",
+    "staleness": "verfällt"
+  },
+  {
+    "port_name": "Ålesund",
+    "title": "Ålesund",
+    "content": "",
+    "source_tier": "2",
     "source_name": "",
     "source_url": "",
     "staleness": "verfällt"

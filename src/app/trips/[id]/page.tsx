@@ -134,7 +134,7 @@ function TripPageContent() {
   const bordAbcFindings = context.research.filter((r) => r.category === "bord_abc");
 
   return (
-    <div className="lg:mx-auto lg:flex lg:max-w-5xl lg:items-start lg:gap-10 lg:px-6 lg:pt-12">
+    <div className="lg:mx-auto lg:flex lg:max-w-7xl lg:items-start lg:gap-10 lg:px-6 lg:pt-12">
       <TabBar active={activeTab === "bord-abc" ? "reise" : activeTab} onChange={setTab} />
 
       <main className="mx-auto min-h-screen max-w-2xl flex-1 space-y-8 px-6 pb-[104px] pt-12 lg:mx-0 lg:max-w-none lg:px-0 lg:pb-12 lg:pt-0">

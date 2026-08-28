@@ -92,7 +92,22 @@
       "Bash(curl -s --max-time 10 \"https://marine-api.open-meteo.com/v1/marine?latitude=55.67594&longitude=12.7&daily=sea_surface_temperature_max&start_date=2023-08-20&end_date=2023-08-24\")",
       "Bash(curl -s --max-time 8 \"https://api.open-meteo.com/v1/forecast?latitude=55.67594&longitude=12.56553&daily=temperature_2m_max&timezone=auto&forecast_days=6\")",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(list\\(zip\\(d['daily']['time'], d['daily']['temperature_2m_max']\\)\\)\\)\")",
-      "Bash(curl -s --max-time 10 \"https://de.wikipedia.org/w/api.php?action=query&list=geosearch&gscoord=55.6761%7C12.5683&gsradius=3000&gslimit=15&format=json\")"
+      "Bash(curl -s --max-time 10 \"https://de.wikipedia.org/w/api.php?action=query&list=geosearch&gscoord=55.6761%7C12.5683&gsradius=3000&gslimit=15&format=json\")",
+      "Bash(node --env-file=.env.local -e ' *)",
+      "Bash(node --env-file=.env.local scripts/backfill-sight-images.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-caribbean.ts)",
+      "Bash(python3)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-batch13.ts)",
+      "Bash(node --env-file=.env.local scripts/scan-research-gaps.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-caribbean-batch2.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-batch14.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-asia.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-batch15.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-world.ts)",
+      "Bash(perl -i -pe 's/\"|\"|„/\"/g' /Users/marc-andrefaber/Downloads/reisegehirn-app/scripts/data/port-research-batch15.json)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-extended.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-final.ts)",
+      "Bash(node --env-file=.env.local scripts/seed-port-research-batch10.ts)"
     ]
   }
 }

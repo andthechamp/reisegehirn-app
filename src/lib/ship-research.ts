@@ -140,6 +140,8 @@ export async function researchAndSaveShip(
     source_tier: f.source_tier,
     source_name: f.source_name,
     source_url: f.source_url,
+    tier_note: f.tier_note ?? null,
+    confirmed_by: f.confirmed_by ?? null,
     staleness: f.staleness,
     sort_order: i,
   }));
@@ -203,6 +205,8 @@ export async function researchAndSaveCabin(
     source_tier: f.source_tier,
     source_name: f.source_name,
     source_url: f.source_url,
+    tier_note: f.tier_note ?? null,
+    confirmed_by: f.confirmed_by ?? null,
     staleness: f.staleness,
     sort_order: i,
   }));

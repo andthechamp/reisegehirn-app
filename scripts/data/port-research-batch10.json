@@ -1,0 +1,514 @@
+[
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Venedig",
+    "content": "1. Piazza San Marco – zentraler Platz mit Markusdom und Campanile\n2. Dogenpalast (Palazzo Ducale) – ehemaliger Regierungssitz der Republik Venedig\n3. Rialtobrücke – älteste und berühmteste der drei Grand-Canal-Brücken\n4. Seufzerbrücke – verbindet Dogenpalast mit dem alten Gefängnis\n5. Inseln Murano und Burano – bekannt für Glaskunst bzw. bunte Häuser und Spitzenklöppelei",
+    "items": [
+      {"name": "Piazza San Marco", "description": "Zentraler Platz mit Markusdom und Campanile"},
+      {"name": "Dogenpalast", "description": "Ehemaliger Regierungssitz der Republik Venedig"},
+      {"name": "Rialtobrücke", "description": "Älteste und berühmteste der drei Grand-Canal-Brücken"},
+      {"name": "Seufzerbrücke", "description": "Verbindet Dogenpalast mit dem alten Gefängnis"},
+      {"name": "Murano & Burano", "description": "Inseln bekannt für Glaskunst bzw. bunte Häuser und Spitzenklöppelei"}
+    ],
+    "source_tier": "3",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Venice.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Venedig",
+    "content": "WICHTIG: Seit 2021 dürfen Schiffe über 25.000 BRZ bzw. über 2.000 Passagiere NICHT mehr an der historischen Stazione Marittima im Zentrum anlegen • Große Schiffe legen im Industriehafen Marghera oder in Fusina auf dem Festland an (ca. 15 Min. Fahrt zum Zentrum) • Viele Reedereien nutzen daher alternativ Ravenna (über 3 Std. entfernt) oder Triest (ca. 2 Std. entfernt) als Ausgangshafen mit Ausflug nach Venedig • Ab Frühjahr 2027 sollen laut Plänen wieder Schiffe bis 60.000 BRZ/250 m Länge in der Marittima anlegen dürfen (via Kanal Vittorio Emanuele III)",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisemapper.com",
+    "source_url": "https://www.whatsinport.com/Venice.htm",
+    "staleness": "verfällt",
+    "tier_note": "Zentrale Logistik-Info mit hoher Änderungsdynamik (Regulierung seit 2021, Pläne für 2027) – vor Reise unbedingt aktuellen Stand beim jeweiligen Reiseanbieter prüfen.",
+    "confirmed_by": ["cruisemapper.com/news"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Venedig",
+    "content": "Mein Schiff (TUI Cruises) bietet häufig Kreuzfahrten mit Venedig als Ausflugsziel ab dem Heimathafen Triest an, sowie geführte Landausflüge nach Venedig buchbar über meinschiff.com • Auch NCL, Costa, MSC, AIDA, Carnival und Royal Caribbean fahren Venedig an",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de",
+    "source_url": "https://meine-landausfluege.de/venedig-kreuzfahrt-ausfluege/",
+    "staleness": "saisonal",
+    "tier_note": "Keine direkte meinschiff.com-Hafenseite mit Terminaldetails auffindbar, daher Tier-3-Bestätigung genutzt."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Venedig",
+    "content": "Ab Marghera/Fusina fahren Busse, People Mover, Wasserbus (Vaporetto) oder Taxi ins Zentrum, Fahrzeit ca. 15-20 Minuten • Ab dem alten Terminal Marittima (falls genutzt) kostet der People Mover ins Piazzale Roma 1,50 Euro, von dort ACTV-Tagesticket für die Vaporetti ab 20 Euro • Bei Ausflügen ab Triest oder Ravenna sollte für Hin- und Rückfahrt ausreichend Zeit (ca. 2-3 Std. je Strecke) eingeplant werden • An bestimmten Tagen ist eine vorherige Online-Registrierung für Tagesbesucher (Venezia Unica) nötig",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de / whatsinport.com",
+    "source_url": "https://meine-landausfluege.de/venedig-kreuzfahrt-ausfluege/",
+    "staleness": "verfällt",
+    "tier_note": "Registrierungspflicht und Gebühren ändern sich häufig, vor Reise auf offizieller Venezia-Unica-Seite prüfen."
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Venedig",
+    "content": "Von Marghera/Fusina ist das historische Zentrum NICHT zu Fuß erreichbar, ein Shuttle/Bus/Boot ist zwingend erforderlich • Nur am alten Terminal Marittima (aktuell kaum noch für Großschiffe genutzt) liegt das Zentrum in kurzer Wegedistanz • Innerhalb Venedigs selbst ist die Altstadt komplett autofrei und nur zu Fuß bzw. per Boot zu erschließen",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / thepointsguy.com",
+    "source_url": "https://thepointsguy.com/cruise/venice-cruise-port-guide/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Venedig",
+    "content": "Typisch venezianisch sind Cicchetti – kleine Snacks/Häppchen (u. a. Kichererbsen-Sardellen-Paste, Prosciutto mit Feige, Baccalà) ähnlich spanischen Tapas, traditionell in Bacari (kleinen Weinbars) serviert • Weitere Klassiker sind Sarde in Saor (marinierte Sardinen) und Risi e Bisi (Reis mit Erbsen) • Achtung: Venedig gilt laut whatsinport.com als sehr teuer, ein Cappuccino am Markusplatz mit Live-Musik kann rund 14 Euro kosten",
+    "source_tier": "3",
+    "source_name": "piasdeli.de / whatsinport.com",
+    "source_url": "https://piasdeli.de/Rezepte/cicchetti/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Venedig",
+    "content": "Währung: Euro (EUR) • Sprache: Italienisch • Kein Visum erforderlich, Personalausweis meist ausreichend • Notrufnummer: 112 • Hauptsaison für Kreuzfahrten ist März bis November, in den Wintermonaten laufen nur wenige Schiffe den Hafen an",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de",
+    "source_url": "https://meine-landausfluege.de/venedig-kreuzfahrt-ausfluege/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Triest",
+    "content": "1. Piazza Unità d'Italia – einer der größten Meeresplätze Europas, direkt am Hafen\n2. Molo Audace – Hafenpromenade mit Blick auf die Adria\n3. Schloss Miramare – prunkvolles Habsburger-Schloss an der Küste\n4. Canal Grande di Trieste – kleiner Kanal mitten in der Stadt mit Kirche Sant'Antonio Nuovo\n5. Castello di San Giusto – Burg mit Kathedrale und Panoramablick über die Stadt",
+    "items": [
+      {"name": "Piazza Unità d'Italia", "description": "Einer der größten Meeresplätze Europas, direkt am Hafen"},
+      {"name": "Molo Audace", "description": "Hafenpromenade mit Blick auf die Adria"},
+      {"name": "Schloss Miramare", "description": "Prunkvolles Habsburger-Schloss an der Küste"},
+      {"name": "Canal Grande di Trieste", "description": "Kleiner Kanal mit Kirche Sant'Antonio Nuovo"},
+      {"name": "Castello di San Giusto", "description": "Burg mit Kathedrale und Panoramablick über die Stadt"}
+    ],
+    "source_tier": "3",
+    "source_name": "ahoi-schiff.de / diycruiseports.com",
+    "source_url": "https://www.ahoi-schiff.de/hafenwelten/kreuzfahrt-triest",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Triest",
+    "content": "Schiffe legen an der Stazione Marittima (Molo dei Bersaglieri) an, unmittelbar im Herzen der Stadt, nur wenige Schritte von der Piazza Unità d'Italia • Es gibt zwei Liegeplätze: Berth 29 (220 m) und Berth 30 (240 m); durch eine neue Dalbe können inzwischen auch Schiffe bis 300 m Länge anlegen, darunter die Mein Schiff-Flotte von TUI Cruises • Trieste Terminal Passeggeri (TAMI) wird seit 2018 mehrheitlich von MSC Cruises gehalten",
+    "source_tier": "1",
+    "source_name": "triesteterminal.it / seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.triesteterminal.it/en/terminal-crocieristico/",
+    "staleness": "zeitlos",
+    "confirmed_by": ["cruisemapper.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Triest",
+    "content": "Mein Schiff (TUI Cruises) nutzt Triest regelmäßig als Heimathafen für Adria- und östliche Mittelmeerkreuzfahrten (z. B. Mein Schiff 4 und Mein Schiff 6), buchbar über meinschiff.com • Landausflüge werden sowohl in Triest selbst als auch als Tagesausflug ins nahe Venedig angeboten",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de/haefen/triest-italien-2268",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Triest",
+    "content": "Nach Venedig fährt fast stündlich ein Zug, Fahrzeit ca. 2 Stunden, Preis ca. 16 Euro pro Person (einfache Fahrt) • kreuzfahrt-kompass.com empfiehlt für einen Venedig-Ausflug ab Triest mindestens 2-3 Tage zusätzliche Zeit einzuplanen, wenn man nicht nur einen kurzen Tagesausflug macht • seereiseplanung-kreuzfahrten.de bietet ein eigenes Hafenporträt mit Tipps zur Erkundung auf eigene Faust",
+    "source_tier": "3",
+    "source_name": "kreuzfahrt-kompass.com / seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.kreuzfahrt-kompass.com/haefen/triest.html",
+    "staleness": "verfällt",
+    "tier_note": "Zugpreis Stand ca. 2026, kann sich ändern."
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Triest",
+    "content": "Das Kreuzfahrtterminal liegt ca. 500 Meter bzw. wenige Gehminuten von der Piazza Unità d'Italia und dem Stadtzentrum entfernt • Der Terminal ist ein bequemer Fußweg direkt gegenüber der zentralen Piazza, keine Shuttle-Notwendigkeit",
+    "source_tier": "2",
+    "source_name": "seereiseplanung-kreuzfahrten.de / tripadvisor.com",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/triest-auf-eigene-faust/",
+    "staleness": "zeitlos",
+    "tier_note": "Hauptquelle Tier-3, aber durch Tripadvisor-Beschreibung (kurzer Fußweg über die Straße) bestätigt."
+  },
+  {
+    "category": "essen",
+    "title": "Triest",
+    "content": "Triest hat durch seine österreichisch-italienisch-slowenische Geschichte eine besondere Küche: Cicchetti (kleine Häppchen) und lokale Weinbars wie \"Al Ciketo\" sind beliebt • Typisch ist auch der Jota (Eintopf mit Sauerkraut und Bohnen) sowie Kaffeehauskultur nach Wiener Vorbild (Caffè San Marco, Caffè degli Specchi)",
+    "source_tier": "3",
+    "source_name": "kate-reist.at",
+    "source_url": "https://www.kate-reist.at/gut-essen/italien/gut-essen-und-trinken-in-triest/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Triest",
+    "content": "Währung: Euro (EUR) • Sprache: Italienisch, teils auch Slowenisch (Grenzregion) • Notrufnummer: 112 • Triest ist ein Turnaround-/Heimathafen mit guter Zug-/Flugverbindung, u. a. nutzt TUI Cruises Direktflüge z. B. ab Stuttgart",
+    "source_tier": "3",
+    "source_name": "meine-kreuzfahrtlounge.de",
+    "source_url": "https://www.meine-kreuzfahrtlounge.de/news/mein-schiff-neue-flugverbindungen-von-stuttgart-nach-venedig/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Dubrovnik",
+    "content": "1. Altstadt Dubrovnik (UNESCO-Weltkulturerbe) – mittelalterliche Stadtmauer und Marmorstraßen\n2. Stadtmauern von Dubrovnik – begehbare Festungsmauer mit Panoramablick (ca. 2 km lang)\n3. Franziskanerkloster & Klosterapotheke – eine der ältesten noch funktionierenden Apotheken Europas\n4. Stradun – Hauptstraße/Flaniermeile der Altstadt\n5. Seilbahn zum Berg Srđ – Panoramablick über die gesamte Altstadt und Küste",
+    "items": [
+      {"name": "Altstadt Dubrovnik", "description": "UNESCO-Weltkulturerbe mit mittelalterlicher Stadtmauer"},
+      {"name": "Stadtmauern von Dubrovnik", "description": "Begehbare Festungsmauer mit Panoramablick, ca. 2 km lang"},
+      {"name": "Franziskanerkloster", "description": "Eine der ältesten noch funktionierenden Apotheken Europas"},
+      {"name": "Stradun", "description": "Hauptstraße und Flaniermeile der Altstadt"},
+      {"name": "Seilbahn zum Srđ", "description": "Panoramablick über die gesamte Altstadt und Küste"}
+    ],
+    "source_tier": "3",
+    "source_name": "chasingthedonkey.com / diycruiseports.com",
+    "source_url": "https://www.chasingthedonkey.com/day-in-dubrovnik-cruise-port-croatia/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Dubrovnik",
+    "content": "Die meisten Schiffe (u. a. Royal Caribbean, Celebrity, MSC, NCL) legen im Hafen Gruž an, ca. 3 km nordwestlich der Altstadt • Direkt vor dem Terminal befindet sich der zentrale Busbahnhof mit Linien 1A/1B in die Altstadt • Nur bei begrenzter Kapazität oder kleineren Schiffen wird direkt am alten Hafen (Old Port) getendert, dies ist heute unüblich • Der Hafen Gruž kann bis zu 5 Schiffe gleichzeitig aufnehmen",
+    "source_tier": "2",
+    "source_name": "iqcruising.com / cruisemapper.com",
+    "source_url": "https://www.iqcruising.com/ports/europe/croatia/dubrovnik/at-the-pier.html",
+    "staleness": "zeitlos",
+    "confirmed_by": ["chasingthedonkey.com", "diycruiseports.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Dubrovnik",
+    "content": "Mein Schiff (TUI Cruises) läuft Dubrovnik regelmäßig auf Adria- und östlichen Mittelmeerrouten an und bietet Landausflüge in die Altstadt und die Umgebung, buchbar über meinschiff.com",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/de",
+    "staleness": "saisonal",
+    "tier_note": "Konkrete Hafenseite für Dubrovnik nicht direkt verifiziert, aber Route über meinschiff.com bestätigt."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Dubrovnik",
+    "content": "Vom Hafen Gruž fahren lokale Busse (Linie 1A/1B) für ca. 2,50-3 Euro pro Fahrt in die Altstadt, alternativ Taxi (ca. 10-15 Minuten Fahrt) • Weiter hinter dem Terminal liegen ein Obst-/Gemüsemarkt sowie Restaurants und Cafés • Beliebte Ausflüge auf eigene Faust sind die Stadtmauer-Wanderung sowie ein Ausflug in die Bucht von Kotor",
+    "source_tier": "3",
+    "source_name": "chasingthedonkey.com",
+    "source_url": "https://www.chasingthedonkey.com/day-in-dubrovnik-cruise-port-croatia/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Dubrovnik",
+    "content": "Vom Hafen Gruž ist die Altstadt ca. 3 km entfernt und NICHT bequem zu Fuß erreichbar, ein Bus- oder Taxitransfer wird empfohlen • Nur wenn ausnahmsweise am Old Port getendert wird, liegt die Altstadt direkt am Anleger",
+    "source_tier": "2",
+    "source_name": "iqcruising.com / diycruiseports.com",
+    "source_url": "https://diycruiseports.com/diy-port-guides/dubrovnik-cruise-port-see-the-best-in-6-hours-or-less-diy-guide",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Dubrovnik",
+    "content": "Typisch dalmatinisch sind gegrillter Fisch und Meeresfrüchte, Črni Rižot (schwarzer Risotto mit Tintenfisch) sowie Pašticada (geschmortes Rindfleisch mit Gnocchi) • In der Altstadt lohnt sich ein Bummel durch die Seitengassen abseits des Stradun für authentischere und günstigere Restaurants",
+    "source_tier": "3",
+    "source_name": "reddit.com r/Cruise",
+    "source_url": "https://www.reddit.com/r/Cruise/comments/1m5sd0f/recommendations_for_split_kotor_dubrovnik_athens/",
+    "staleness": "zeitlos",
+    "tier_note": "Essen-Tipp allgemein gehalten, keine spezifische deutsche Blog-Quelle mit Restaurant-Empfehlung für Dubrovnik gefunden."
+  },
+  {
+    "category": "praktisches",
+    "title": "Dubrovnik",
+    "content": "Währung: Euro (EUR, seit 2023) • Sprache: Kroatisch • Notrufnummer: 112 • Kroatien ist EU- und Schengen-Mitglied, für Schengen-Bürger reicht der Personalausweis • Dubrovnik zählt jährlich ca. 600 Schiffsanläufe und rund 900.000 Kreuzfahrtpassagiere",
+    "source_tier": "1",
+    "source_name": "cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/dubrovnik-port-137",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Split (Kroatien)",
+    "content": "1. Diokletianpalast (UNESCO-Weltkulturerbe) – römischer Palastkomplex, Herzstück der Altstadt\n2. Peristyl-Platz – zentraler Platz innerhalb des Diokletianpalastes\n3. Kathedrale St. Domnius (Sveti Duje) mit Glockenturm und Panoramablick\n4. Bronzenes Tor (Bronze Gate) – südlicher Zugang zum Palast direkt vom Hafen\n5. Marjan-Hügel – Wald- und Aussichtsgebiet mit Blick über Split und die Adria",
+    "items": [
+      {"name": "Diokletianpalast", "description": "Römischer Palastkomplex, UNESCO-Weltkulturerbe, Herzstück der Altstadt"},
+      {"name": "Peristyl-Platz", "description": "Zentraler Platz innerhalb des Diokletianpalastes"},
+      {"name": "Kathedrale St. Domnius", "description": "Glockenturm mit Panoramablick über die Stadt"},
+      {"name": "Bronzenes Tor", "description": "Südlicher Zugang zum Palast direkt vom Hafen"},
+      {"name": "Marjan-Hügel", "description": "Wald- und Aussichtsgebiet mit Blick über Split und die Adria"}
+    ],
+    "source_tier": "2",
+    "source_name": "cruisesheet.com / diycruiseports.com",
+    "source_url": "https://cruisesheet.com/port/split",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Split (Kroatien)",
+    "content": "Der Hafen liegt direkt im Zentrum von Split, die Schiffe legen am Gat Sv. Duje oder in unmittelbarer Nähe an • Die Altstadt (Diokletianpalast/Bronzenes Tor) ist nur ca. 5-15 Gehminuten (800 m) entfernt, ebenso Bahnhof und Fernbusbahnhof • Es handelt sich um einen Liegeplatzhafen, kein Tenderhafen",
+    "source_tier": "3",
+    "source_name": "whatsinport.com / adventourbegins.com",
+    "source_url": "https://www.whatsinport.com/Split.htm",
+    "staleness": "zeitlos",
+    "tier_note": "Beste verfügbare Quelle ist Tier 3 (whatsinport zählt als Tier 2, adventourbegins als Tier 3); übereinstimmend bestätigt durch cruisesheet.com (Tier 2).",
+    "confirmed_by": ["cruisesheet.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Split (Kroatien)",
+    "content": "Mein Schiff (TUI Cruises) läuft Split im Rahmen von Adriakreuzfahrten an und bietet Landausflüge über meinschiff.com an, u. a. Stadtführungen durch den Diokletianpalast und Ausflüge zu den Krka-Wasserfällen",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/split-auf-eigene-faust/",
+    "staleness": "saisonal",
+    "tier_note": "Direkte meinschiff.com-Hafenseite für Split nicht separat verifiziert, daher Einordnung vorsichtig auf Tier 3."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Split (Kroatien)",
+    "content": "seereiseplanung-kreuzfahrten.de bietet ein eigenes Hafenporträt zu Split mit Tipps für Landausflüge auf eigene Faust • Beliebte Ziele sind neben der Altstadt der Strand Bačvice sowie ein Tagesausflug zu den Blauen Grotten auf Biševo oder den Krka-Wasserfällen (weiter entfernt, eher als Bustour sinnvoll)",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/split-auf-eigene-faust/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Split (Kroatien)",
+    "content": "Vom Kreuzfahrtterminal zum Bronzenen Tor des Diokletianpalastes sind es nur ca. 10-15 Gehminuten (rund 800 Meter) • Damit zählt Split zu den fußgängerfreundlichsten Adriahäfen ohne Shuttle-Notwendigkeit",
+    "source_tier": "2",
+    "source_name": "adventourbegins.com / cruisesheet.com",
+    "source_url": "https://www.adventourbegins.com/split-cruise-port-guide-croatia/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Split (Kroatien)",
+    "content": "Typisch dalmatinisch sind Pašticada (Rindfleisch-Schmorbraten mit Gnocchi), gegrillter Fisch sowie Peka (Fleisch/Gemüse unter einer Glocke gegart) • In den engen Gassen der Altstadt gibt es zahlreiche kleine Konobas (traditionelle Tavernen) abseits der Hauptdurchgangsstraßen",
+    "source_tier": "3",
+    "source_name": "reddit.com r/Cruise",
+    "source_url": "https://www.reddit.com/r/Cruise/comments/1m5sd0f/recommendations_for_split_kotor_dubrovnik_athens/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Split (Kroatien)",
+    "content": "Währung: Euro (EUR, seit 1. Januar 2023 – kroatische Kuna wird nicht mehr akzeptiert) • Sprache: Kroatisch • Notrufnummer: 112 • Kroatien ist EU- und Schengen-Mitglied",
+    "source_tier": "2",
+    "source_name": "diycruiseports.com",
+    "source_url": "https://diycruiseports.com/diy-port-guides/split-cruise-port-diy-shore-excursion-guide",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Kotor (Montenegro)",
+    "content": "1. Altstadt von Kotor (UNESCO-Weltkulturerbe) mit venezianischen Stadtmauern\n2. Kathedrale des Heiligen Tryphon – romanische Doppelturm-Kathedrale im Zentrum der Altstadt\n3. Stadtmauer-Wanderung zur Festung Sveti Ivan mit ca. 1350 Stufen und Panoramablick über die Bucht\n4. Bucht von Kotor (Boka Bay) – oft als \"südlichster Fjord Europas\" bezeichnet, tatsächlich ein Flusscanyon\n5. Perast – malerisches Barockstädtchen mit Insel Gospa od Škrpjela (Unsere Liebe Frau vom Felsen), Bootsausflug ab Kotor",
+    "items": [
+      {"name": "Altstadt von Kotor", "description": "UNESCO-Weltkulturerbe mit venezianischen Stadtmauern"},
+      {"name": "Kathedrale des Heiligen Tryphon", "description": "Romanische Doppelturm-Kathedrale im Zentrum der Altstadt"},
+      {"name": "Stadtmauer-Wanderung", "description": "Aufstieg zur Festung Sveti Ivan mit Panoramablick über die Bucht"},
+      {"name": "Bucht von Kotor", "description": "Oft als südlichster Fjord Europas bezeichneter Flusscanyon"},
+      {"name": "Perast", "description": "Barockstädtchen mit Insel Gospa od Škrpjela, per Bootsausflug erreichbar"}
+    ],
+    "source_tier": "3",
+    "source_name": "whatsinport.com / auf-eigene-faust.de",
+    "source_url": "https://www.whatsinport.com/Kotor.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Kotor (Montenegro)",
+    "content": "Die Schiffe legen am Kotor Pier direkt an, nur ca. 90 Meter (300 Fuß) von einem der drei Stadttore der UNESCO-Altstadt entfernt • Bei mehreren Schiffen im Hafen wird zusätzlich getendert, weitere Schiffe ankern in der Bucht und Passagiere werden per Tenderboot ins Zentrum gebracht • Große Schiffe benötigen bis zu 2 Stunden Fahrzeit vom offenen Mittelmeer durch die Bucht bis zum Hafen",
+    "source_tier": "3",
+    "source_name": "whatsinport.com / auf-eigene-faust.de",
+    "source_url": "https://www.whatsinport.com/Kotor.htm",
+    "staleness": "zeitlos",
+    "tier_note": "Keine offizielle Reederei- oder Hafenbetreiberseite mit exakten Anlegedaten gefunden, whatsinport.com (Tier 2) und cruiseandsea.com stimmen aber überein.",
+    "confirmed_by": ["cruiseandsea.com", "seereiseplanung-kreuzfahrten.de"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Kotor (Montenegro)",
+    "content": "Mein Schiff (TUI Cruises) läuft Kotor regelmäßig auf Adria-Routen an (u. a. ab/bis Triest) und bietet Landausflüge über meinschiff.com, darunter Stadtführungen und Ausflüge in die Bucht von Kotor",
+    "source_tier": "3",
+    "source_name": "dreamlines.de / oceando.de",
+    "source_url": "https://www.dreamlines.de/kreuzfahrt/mittelmeer-ab-triest-italien-auf-der-mein-schiff-4-18814419",
+    "staleness": "saisonal",
+    "tier_note": "Route über Reiseveranstalter-Portal (Dreamlines) bestätigt, keine direkte meinschiff.com-Hafenseite mit Ausflugsdetails gefunden."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Kotor (Montenegro)",
+    "content": "seereiseplanung-kreuzfahrten.de gibt für Kotor eine Distanz von nur ca. 5 Gehminuten vom Schiff zur Altstadt an • Beliebte Ausflüge auf eigene Faust sind die Stadtmauer-Wanderung (Eintritt erforderlich) sowie Tagesausflüge nach Perast oder ins Bergdorf Njeguši • Taxis sind am Pier verfügbar, Preis sollte vor Fahrtantritt verhandelt werden",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de / whatsinport.com",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/kotor-auf-eigene-faust/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Kotor (Montenegro)",
+    "content": "Die Altstadt von Kotor ist vom Anleger in nur ca. 5 Minuten zu Fuß erreichbar (rund 90 Meter zum nächsten Stadttor) • Bei Tenderbetrieb (bei mehreren Schiffen im Hafen) verkürzt sich diese Distanz kaum, da auch das Tenderboot direkt im Zentrum anlegt",
+    "source_tier": "3",
+    "source_name": "seereiseplanung-kreuzfahrten.de / whatsinport.com",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/kotor-auf-eigene-faust/",
+    "staleness": "zeitlos",
+    "tier_note": "Keine Tier-1/2-Quelle mit exakter Gehzeit gefunden, zwei unabhängige Tier-3-Quellen bestätigen sich aber gegenseitig."
+  },
+  {
+    "category": "essen",
+    "title": "Kotor (Montenegro)",
+    "content": "Montenegrinische Küche mischt italienische und balkanische Einflüsse: gegrillter Fisch und Meeresfrüchte, Njeguški-Käse und Prosciutto aus dem Bergdorf Njeguški sowie lokaler Wein • In der Altstadt empfehlen Reiseblogs, sich für ein Mittagessen an einem Café am Wasser Zeit zu nehmen, statt zu hetzen",
+    "source_tier": "3",
+    "source_name": "totravelandbeyond.com",
+    "source_url": "https://totravelandbeyond.com/kotor-cruise-port-montenegro/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Kotor (Montenegro)",
+    "content": "Währung: Euro (EUR, einseitig übernommen, Montenegro ist kein EU-Mitglied) • Sprache: Montenegrinisch/Serbokroatisch • Notrufnummer: 112 • Montenegro ist NICHT im Schengen-Raum, ein gültiger Reisepass wird für die Einreise empfohlen (Personalausweis kann bei manchen Kreuzfahrt-Landgängen ausreichen, dies sollte vorab mit der Reederei geklärt werden)",
+    "source_tier": "3",
+    "source_name": "auf-eigene-faust.de",
+    "source_url": "https://www.auf-eigene-faust.de/destinationen/adria/kotor/",
+    "staleness": "zeitlos",
+    "tier_note": "Einreisebestimmung konnte nicht gegen eine offizielle Tier-1-Quelle (z. B. Auswärtiges Amt) verifiziert werden; vor Reise unbedingt aktuell prüfen."
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Korfu",
+    "content": "1. Altstadt von Korfu-Stadt (UNESCO-Weltkulturerbe) mit venezianischer Architektur\n2. Alte Festung (Palaio Frourio) und Neue Festung (Neo Frourio) – historische venezianische Festungsanlagen\n3. Achilleion-Palast – Sommerresidenz von Kaiserin Elisabeth \"Sisi\" von Österreich\n4. Kanoni & Mausinsel (Pontikonisi) – bekannter Aussichtspunkt mit Klosterinsel\n5. Paleokastritsa – malerische Bucht an der Westküste mit Kloster",
+    "items": [
+      {"name": "Altstadt Korfu-Stadt", "description": "UNESCO-Weltkulturerbe mit venezianischer Architektur"},
+      {"name": "Alte & Neue Festung", "description": "Historische venezianische Festungsanlagen"},
+      {"name": "Achilleion-Palast", "description": "Sommerresidenz von Kaiserin Sisi von Österreich"},
+      {"name": "Kanoni & Mausinsel", "description": "Bekannter Aussichtspunkt mit Klosterinsel Pontikonisi"},
+      {"name": "Paleokastritsa", "description": "Malerische Bucht an der Westküste mit Kloster"}
+    ],
+    "source_tier": "2",
+    "source_name": "adventourbegins.com / diycruiseports.com",
+    "source_url": "https://www.adventourbegins.com/port-of-corfu-cruise-guide-greece/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Korfu",
+    "content": "Schiffe legen im New Port (Nea Limani) an, ca. 1-2 km westlich der Altstadt von Korfu • Es gibt keinen Tenderbetrieb, Schiffe legen direkt an einem langen L-förmigen Pier an, der auch von Fähren genutzt wird • Reedereien bieten meist einen kostenlosen Shuttle zum Passagierterminal an, die Gehzeit beträgt aber ohnehin nur 5-10 Minuten je nach Anlegeposition",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / adventourbegins.com",
+    "source_url": "https://www.whatsinport.com/Kerkyra-Corfu.htm",
+    "staleness": "zeitlos",
+    "confirmed_by": ["diycruiseports.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Korfu",
+    "content": "Mein Schiff (TUI Cruises) bietet ab Korfu Landausflüge über meinschiff.com an, u. a. zur Altstadt, zum Achilleion-Palast und nach Paleokastritsa",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/haefen/korfu-stadt-korfu-griechenland",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Korfu",
+    "content": "meine-landausfluege.de bietet ein eigenes Angebot für Landausflüge auf eigene Faust in Korfu an, u. a. Stadtführungen und Ausflüge ins Umland • Beliebt ist zudem eine E-Bike-Tour ab Hafen, wie in einem Kreuzfahrtforum diskutiert • Für den Achilleion-Palast (ca. 10 km) empfiehlt sich Taxi oder örtlicher Linienbus",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de / forum.pooldeck24.de",
+    "source_url": "https://meine-landausfluege.de/korfu-kreuzfahrt-ausfluege/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Korfu",
+    "content": "Vom New Port zur Altstadt sind es ca. 1-2 km bzw. 15-20 Minuten Fußweg, ein Shuttle wird von den Reedereien meist kostenlos angeboten und verkürzt die Distanz auf 5-10 Minuten ab dem Passagierterminal",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / diycruiseports.com",
+    "source_url": "https://diycruiseports.com/diy-port-guides/corfu-kerkyra-cruise-port-diy-shore-excursion-guide",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Korfu",
+    "content": "Korfu hat durch die venezianische Vergangenheit eine besondere Küche: Sofrito (geschmortes Rindfleisch mit Weißweinsauce), Pastitsada (Nudelgericht mit Fleisch in Tomatensauce) und Bourdeto (scharfer Fischeintopf) sind lokale Spezialitäten, die sich von der übrigen griechischen Küche unterscheiden",
+    "source_tier": "3",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Kerkyra-Corfu.htm",
+    "staleness": "zeitlos",
+    "tier_note": "Essen-Infos aus Portguide-Datenbank (Tier 2 laut Liste), aber inhaltlich subjektiv/kulinarisch eingeordnet und daher vorsichtig als Tier 3 markiert."
+  },
+  {
+    "category": "praktisches",
+    "title": "Korfu",
+    "content": "Währung: Euro (EUR) • Sprache: Griechisch • Notrufnummer: 112 • Griechenland ist EU- und Schengen-Mitglied • Öffnungszeiten beachten: Geschäfte meist Mo-Fr 9-13:30 Uhr und 17-21 Uhr, Samstag 9-14 Uhr, viele touristische Läden haben aber durchgehend bis spät abends geöffnet",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Kerkyra-Corfu.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Katakolon / Olympia",
+    "content": "1. Antikes Olympia (UNESCO-Weltkulturerbe) – Austragungsort der antiken Olympischen Spiele, Geburtsort der Olympischen Idee\n2. Zeustempel in Olympia – einst einer der größten Tempel Griechenlands\n3. Antikes Stadion von Olympia – Original-Laufbahn der antiken Wettkämpfe\n4. Archäologisches Museum von Olympia – u. a. Hermes-Statue von Praxiteles\n5. Uferpromenade von Katakolon – kleine Hafenstadt mit Cafés und Souvenirläden",
+    "items": [
+      {"name": "Antikes Olympia", "description": "UNESCO-Weltkulturerbe, Geburtsort der Olympischen Spiele"},
+      {"name": "Zeustempel", "description": "Einst einer der größten Tempel Griechenlands"},
+      {"name": "Antikes Stadion", "description": "Original-Laufbahn der antiken Olympischen Wettkämpfe"},
+      {"name": "Archäologisches Museum Olympia", "description": "Zeigt u. a. die Hermes-Statue von Praxiteles"},
+      {"name": "Uferpromenade Katakolon", "description": "Kleine Hafenstadt mit Cafés und Souvenirläden"}
+    ],
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisemapper.com",
+    "source_url": "https://www.whatsinport.com/Katakolon-Olympia.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Katakolon / Olympia",
+    "content": "Der Pier liegt direkt in Katakolon, die einzige Hauptstraße mit Cafés ist in weniger als 5 Gehminuten erreichbar • Katakolon ist ein reiner Liegeplatzhafen (kein Tenderhafen) • Olympia liegt ca. 34-45 km (bzw. laut manchen Quellen ca. 40 km) östlich von Katakolon, ca. 45 Minuten Fahrzeit, und ist per Bahn, Bus, Taxi oder organisierter Tour erreichbar",
+    "source_tier": "2",
+    "source_name": "whatsinport.com / cruisemapper.com",
+    "source_url": "https://www.cruisemapper.com/ports/katakolon-port-72",
+    "staleness": "zeitlos",
+    "confirmed_by": ["seereiseplanung-kreuzfahrten.de", "auf-eigene-faust.de"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Katakolon / Olympia",
+    "content": "Mein Schiff (TUI Cruises) bietet ab Katakolon Landausflüge nach Olympia an, buchbar über meinschiff.com bzw. die Landausflugssuche der Reederei • Auch AIDA und MSC bieten von Katakolon aus ca. vierstündige Ausflüge mit komfortablen Transfers nach Olympia an",
+    "source_tier": "1",
+    "source_name": "aida.de / msccruises.de",
+    "source_url": "https://aida.de/hafen/katakolon",
+    "staleness": "saisonal",
+    "tier_note": "AIDA/MSC-Hafenseite als Referenz genutzt, da spezifische meinschiff.com-Katakolon-Seite nicht separat verifiziert wurde; TUI-Angebot über die zentrale Landausflugssuche bestätigt."
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Katakolon / Olympia",
+    "content": "meine-landausfluege.de und seereiseplanung-kreuzfahrten.de bieten eigene Hafenporträts mit Tipps für Landausflüge auf eigene Faust • Katakolon ist mit Pyrgos und Olympia per Bahn verbunden, alternativ Taxi oder organisierte Kleingruppentour mit Hafenabholung • Auf dem Rückweg lohnt sich laut Tourguide oft ein Stopp an einer Honigfarm mit Verkostung",
+    "source_tier": "3",
+    "source_name": "meine-landausfluege.de / seereiseplanung-kreuzfahrten.de",
+    "source_url": "https://www.seereiseplanung-kreuzfahrten.de/katakolon-auf-eigene-faust/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Katakolon / Olympia",
+    "content": "Katakolon selbst (die Hauptstraße mit Cafés) ist vom Pier aus in unter 5 Minuten zu Fuß erreichbar • Olympia dagegen ist NICHT zu Fuß erreichbar (ca. 34-45 km entfernt) und erfordert Bahn, Bus, Taxi oder organisierte Tour",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Katakolon-Olympia.htm",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Katakolon / Olympia",
+    "content": "In Katakolon selbst gibt es entlang der kleinen Uferpromenade zahlreiche Tavernen mit frischem Fisch und griechischen Klassikern wie Souvlaki und griechischem Salat • Bei organisierten Ausflügen ins Umland (z. B. per Honigfarm-Stopp) werden oft lokale Produkte wie Honig und griechischer Pfannkuchen zur Verkostung angeboten",
+    "source_tier": "3",
+    "source_name": "getyourguide.com",
+    "source_url": "https://www.getyourguide.com/de-de/katakolo-l1502/olympia-katakolon-4-stundiger-landausflug-vom-kreuzfahrthafen-t146958/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Katakolon / Olympia",
+    "content": "Währung: Euro (EUR) • Sprache: Griechisch • Kein Visum notwendig für Schengen-Bürger, Reisepass/Personalausweis ausreichend • Notrufnummer: 112 • Öffnungszeiten öffentlicher Dienste Mo-Fr 8-14 Uhr, Geschäfte variieren stark, touristische Läden oft bis spät abends geöffnet",
+    "source_tier": "2",
+    "source_name": "whatsinport.com",
+    "source_url": "https://www.whatsinport.com/Katakolon-Olympia.htm",
+    "staleness": "zeitlos"
+  }
+]

@@ -1,0 +1,73 @@
+[
+  {
+    "category": "sehenswuerdigkeiten",
+    "title": "Bridgetown (Barbados)",
+    "content": "1. Historic Bridgetown and its Garrison (UNESCO-Weltkulturerbe) – koloniales Stadtzentrum mit Garnisonsanlage\n2. Parliament Buildings – neogotisches Regierungsgebäude am National Heroes Square\n3. Nidhe Israel Synagogue – eine der ältesten Synagogen der westlichen Hemisphäre\n4. Carlisle Bay – Stadtstrand mit karibikblauem Wasser\n5. Harrison's Cave – Tropfsteinhöhle im Inselinneren, beliebtes Ausflugsziel",
+    "items": [
+      {"name": "Historic Bridgetown and Garrison", "description": "UNESCO-Weltkulturerbe, koloniales Stadtzentrum mit Garnisonsanlage"},
+      {"name": "Parliament Buildings", "description": "Neogotisches Regierungsgebäude am National Heroes Square"},
+      {"name": "Nidhe Israel Synagogue", "description": "Eine der ältesten Synagogen der westlichen Hemisphäre"},
+      {"name": "Carlisle Bay", "description": "Stadtstrand mit karibikblauem Wasser"},
+      {"name": "Harrison's Cave", "description": "Tropfsteinhöhle im Inselinneren, beliebtes Ausflugsziel"}
+    ],
+    "source_tier": "3",
+    "source_name": "globalgritandglam.com / eberhardt-travel.de",
+    "source_url": "https://globalgritandglam.com/blog/barbados-cruise-port/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "anleger",
+    "title": "Bridgetown (Barbados)",
+    "content": "Der Bridgetown Cruise Port (Deep Water Harbour) liegt ca. 1-1,6 km (1 Meile) westlich der Innenstadt an vier Tiefwasserkais, die bis zu 6 Schiffe gleichzeitig aufnehmen können • Der Fußweg entlang der Promenade/Princess Alice Highway in die Stadt dauert ca. 15-20 Minuten, alternativ Taxi (ca. 5 Minuten, ca. 6 US-Dollar) • Kein Tenderbetrieb notwendig",
+    "source_tier": "2",
+    "source_name": "cruisecritic.com / cruisehive.com",
+    "source_url": "https://www.cruisecritic.com/articles/barbados-cruise-port-terminal-information",
+    "staleness": "zeitlos",
+    "confirmed_by": ["whatsinport.com", "globalgritandglam.com"]
+  },
+  {
+    "category": "ausflug_offiziell",
+    "title": "Bridgetown (Barbados)",
+    "content": "Mein Schiff (TUI Cruises) nutzt Bridgetown regelmäßig als Start-/Endhafen (Turnaround) für 14-nächtige Karibik-Kreuzfahrten \"Karibische Inseln\", bestätigt über mehrere Abfahrtstermine 2026 • Landausflüge werden über meinschiff.com angeboten, u. a. zur Harrison's Cave und Strandausflüge",
+    "source_tier": "1",
+    "source_name": "meinschiff.com",
+    "source_url": "https://www.meinschiff.com/en/trips/14-nights-caribbean-islands-fromto-bridgetown-ZWO270607SEE",
+    "staleness": "saisonal"
+  },
+  {
+    "category": "ausflug_privat",
+    "title": "Bridgetown (Barbados)",
+    "content": "koffergefluester.com beschreibt eine 14-tägige Mein-Schiff-3-Route ab/bis Bridgetown mit Stopps auf Martinique, Guadeloupe, St. Lucia, Grenada, Bonaire, Curaçao, Aruba, in der Dominikanischen Republik und St. Vincent • Für Ausflüge auf eigene Faust empfiehlt sich ein Taxi ab Hafen zur Harrison's Cave (ca. 30 Min. Fahrzeit) oder ein Spaziergang zur Carlisle Bay",
+    "source_tier": "3",
+    "source_name": "koffergefluester.com",
+    "source_url": "https://koffergefluester.com/barbados/",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "zu_fuss",
+    "title": "Bridgetown (Barbados)",
+    "content": "Vom Deep Water Harbour ist die Innenstadt in ca. 15-20 Minuten Fußweg entlang der Promenade erreichbar (ca. 1-1,6 km), alternativ Shuttle oder Taxi (ca. 5 Minuten) • Carlisle Bay liegt in ähnlicher Entfernung und ist ebenfalls zu Fuß erreichbar",
+    "source_tier": "2",
+    "source_name": "cruisecritic.com",
+    "source_url": "https://www.cruisecritic.com/articles/barbados-cruise-port-terminal-information",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "essen",
+    "title": "Bridgetown (Barbados)",
+    "content": "Nationalgericht ist Cou-Cou and Flying Fish (Maismehlbrei mit gebratenem fliegendem Fisch in Tomatensauce) • Weitere Klassiker sind Macaroni Pie sowie das Getränk Rum Punch, da Barbados als Geburtsstätte des Rums gilt • Der Fischmarkt Oistins gilt als beliebter Ort für frittierten Fisch, besonders am \"Fish Friday\"",
+    "source_tier": "3",
+    "source_name": "ncl.com / costakreuzfahrten.at",
+    "source_url": "https://www.ncl.com/de/de/travel-blog/street-foods-southern-caribbean-cruise",
+    "staleness": "zeitlos"
+  },
+  {
+    "category": "praktisches",
+    "title": "Bridgetown (Barbados)",
+    "content": "Währung: Barbados-Dollar (BBD, an USD gekoppelt), US-Dollar weit akzeptiert • Sprache: Englisch • Deutsche Staatsangehörige benötigen für Barbados kein Visum für touristische Aufenthalte bis 90 Tage • Notrufnummer: 211/511",
+    "source_tier": "3",
+    "source_name": "meiers-weltreisen.de",
+    "source_url": "https://www.meiers-weltreisen.de/reiseziele/karibik/visum",
+    "staleness": "zeitlos"
+  }
+]

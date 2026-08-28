@@ -7,7 +7,7 @@ import {
   type ResearchCategory,
   type SightItem,
 } from "@/lib/research-schema";
-import { googleSearchUrl, lookupWikipediaImage } from "@/lib/wikimedia";
+import { googleSearchUrl, lookupSightImage } from "@/lib/wikimedia";
 import { canonicalPortName, portNameVariants } from "@/lib/port-names";
 import { loadAttempts, markAttempted, recordGaps, resolveGaps, withinAttemptLimit } from "@/lib/research-gaps";
 import { buildWeatherFinding, getWeatherData } from "@/lib/weather";
@@ -171,12 +171,13 @@ export async function researchAndSavePort(
     if (sehenswuerdigkeitenFinding?.items) {
       sehenswuerdigkeitenFinding.items = await Promise.all(
         sehenswuerdigkeitenFinding.items.map(async (item) => {
-          const lookup = await lookupWikipediaImage(item.name);
+          const lookup = await lookupSightImage(item.name, portName);
           return {
             ...item,
-            image_url: lookup?.url ?? null,
-            image_source: lookup?.source ?? null,
-            article_url: lookup?.articleUrl ?? googleSearchUrl(`${item.name} ${portName}`),
+            image_url: lookup.url,
+            image_source: lookup.source,
+            article_url: lookup.articleUrl ?? googleSearchUrl(`${item.name} ${portName}`),
+            attribution: lookup.attribution,
           };
         })
       );
@@ -196,6 +197,8 @@ export async function researchAndSavePort(
         source_tier: f.source_tier,
         source_name: f.source_name,
         source_url: f.source_url,
+        tier_note: f.tier_note ?? null,
+        confirmed_by: f.confirmed_by ?? null,
         staleness: f.staleness,
         sort_order: sortOrder++,
       }));
@@ -216,6 +219,8 @@ export async function researchAndSavePort(
         source_tier: f.source_tier,
         source_name: f.source_name,
         source_url: f.source_url,
+        tier_note: f.tier_note ?? null,
+        confirmed_by: f.confirmed_by ?? null,
         staleness: f.staleness,
         sort_order: sortOrder++,
       }));
@@ -282,12 +287,13 @@ export async function researchAndSavePort(
       const updatedItems = await Promise.all(
         items.map(async (item) => {
           if (item.image_url) return item;
-          const lookup = await lookupWikipediaImage(item.name);
+          const lookup = await lookupSightImage(item.name, portName);
           return {
             ...item,
-            image_url: lookup?.url ?? null,
-            image_source: lookup?.source ?? null,
-            article_url: lookup?.articleUrl ?? item.article_url ?? googleSearchUrl(`${item.name} ${portName}`),
+            image_url: lookup.url,
+            image_source: lookup.source,
+            article_url: lookup.articleUrl ?? item.article_url ?? googleSearchUrl(`${item.name} ${portName}`),
+            attribution: lookup.attribution,
           };
         })
       );

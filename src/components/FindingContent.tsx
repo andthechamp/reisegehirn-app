@@ -54,6 +54,7 @@ export default function FindingContent({ content, items }: FindingContentProps) 
                   <img
                     src={thumbUrl}
                     alt={item.name}
+                    title={item.attribution ? `Foto: ${item.attribution}` : undefined}
                     loading="lazy"
                     className="h-16 w-16 shrink-0 rounded-lg object-cover bg-ink/5"
                   />
