@@ -4,6 +4,7 @@ node_modules/
 .DS_Store
 *.log
 repomix-output.xml
+supabase/.temp/
 
 # Aus node_modules gebündelt per "postinstall" (siehe package.json) - kein
 # Quellcode, wird bei jedem npm install frisch erzeugt.
