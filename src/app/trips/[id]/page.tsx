@@ -13,6 +13,8 @@ import { normalizeCabinCategory, extractDeckNumber, cabinLabel } from "@/lib/cab
 import RouteResearch from "@/components/RouteResearch";
 import ExcursionForm from "@/components/ExcursionForm";
 import ExcursionCard from "@/components/ExcursionCard";
+import TransferForm from "@/components/TransferForm";
+import TransferCard from "@/components/TransferCard";
 import PortDaySwiper from "@/components/PortDaySwiper";
 import MemoryItem from "@/components/MemoryItem";
 import ShareTrip from "@/components/ShareTrip";
@@ -52,6 +54,7 @@ function TripPageContent() {
 
   const [context, setContext] = useState<TripContext | null>(null);
   const [excursions, setExcursions] = useState<TripContext["excursions"]>([]);
+  const [transfers, setTransfers] = useState<TripContext["transfers"]>([]);
   const [memory, setMemory] = useState<TripContext["memory"]>([]);
   const [portCoordinates, setPortCoordinates] = useState<Record<string, { lat: number; lon: number }>>({});
   const [shipImageUrl, setShipImageUrl] = useState<string | null>(null);
@@ -72,6 +75,7 @@ function TripPageContent() {
         if (!res.ok) throw new Error(json.error ?? "Laden fehlgeschlagen.");
         setContext(json.context);
         setExcursions(json.context.excursions);
+        setTransfers(json.context.transfers);
         setMemory(json.context.memory);
         setMessages(json.messages);
         setIsOwner(json.isOwner);
@@ -96,6 +100,17 @@ function TripPageContent() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Löschen fehlgeschlagen.");
       setExcursions((prev) => prev.filter((e) => e.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
+    }
+  }
+
+  async function handleDeleteTransfer(id: string) {
+    try {
+      const res = await fetch(`/api/transfers/${id}`, { method: "DELETE" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Löschen fehlgeschlagen.");
+      setTransfers((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unerwarteter Fehler.");
     }
@@ -281,6 +296,29 @@ function TripPageContent() {
               </ul>
             ) : (
               <p className="text-sm text-ink/50">Noch keine Ausflüge gebucht.</p>
+            )}
+          </section>
+        )}
+
+        {activeTab === "anreise" && (
+          <section className="space-y-3 lg:mx-auto lg:max-w-2xl">
+            <div>
+              <h2 className="font-display text-xl font-medium text-ink">Anreise & Abreise</h2>
+              <p className="mt-0.5 text-sm text-ink/65">
+                Parkplatz oder Flug - alle Infos zum Weg zum und vom Hafen an einer Stelle.
+              </p>
+            </div>
+            <TransferForm tripId={tripId} onAdded={(t) => setTransfers((prev) => [...prev, t])} />
+            {transfers.length > 0 ? (
+              <ul className="space-y-2">
+                {[...transfers]
+                  .sort((a, b) => (a.direction === b.direction ? 0 : a.direction === "anreise" ? -1 : 1))
+                  .map((t) => (
+                    <TransferCard key={t.id} transfer={t} onDelete={handleDeleteTransfer} />
+                  ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-ink/50">Noch keine Anreise/Abreise hinterlegt.</p>
             )}
           </section>
         )}

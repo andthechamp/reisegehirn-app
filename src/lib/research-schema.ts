@@ -199,7 +199,7 @@ function looksLikeRealStringEnd(text: string, i: number): boolean {
  * Außerhalb von Strings (Einrückung zwischen den Objekten) bleibt der Text
  * unverändert, da dort erlaubt/irrelevant.
  */
-function escapeControlCharsInStrings(text: string): string {
+export function escapeControlCharsInStrings(text: string): string {
   let result = "";
   let inString = false;
   let openGermanQuote = false;
@@ -264,7 +264,7 @@ function escapeControlCharsInStrings(text: string): string {
  * Läuft VOR dem JSON-Parsing, weil die Anführung im index-Attribut sonst ein
  * JSON-String vorzeitig beenden kann (siehe escapeControlCharsInStrings).
  */
-function stripCitationTags(text: string): string {
+export function stripCitationTags(text: string): string {
   return text.replace(/<\/?cite(?:[^<>]*)>/g, "");
 }
 

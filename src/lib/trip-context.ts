@@ -99,6 +99,22 @@ export interface TripContext {
     booking_reference: string | null;
     notes: string | null;
   }>;
+  // An-/Abreise zum bzw. vom Hafen (Anreise-Modul) - trip-gebunden statt an
+  // einen port_call, siehe supabase/schema.sql (trip_transfers).
+  transfers: Array<{
+    id: string;
+    direction: string; // "anreise" | "abreise"
+    transfer_art: string; // "auto" | "flug"
+    date: string | null;
+    parkplatz_anbieter: string | null;
+    parkplatz_buchungslink: string | null;
+    reservierungsnummer: string | null;
+    flugnummer: string | null;
+    airline: string | null;
+    abflugzeit: string | null;
+    ankunftszeit: string | null;
+    notes: string | null;
+  }>;
 }
 
 /**
@@ -125,6 +141,7 @@ export async function fetchTripContext(
     { data: shipResearch, error: shipResearchError },
     { data: memory, error: memoryError },
     { data: excursions, error: excursionsError },
+    { data: transfers, error: transfersError },
   ] = await Promise.all([
     supabase.from("bookings").select("*").eq("trip_id", tripId),
     supabase.from("travelers").select("*").eq("trip_id", tripId),
@@ -143,6 +160,7 @@ export async function fetchTripContext(
     supabase.from("ship_research").select("*").eq("ship_name", trip.ship_name).order("sort_order", { ascending: true }),
     supabase.from("user_memory").select("*").eq("trip_id", tripId).order("created_at", { ascending: false }),
     supabase.from("port_excursions").select("*").eq("trip_id", tripId),
+    supabase.from("trip_transfers").select("*").eq("trip_id", tripId),
   ]);
 
   if (bookingsError) throw bookingsError;
@@ -152,6 +170,7 @@ export async function fetchTripContext(
   if (shipResearchError) throw shipResearchError;
   if (memoryError) throw memoryError;
   if (excursionsError) throw excursionsError;
+  if (transfersError) throw transfersError;
 
   const bookingIdToCabinNumber = new Map<string, string | null>();
   for (const b of bookings ?? []) {
@@ -314,6 +333,20 @@ export async function fetchTripContext(
       currency: e.currency,
       booking_reference: e.booking_reference,
       notes: e.notes,
+    })),
+    transfers: (transfers ?? []).map((t) => ({
+      id: t.id,
+      direction: t.direction,
+      transfer_art: t.transfer_art,
+      date: t.date,
+      parkplatz_anbieter: t.parkplatz_anbieter,
+      parkplatz_buchungslink: t.parkplatz_buchungslink,
+      reservierungsnummer: t.reservierungsnummer,
+      flugnummer: t.flugnummer,
+      airline: t.airline,
+      abflugzeit: t.abflugzeit,
+      ankunftszeit: t.ankunftszeit,
+      notes: t.notes,
     })),
   };
 }

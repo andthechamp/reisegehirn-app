@@ -32,6 +32,12 @@ interface PortDaySwiperProps {
 // (der minimal wackelt) versehentlich als Wisch erkannt.
 const SWIPE_THRESHOLD_PX = 40;
 
+// Postgres liefert "time"-Spalten als HH:MM:SS zurück - für die Anzeige
+// reichen HH:MM, analog zu TransferCard.
+function trimSeconds(time: string): string {
+  return time.slice(0, 5);
+}
+
 export default function PortDaySwiper({
   tripId,
   portCalls,
@@ -186,9 +192,12 @@ export default function PortDaySwiper({
           <>
             {(active.arrival_time || active.departure_time) && (
               <p className="mt-1 font-mono text-xs text-sea">
-                {active.arrival_time && <>An {active.arrival_time}</>}
+                {active.arrival_time && <>An {trimSeconds(active.arrival_time)}</>}
                 {active.arrival_time && active.departure_time && " · "}
-                {active.departure_time && <>Ab {active.departure_time}</>}
+                {active.departure_time && <>Ab {trimSeconds(active.departure_time)}</>}
+                {active.confidence === "erschlossen" && (
+                  <span className="text-ink/40"> · recherchiert, unbestätigt</span>
+                )}
               </p>
             )}
             <ul className="mt-3 space-y-2">

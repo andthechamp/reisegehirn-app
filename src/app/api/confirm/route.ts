@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { getSupabaseServerClient, getSupabaseAdminClient } from "@/lib/supabase";
 import { ensurePortResearched } from "@/lib/port-research";
+import { researchTripBerthTimes } from "@/lib/berth-time-research";
 import type { ExtractionResult } from "@/lib/extraction-schema";
 
 export const runtime = "nodejs";
@@ -66,7 +67,14 @@ export async function POST(req: NextRequest) {
 
     // 3. Hafenanläufe - confidence spiegelt Regel 3.2 aus dem Konzeptdokument:
     //    nur 'bestätigt', wenn beide Zeiten tatsächlich vorliegen.
-    let portsToResearch: { id: string; port_name: string; call_date: string }[] = [];
+    let portsToResearch: {
+      id: string;
+      port_name: string;
+      call_date: string;
+      arrival_time: string | null;
+      departure_time: string | null;
+      confidence: string;
+    }[] = [];
     if (data.port_calls?.length) {
       const rows = data.port_calls.map((pc) => ({
         trip_id: tripId,
@@ -114,6 +122,31 @@ export async function POST(req: NextRequest) {
       const shipName = data.trip.ship_name;
       after(async () => {
         const adminSupabase = getSupabaseAdminClient();
+
+        // Liegezeiten (Ankunft/Abfahrt) für die GANZE Reise in einem Aufruf,
+        // nicht pro Hafen - siehe researchTripBerthTimes. Unabhängig von
+        // RESEARCH_AUTO (das steuert nur die wiederkehrende Hafen-/Schiffs-
+        // Recherche bei jedem Seitenaufruf): das hier ist ein einmaliger,
+        // klar begrenzter Vorgang direkt nach dem Upload, kein
+        // Dauerkostenfaktor. Läuft trotzdem sequenziell VOR der
+        // Hafenrecherche unten, damit sie sich nicht gegenseitig die
+        // Anthropic-API-Kapazität streitig machen.
+        try {
+          await researchTripBerthTimes(adminSupabase, {
+            shipName,
+            portCalls: portsToResearch.map((pc) => ({
+              id: pc.id,
+              portName: pc.port_name,
+              callDate: pc.call_date,
+              arrivalTime: pc.arrival_time,
+              departureTime: pc.departure_time,
+              confidence: pc.confidence,
+            })),
+          });
+        } catch (err) {
+          console.error("Automatische Liegezeiten-Recherche fehlgeschlagen:", err);
+        }
+
         for (const pc of portsToResearch) {
           try {
             await ensurePortResearched(adminSupabase, {

@@ -298,6 +298,7 @@ Regeln, an die du dich strikt hältst:
 5. staleness: "zeitlos" für dauerhaft gültige Fakten (Anlegestelle, Entfernung, bekannte Sehenswürdigkeiten), "saisonal" für Dinge wie Wetter oder Ausflugsangebote, "verfällt" für Preise.
 6. category muss exakt einer dieser Werte sein: "sehenswuerdigkeiten", "anleger", "ausflug_offiziell", "ausflug_privat", "zu_fuss", "essen", "praktisches", "wetter_packen", "sonstiges" - wähle die am besten passende pro Eintrag.
 7. Nenne im title-Feld immer den Hafennamen "${portName}", damit bei mehreren Häfen einer Reise klar bleibt, worauf sich ein Eintrag bezieht.
+8. WICHTIG bei erreichtem Such-Limit: Meldet das web_search-Tool, dass das Limit für Websuchen in diesem Zug erreicht ist ("too many times this turn", "server tool use limit exceeded" o. Ä.), dann breche sofort ab und antworte trotzdem mit einem gültigen JSON-Array - ausschließlich mit den Themen, für die du bis zu diesem Zeitpunkt bereits einen belastbaren Fund hast (auch ein leeres Array [], falls noch nichts gefunden wurde). Versuche NIEMALS erneut zu suchen, nachdem das Tool diese Meldung einmal gezeigt hat - ein weiterer Versuch schlägt garantiert wieder fehl und verschwendet nur Zeit. Antworte in diesem Fall AUSSCHLIESSLICH mit dem JSON-Array, NIEMALS mit einer Text-Erklärung oder Entschuldigung statt JSON - selbst ein unvollständiges Ergebnis mit einzelnen fehlenden Themen ist immer nützlicher als gar keine Antwort.
 ${WEB_INJECTION_GUARD_RULE}
 ${VERIFICATION_RULE}
 ${CONTENT_FORMATTING_RULE}
@@ -322,6 +323,61 @@ Nachdem du recherchiert hast, gib deine Ergebnisse AUSSCHLIESSLICH als JSON-Arra
 ]
 
 Das items-Feld gehört NUR in den Eintrag mit category "sehenswuerdigkeiten" - bei jeder anderen category taucht der Schlüssel "items" im Objekt gar nicht erst auf.`;
+}
+
+// Extraktions-Prompt für die Liegezeiten (Ankunft/Abfahrt) ALLER
+// Hafenanläufe EINER Reise aus dem Inhalt EINER bereits abgerufenen
+// Fahrplanseite (siehe berth-time-research.ts: Serper für die gezielte
+// Suche nach der Seite, Firecrawl fürs Abrufen, dieser Prompt nur noch fürs
+// Auslesen). Bewusst KEIN web_search-Tool mehr (siehe Git-Historie dieser
+// Datei) - die frühere agentische Variante hat sich in Suchrunden verheddert
+// und war zeitlich unvorhersagbar; ein einzelner Extraktions-Aufruf mit
+// bereits vorliegendem Seiteninhalt ist so schnell/deterministisch wie die
+// anderen Dokument-Extraktionsprompts dieser App.
+export function buildTripLiegezeitenExtractionPrompt(
+  shipName: string,
+  portCalls: { portName: string; callDate: string }[],
+  sourceUrl: string,
+  pageContent: string
+): string {
+  const portList = portCalls.map((pc) => `- ${pc.callDate}: ${pc.portName}`).join("\n");
+
+  return `Du extrahierst die geplanten Liegezeiten (Ankunfts- und Abfahrtszeiten) für MEHRERE Hafenanläufe EINER einzelnen Kreuzfahrt aus dem Inhalt einer bereits abgerufenen Webseite.
+
+Schiff: "${shipName}"
+Gesuchte Hafenanläufe dieser einen Reise (Datum - Hafen):
+${portList}
+
+Quelle des folgenden Seiteninhalts: ${sourceUrl}
+
+Regeln, an die du dich strikt hältst:
+1. ${WEB_INJECTION_GUARD_RULE.replace("Websuche-Inhalte", "Inhalte der abgerufenen Seite").replace("durchsuchten Webseiten", "unten eingefügten Seite")}
+2. Du hast KEIN Websuche-Werkzeug und keinen Zugriff auf andere Seiten - arbeite ausschließlich mit dem unten eingefügten Seiteninhalt. Reicht der Inhalt nicht aus, um eine der gelisteten Zeiten zu bestätigen, gib für diesen Anlauf nichts zurück statt zu raten.
+3. Extrahiere NUR Zeiten für Anläufe, deren Datum GENAU zu einem der oben gelisteten Daten passt UND erkennbar zu GENAU diesem Schiff gehört - nicht zu einem anderen Termin derselben Route, einem Schwesterschiff oder einer anderen Route desselben Schiffs, die zufällig auf derselben Seite steht (z. B. "vorherige/nächste Abfahrten" am Seitenrand).
+4. Erfinde niemals eine Uhrzeit. Enthält die Seite keine passende Tabelle für exakt diese Reise, gib ein leeres Array zurück statt zu schätzen.
+5. Uhrzeiten im Format HH:MM (24-Stunden). Übernimm call_date und port_name exakt wie oben gelistet, damit die Zuordnung eindeutig bleibt.
+6. source_tier: "1", wenn die Seite erkennbar die offizielle Reederei-Website ist, sonst "3" (Fan-/Buchungsportal - Uhrzeiten von dort gelten für diesen konkreten, tabellarischen Fakt als ausreichend verlässlich, auch wenn es keine Tier-1-Quelle ist). source_name: Name/Domain der Seite. source_url: "${sourceUrl}".
+${JSON_SAFETY_RULE}
+
+Seiteninhalt (Auszug):
+"""
+${pageContent}
+"""
+
+Antworte AUSSCHLIESSLICH mit einem JSON-Array exakt in diesem Schema, ohne Markdown, ohne Erklärtext davor oder danach - ein Eintrag pro Anlauf, für den du etwas Belastbares gefunden hast (auch ein leeres Array [], falls nichts passt):
+
+[
+  {
+    "call_date": string,
+    "port_name": string,
+    "arrival_time": string | null,
+    "departure_time": string | null,
+    "source_tier": "1" | "3",
+    "source_name": string | null,
+    "source_url": string,
+    "tier_note": string | null
+  }
+]`;
 }
 
 // Extraktions-Prompt für einen Reiseverlauf-Screenshot ohne Schiffsname/
@@ -381,4 +437,38 @@ Antworte NUR mit einem JSON-Objekt exakt in dieser Form, ohne Zusatztext:
   "notes": string | null,
   "call_date": string | null,
   "port_name": string | null
+}`;
+
+// Extraktions-Prompt für einen einzelnen An-/Abreise-Beleg (Parkschein,
+// Flugbuchungsbestätigung, Bordkarte) - gleiche "nichts erfinden"-Regel wie
+// bei der Ausflugs-Extraktion. direction (Anreise/Abreise) ist bewusst NICHT
+// Teil des Schemas: aus einem einzelnen Beleg lässt sich das nicht
+// zuverlässig ableiten, das wählt die Nutzerin manuell beim Speichern.
+export const TRANSFER_EXTRACTION_SYSTEM_PROMPT = `Du extrahierst die Details eines einzelnen An- oder Abreise-Belegs (Parkplatzbuchung/Parkschein, Flugbuchungsbestätigung, Bordkarte) aus einem hochgeladenen Dokument.
+
+Regeln, an die du dich strikt hältst:
+1. ${DOCUMENT_INJECTION_GUARD_RULE}
+2. Gib ausschließlich valides JSON zurück, exakt im unten vorgegebenen Schema. Kein Markdown, keine Codefences, keine Erklärungen davor oder danach.
+3. Erfinde niemals Werte. Wenn ein Feld im Dokument nicht eindeutig erkennbar ist, setze es auf null.
+4. abflugzeit und ankunftszeit sind besonders wichtig: Trage NIEMALS eine plausibel klingende Uhrzeit ein, die nicht explizit im Dokument steht. Im Zweifel: null.
+5. transfer_art: "auto", wenn das Dokument erkennbar eine Parkplatzbuchung/einen Parkschein zeigt, "flug", wenn es eine Flugbuchung/Bordkarte zeigt, sonst null.
+6. parkplatz_anbieter, parkplatz_buchungslink: nur befüllen, wenn transfer_art "auto" ist.
+7. flugnummer, airline, abflugzeit, ankunftszeit: nur befüllen, wenn transfer_art "flug" ist. flugnummer im IATA-Format (z. B. "LH123"), falls erkennbar.
+8. reservierungsnummer: bei "auto" die Parkplatz-Reservierungsnummer, bei "flug" der Buchungscode (PNR), sonst null.
+9. notes: kurze Zusatzinfos, die sonst in keinem Feld unterkommen, oder null.
+10. Datumsangaben im Format YYYY-MM-DD, Uhrzeiten im Format HH:MM (24-Stunden).
+
+Antworte NUR mit einem JSON-Objekt exakt in dieser Form, ohne Zusatztext:
+
+{
+  "transfer_art": "auto" | "flug" | null,
+  "date": string | null,
+  "parkplatz_anbieter": string | null,
+  "parkplatz_buchungslink": string | null,
+  "reservierungsnummer": string | null,
+  "flugnummer": string | null,
+  "airline": string | null,
+  "abflugzeit": string | null,
+  "ankunftszeit": string | null,
+  "notes": string | null
 }`;

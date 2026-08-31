@@ -721,3 +721,42 @@ alter table research_findings add constraint research_findings_source_tier_check
 alter table ship_research add constraint ship_research_source_tier_check check (source_tier in ('1', '2', '3'));
 alter table port_research add constraint port_research_source_tier_check check (source_tier in ('1', '2', '3'));
 alter table route_research add constraint route_research_source_tier_check check (source_tier in ('1', '2', '3'));
+
+-- ------------------------------------------------------------
+-- Anreise/Abreise-Modul (31.08.2026)
+--
+-- Trip-gebunden statt an einen port_call, da An-/Abreise vor bzw. nach dem
+-- eigentlichen Reiseverlauf liegen. transfer_art steuert, welche Felder in
+-- der UI relevant sind ('auto' -> Parkplatz-Felder, 'flug' -> Flug-Felder) -
+-- beide Feldgruppen bleiben nullable, da bei Anlage nur die zur gewählten
+-- Art passenden befüllt werden. Phase 1 (siehe Feature-Spec) ist rein
+-- passive Ablage, ggf. per Foto-Extraktion befüllt (source-Feld analog
+-- port_calls.source) - Live-Flugdaten (Phase 2) kämen als additive Spalten
+-- (z. B. live_status, last_synced_at) dazu, kein Schema-Bruch.
+create table trip_transfers (
+  id                      uuid primary key default gen_random_uuid(),
+  trip_id                 uuid not null references trips(id) on delete cascade,
+  direction               text not null check (direction in ('anreise', 'abreise')),
+  transfer_art            text not null check (transfer_art in ('auto', 'flug')),
+  date                    date,
+  -- nur bei transfer_art 'auto' befüllt
+  parkplatz_anbieter      text,
+  parkplatz_buchungslink  text,
+  -- Auto: Parkplatz-Reservierungsnummer · Flug: Buchungscode
+  reservierungsnummer     text,
+  -- nur bei transfer_art 'flug' befüllt, IATA-Format (z. B. "LH123")
+  flugnummer              text,
+  airline                 text,
+  abflugzeit              time,
+  ankunftszeit            time,
+  notes                   text,
+  source                  text,                  -- z. B. "Foto Parkschein", "Screenshot Bordkarte"
+  created_at              timestamptz not null default now()
+);
+
+create index idx_transfers_trip on trip_transfers(trip_id);
+
+alter table trip_transfers enable row level security;
+
+create policy "trip_transfers: access via trip" on trip_transfers
+  for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));

@@ -1,13 +1,14 @@
 "use client";
 
-import { AnchorIcon, CompassIcon, FootprintsIcon, ChatIcon } from "@/components/icons";
+import { AnchorIcon, CompassIcon, FootprintsIcon, PlaneIcon, ChatIcon } from "@/components/icons";
 
-export type TripTab = "reise" | "tage" | "ausfluege" | "chat";
+export type TripTab = "reise" | "tage" | "ausfluege" | "anreise" | "chat";
 
 const TABS: { id: TripTab; label: string; icon: (p: { className?: string }) => React.ReactElement }[] = [
   { id: "reise", label: "Reise", icon: AnchorIcon },
   { id: "tage", label: "Tage", icon: CompassIcon },
   { id: "ausfluege", label: "Ausflüge", icon: FootprintsIcon },
+  { id: "anreise", label: "Anreise", icon: PlaneIcon },
   { id: "chat", label: "Chat", icon: ChatIcon },
 ];
 

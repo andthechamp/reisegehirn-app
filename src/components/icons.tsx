@@ -143,6 +143,24 @@ export function CameraIcon({ className }: IconProps) {
   );
 }
 
+export function PlaneIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-1 .1-1.3.5l-.7.8c-.5.5-.4 1.3.2 1.7L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.6 6c.4.6 1.2.7 1.7.2l.8-.7c.3-.3.5-.8.4-1.3Z" />
+    </svg>
+  );
+}
+
+export function CarIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M5 11 6.5 6.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11" />
+      <rect x="3" y="11" width="18" height="6" rx="2" />
+      <path d="M3 15h18M7 17v1.5M17 17v1.5" />
+    </svg>
+  );
+}
+
 export function SpinnerIcon({ className }: IconProps) {
   return (
     <svg className={"animate-spin " + (className ?? "")} viewBox="0 0 24 24" fill="none">
