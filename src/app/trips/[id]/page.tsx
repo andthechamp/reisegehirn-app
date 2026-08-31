@@ -246,8 +246,10 @@ function TripPageContent() {
             tripId={tripId}
             portCalls={context.port_calls}
             excursions={excursions}
+            transfers={transfers}
             research={context.research}
             onDeleteExcursion={handleDeleteExcursion}
+            onDeleteTransfer={handleDeleteTransfer}
             isAdmin={isAdmin}
             portPhotos={portPhotos}
             portPhotoAttributions={portPhotoAttributions}

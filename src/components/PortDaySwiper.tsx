@@ -3,19 +3,23 @@
 import { useRef, useState } from "react";
 import type { TripContext } from "@/lib/trip-context";
 import ExcursionCard from "@/components/ExcursionCard";
+import TransferCard from "@/components/TransferCard";
 import PortResearch from "@/components/PortResearch";
 import RouteMap, { type RouteMapPort } from "@/components/RouteMap";
 
 type PortCall = TripContext["port_calls"][number];
 type Excursion = TripContext["excursions"][number];
+type Transfer = TripContext["transfers"][number];
 type Finding = TripContext["research"][number];
 
 interface PortDaySwiperProps {
   tripId: string;
   portCalls: PortCall[];
   excursions: Excursion[];
-  research: Finding[];
+  transfers: Transfer[];
   onDeleteExcursion: (id: string) => void;
+  onDeleteTransfer: (id: string) => void;
+  research: Finding[];
   isAdmin: boolean;
   // port_name -> Foto-URL, via resolvePortPhoto() serverseitig aufgelöst
   // (siehe /api/trips/[id]/route.ts) - Häfen ohne Treffer fehlen im Objekt.
@@ -42,8 +46,10 @@ export default function PortDaySwiper({
   tripId,
   portCalls,
   excursions,
+  transfers,
   research,
   onDeleteExcursion,
+  onDeleteTransfer,
   isAdmin,
   portPhotos,
   portPhotoAttributions,
@@ -201,6 +207,11 @@ export default function PortDaySwiper({
               </p>
             )}
             <ul className="mt-3 space-y-2">
+              {transfers
+                .filter((t) => t.date === active.call_date)
+                .map((t) => (
+                  <TransferCard key={t.id} transfer={t} onDelete={onDeleteTransfer} />
+                ))}
               {excursions
                 .filter((e) => e.port_call_id === active.id)
                 .map((e) => (
