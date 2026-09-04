@@ -1,5 +1,6 @@
 import CloseButton from "@/components/CloseButton";
 import ProfileForm from "@/components/ProfileForm";
+import PasswordChangeForm from "@/components/PasswordChangeForm";
 import { getSupabaseServerClient } from "@/lib/supabase";
 
 export default async function AccountPage() {
@@ -23,6 +24,9 @@ export default async function AccountPage() {
         initialFullName={profile?.full_name ?? ""}
         initialChatLanguage={profile?.chat_language === "vi" ? "vi" : "de"}
       />
+
+      <h2 className="mb-4 mt-10 font-display text-lg font-semibold text-ink">Passwort ändern</h2>
+      <PasswordChangeForm />
     </main>
   );
 }
