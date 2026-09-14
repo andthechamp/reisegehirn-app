@@ -147,7 +147,7 @@ src/
     trips/[id]/page.tsx             Reiseseite: Tabs Reise/Tage/Ausflüge/Anreise/Chat (TabBar.tsx) + Bord-ABC
     trips/[id]/edit/page.tsx        Reise bearbeiten (ReviewStep im "edit"-Modus)
     admin/page.tsx                  Nutzerverwaltung, Registrierungs-Allowlist, offene Recherche-Lücken (nur Admins)
-    account/page.tsx                Eigenes Profil (Anzeigename)
+    account/page.tsx                Eigenes Profil (Anzeigename, Passwort ändern)
     login/, signup/, auth/callback/ Auth-Flow
     api/
       extract/route.ts              Foto/PDF -> vollständige Reise-Extraktion
@@ -175,7 +175,8 @@ src/
     ExcursionForm.tsx, ExcursionCard.tsx              Ausflüge
     MemoryItem.tsx, ChatPanel.tsx                     Gemerkt & Chat
     ShareTrip.tsx, UserTable.tsx, InviteList.tsx,
-    ResearchGapList.tsx, ProfileForm.tsx              Freigaben, Admin, Profil
+    ResearchGapList.tsx, ProfileForm.tsx,
+    PasswordChangeForm.tsx                            Freigaben, Admin, Profil
     AuthForm.tsx, LogoutButton.tsx, SiteHeader.tsx,
     CloseButton.tsx, Spinner.tsx, icons.tsx, MarkdownText.tsx   Gemeinsame Bausteine
   lib/
