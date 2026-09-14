@@ -108,7 +108,7 @@ export type ChatLanguage = "de" | "vi";
 
 const CHAT_LANGUAGE_INSTRUCTION: Record<ChatLanguage, string> = {
   de: "Antworte auf Deutsch, knapp und konkret.",
-  vi: "Antworte auf Vietnamesisch (Tiếng Việt), knapp und konkret - auch wenn die unten aufgeführten Reisedaten auf Deutsch vorliegen, übersetze die für die Antwort relevanten Inhalte sinngemäß ins Vietnamesische.",
+  vi: "Antworte auf Vietnamesisch (Tiếng Việt), knapp und konkret - auch wenn die unten aufgeführten Reisedaten auf Deutsch vorliegen, übersetze die für die Antwort relevanten Inhalte sinngemäß ins Vietnamesische. Verwende dabei ausschließlich das vietnamesische Alphabet (lateinische Schrift mit Diakritika) - niemals chinesische Schriftzeichen (Hán tự) oder andere Schriftsysteme, auch nicht bei sino-vietnamesischen Lehnwörtern.",
 };
 
 export function buildChatSystemPrompt(tripContextJson: string, chatLanguage: ChatLanguage = "de"): string {

@@ -17,34 +17,53 @@ im Chat, verwaltet gebuchte Ausflüge und lässt sich mit Mitreisenden teilen.
   Liegezeiten, lässt sich zusätzlich gezielt ein Reiseverlauf-Screenshot
   (z. B. aus der Reederei-App) hochladen — die erkannten Zeiten werden anhand
   von Datum/Hafenname automatisch den passenden Tagen zugeordnet, auch wenn
-  an einem Tag mehrere Häfen angelaufen werden.
-- **Hafen- und Schiffsrecherche**: Claude recherchiert per Websuche zu einem
-  einzelnen Hafentag (Anlegestelle, Sehenswürdigkeiten, Ausflüge, Essen,
-  Praktisches, Wetter), zum Schiff selbst (Decksplan, Restaurants,
-  Ausstattung, Erfahrungsberichte anderer Gäste) und zur gebuchten
-  Kabinenkategorie. Jeder Fund nennt seine Quelle und wird verifiziert, bevor
-  er als Fakt behandelt wird. Läuft automatisch im Hintergrund, sobald eine
-  Reise geladen wird und Daten fehlen oder älter als 7 Tage sind (siehe
-  `ensureShipResearched`/`ensureCabinResearched`/`ensurePortResearched`) -
-  normale Nutzer:innen sehen nur das Ergebnis, ohne selbst etwas anzustoßen.
-  Schiffsinfos werden zusätzlich wöchentlich per Cron aufgefrischt
-  (`vercel.json`, `/api/cron/refresh-ship-research`). Ein manueller
-  "Erneut recherchieren"-Trigger bleibt Admins vorbehalten
-  (`/api/research/ship|port|cabin`), damit nicht jedes Konto beliebig oft
-  kostenpflichtige Anthropic-Aufrufe auslösen kann.
-- **Chat**: Fragen zur Reise beantwortet Claude auf Basis der gespeicherten
-  Daten, der Recherche-Funde und bisheriger Chat-Antworten. Wichtige
-  Antworten lassen sich als "Gemerkt" markieren und tauchen dann auf der
-  Reiseseite auf.
+  an einem Tag mehrere Häfen angelaufen werden. Alternativ recherchiert
+  `berth-time-research.ts` fehlende Liegezeiten selbst (Serper-Suche nach der
+  Fahrplanseite der Reederei, Firecrawl zum Abrufen, Claude zum Auslesen).
+- **Anreise/Abreise**: Transfers (Flug, Bahn, Parken, Taxi) lassen sich
+  manuell erfassen oder per Foto/PDF auslesen (`ExtractedTransfer` in
+  `src/lib/transfer-schema.ts`) und erscheinen sowohl im eigenen "Anreise"-Tab
+  als auch am passenden Tag im Tage-Swiper.
+- **Hafen-, Schiffs- und Routenrecherche**: Claude recherchiert per Websuche
+  zu einem einzelnen Hafentag (Anlegestelle, Sehenswürdigkeiten, Ausflüge,
+  Essen, Praktisches), zum Schiff selbst (Decksplan, Restaurants, Bord-ABC,
+  Erfahrungsberichte anderer Gäste), zur gebuchten Kabinenkategorie und zu
+  Routen-/Regionswissen (`route_research`, z. B. Karibik-Fahrplanbesonderheiten).
+  Jeder Fund nennt seine Quelle und wird verifiziert, bevor er als Fakt
+  behandelt wird. **Läuft standardmäßig nicht mehr automatisch** — der
+  Hauptkostenblock (~25–35 ct pro Hafen, Sonnet + 6 Websuchen) wird bewusst
+  redaktionell statt pro Reise neu gefüllt: fehlende Themen landen in
+  `research_gaps` und erscheinen im Admin-Bereich, von wo sie per Klick auf
+  "Jetzt recherchieren" oder per Seed-Skript (`scripts/seed-*.ts`) gefüllt
+  werden. Der Schalter dafür ist `RESEARCH_AUTO` in
+  `src/lib/research-config.ts` (aus by design, aber jederzeit reaktivierbar —
+  Details dazu unten unter "KI-Nutzung"). Wetter (Open-Meteo, historischer
+  Klimaschnitt bzw. echte Vorhersage kurz vor Reisebeginn) und Sehenswürdigkeiten-
+  /Schiffsfotos (Wikimedia Commons/Wikipedia) laufen unabhängig davon weiter,
+  weil sie ohne KI-Aufruf auskommen (`weather.ts`, `wikimedia.ts`,
+  `ship-photos.ts`). Schiffsinfos lassen sich zusätzlich wöchentlich per Cron
+  auffrischen (`vercel.json`, `/api/cron/refresh-ship-research`, standardmäßig
+  ebenfalls hinter `RESEARCH_AUTO`).
+- **Chat**: Fragen zur Reise beantwortet Claude (Haiku, ohne Websuche) auf
+  Basis der gespeicherten Daten, der Recherche-Funde und bisheriger
+  Chat-Antworten. Wichtige Antworten lassen sich als "Gemerkt" markieren und
+  tauchen dann auf der Reiseseite auf.
 - **Ausflüge**: Gebuchte Landausflüge lassen sich manuell erfassen oder per
   Foto/PDF auslesen (Anbieter, Treffpunkt, Zeit, Preis) und werden dem
   richtigen Hafentag zugeordnet.
-- **Tages-Navigation**: Häfen und Ausflüge einer Reise lassen sich tageweise
-  durchklicken/-swipen statt als eine lange Liste zu scrollen.
+- **Tages-Navigation & Route**: Häfen, Ausflüge und Transfers einer Reise
+  lassen sich tageweise durchklicken/-swipen statt als eine lange Liste zu
+  scrollen (`TabBar.tsx`: Reise/Tage/Ausflüge/Anreise/Chat). Eine Kartenansicht
+  (`RouteMap.tsx`, MapLibre + OpenStreetMap-Tiles, kein API-Key nötig) zeigt
+  die Route über alle Häfen.
 - **Nutzerkonten, Rollen & Freigaben**: Login per E-Mail/Passwort, Reisen
   gehören einem Konto und lassen sich mit weiteren Konten teilen, Zugriff ist
   über Row-Level-Security in Postgres erzwungen (nicht nur im Code). Admins
-  verwalten Rollen unter `/admin`.
+  verwalten Rollen und die Registrierungs-Allowlist unter `/admin`
+  (`InviteList.tsx`, `/api/admin/invites`) und sehen dort auch, welches
+  Recherche-Wissen aktuell fehlt (`ResearchGapList.tsx`, reine Anzeige der
+  `research_gaps`-Tabelle — nachgefüllt wird per Seed-Skript oder über den
+  "Jetzt recherchieren"-Button auf der jeweiligen Reiseseite).
 
 ## Einrichtung
 
@@ -76,11 +95,18 @@ Dann eintragen: `ANTHROPIC_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
 `NEXT_PUBLIC_SUPABASE_URL` (gleiche URL wie `SUPABASE_URL`) und
 `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
-Zusätzlich **verpflichtend** `CRON_SECRET` setzen (beliebiger geheimer
-String, z. B. `openssl rand -hex 32`) — ohne dieses Secret lehnt
+Zusätzlich `CRON_SECRET` setzen (beliebiger geheimer String, z. B.
+`openssl rand -hex 32`) — ohne dieses Secret lehnt
 `/api/cron/refresh-ship-research` jeden Aufruf ab (fail-closed), statt
 öffentlich erreichbar zu sein. Auf Vercel als Environment Variable eintragen;
 Vercel schickt ihn bei geplanten Cron-Aufrufen automatisch als Bearer-Token mit.
+
+Für die automatische Liegezeiten-Recherche (`berth-time-research.ts`)
+zusätzlich `SERPER_API_KEY` ([serper.dev](https://serper.dev), gezielte
+Google-Suche nach der Fahrplanseite der Reederei) und `FIRECRAWL_API_KEY`
+([firecrawl.dev](https://firecrawl.dev), zuverlässiges Abrufen der
+gefundenen Seite inkl. JS-Rendering/Anti-Bot) eintragen. Beide sind optional,
+solange dieses Feature nicht genutzt wird.
 
 ### 5. Starten
 
@@ -117,51 +143,92 @@ werden können — ohne erneut den SQL-Editor zu brauchen.
 ```
 src/
   app/
-    page.tsx                        Reise anlegen (Hochladen -> Prüfen -> Fertig) + Übersicht eigener Reisen
-    trips/[id]/page.tsx             Reiseseite: Hero, Kabinen, Schiffsrecherche, Häfen/Ausflüge, Gemerkt, Chat, Teilen
+    page.tsx                        Reise anlegen (Hochladen -> Prüfen -> Fertig) + Übersicht eigener Reisen (TripList.tsx)
+    trips/[id]/page.tsx             Reiseseite: Tabs Reise/Tage/Ausflüge/Anreise/Chat (TabBar.tsx) + Bord-ABC
     trips/[id]/edit/page.tsx        Reise bearbeiten (ReviewStep im "edit"-Modus)
-    admin/page.tsx                  Nutzerverwaltung (nur Admins)
+    admin/page.tsx                  Nutzerverwaltung, Registrierungs-Allowlist, offene Recherche-Lücken (nur Admins)
     account/page.tsx                Eigenes Profil (Anzeigename)
-    login/, signup/                 Auth-Flow
+    login/, signup/, auth/callback/ Auth-Flow
     api/
       extract/route.ts              Foto/PDF -> vollständige Reise-Extraktion
       extract/excursion/route.ts    Foto/PDF -> ein Ausflug
       extract/itinerary/route.ts    Foto/PDF -> nur Reiseverlauf (Tage/Zeiten), fürs Nachbearbeiten
       confirm/route.ts              Bestätigte Extraktion -> Supabase (neue Reise)
-      trips/[id]/route.ts           Reise lesen/aktualisieren
+      trips/route.ts, trips/[id]/route.ts   Reisen auflisten / lesen / aktualisieren
       trips/[id]/share/route.ts     Reise mit weiterem Konto teilen
-      research/port/route.ts        Hafenrecherche (Websuche)
-      research/ship/route.ts        Schiffsrecherche (Websuche)
-      research/[id]/, research/ship/[id]/   Einzelnen Fund entfernen
+      transfers/, transfers/[id]/   Anreise-/Abreise-Transfers anlegen/entfernen
+      research/ship|port|cabin/route.ts     Recherche manuell auslösen (Admin, kostenpflichtig)
+      research/[id]/, research/ship/[id]/, research/port/[id]/   Einzelnen Fund entfernen
       excursions/, excursions/[id]/ Ausflüge anlegen/entfernen
       memory/, memory/[id]/         "Gemerkt"-Einträge anlegen/entfernen
-      chat/route.ts                 Chat-Antworten
-      cron/refresh-ship-research/   Wöchentlicher Schiffsrecherche-Refresh
+      chat/route.ts                 Chat-Antworten (ohne Websuche)
+      cron/refresh-ship-research/   Wöchentlicher Schiffsrecherche-Refresh (hinter RESEARCH_AUTO)
       admin/users/route.ts          Rollen verwalten
+      admin/invites/route.ts        Registrierungs-Allowlist verwalten
       profile/route.ts              Anzeigename ändern
   components/
     UploadStep.tsx, ReviewStep.tsx, SuccessStep.tsx   Die Bestätigungsschleife bei Anlegen/Bearbeiten
-    TripHero.tsx, PortDaySwiper.tsx, CabinCard.tsx    Reiseseite
-    ShipResearch.tsx, PortResearch.tsx, ResearchCard.tsx, FindingContent.tsx   Recherche-Anzeige
+    TripHero.tsx, PortDaySwiper.tsx, CabinCard.tsx, TabBar.tsx, RouteMap.tsx   Reiseseite
+    ShipResearch.tsx, PortResearch.tsx, CabinResearch.tsx, RouteResearch.tsx,
+    ResearchCard.tsx, FindingContent.tsx, BordAbc.tsx   Recherche-Anzeige
+    TransferCard.tsx, TransferForm.tsx                Anreise/Abreise
     ExcursionForm.tsx, ExcursionCard.tsx              Ausflüge
-    MemoryItem.tsx, ChatWidget.tsx, ChatPanel.tsx      Gemerkt & Chat
-    ShareTrip.tsx, UserTable.tsx, ProfileForm.tsx      Freigaben, Admin, Profil
-    AuthForm.tsx, SiteHeader.tsx, Spinner.tsx, icons.tsx, MarkdownText.tsx   Gemeinsame Bausteine
+    MemoryItem.tsx, ChatPanel.tsx                     Gemerkt & Chat
+    ShareTrip.tsx, UserTable.tsx, InviteList.tsx,
+    ResearchGapList.tsx, ProfileForm.tsx              Freigaben, Admin, Profil
+    AuthForm.tsx, LogoutButton.tsx, SiteHeader.tsx,
+    CloseButton.tsx, Spinner.tsx, icons.tsx, MarkdownText.tsx   Gemeinsame Bausteine
   lib/
-    prompts.ts                      Alle System-Prompts (Extraktion, Chat, Hafen-/Schiffsrecherche)
+    prompts.ts                      Alle System-Prompts (Extraktion, Chat, Hafen-/Schiffs-/Liegezeiten-Recherche)
     extraction-schema.ts            Typen für die volle Reise-Extraktion
     excursion-schema.ts             Typen für die Ausflugs-Extraktion
     itinerary-schema.ts             Typen für die Reiseverlauf-Nachbearbeitung
+    transfer-schema.ts              Typen für die Transfer-Extraktion
     research-schema.ts              Typen + toleranter JSON-Parser für Recherche-Funde
-    ship-research.ts                Schiffsrecherche-Logik (von Route und Cron genutzt)
+    research-config.ts              RESEARCH_ENABLED/RESEARCH_AUTO-Schalter (siehe "KI-Nutzung" unten)
+    research-gaps.ts                Verwaltung der research_gaps-Tabelle (offene Themen, Versuchsobergrenze)
+    ship-research.ts, port-research.ts, route-research.ts   Recherche-Logik je Bereich (von Routes und Cron genutzt)
+    berth-time-research.ts          Liegezeiten-Recherche per Serper+Firecrawl+Claude
+    cabin.ts                        Kabinenkategorie normalisieren (Cache-Schlüssel für ship_research)
+    port-names.ts, port-coordinates.ts   Kuratierte Hafennamen-Normalisierung, Geocoding-Cache
+    ship-photos.ts, wikimedia.ts    Schiffs-/Sehenswürdigkeiten-Fotos von Wikimedia Commons (kein KI-Aufruf)
+    weather.ts                      Wetter von Open-Meteo (klimatologischer Schnitt bzw. echte Vorhersage, kein KI-Aufruf)
     trip-context.ts                 Lädt eine Reise inkl. aller Ebenen für Seite/Chat
     document-upload.ts              Datei-Validierung (Größe/Typ) für alle Upload-Endpunkte
     anthropic.ts, supabase.ts, supabase-browser.ts
     format-list.ts, format-time.ts  Kleine Text-/Eingabe-Formatierungshelfer
+scripts/
+  seed-*.ts                         Redaktionelle Recherche-Skripte (Bord-ABC, Häfen nach Region, Fleet-Dossiers, ...)
+  scan-research-gaps.ts             Füllt research_gaps aus dem Ist-Bestand
+  backfill-*.ts, dedupe-*.ts, revalidate-*.ts   Einmalige Datenpflege-Skripte
 supabase/
   schema.sql                        Alle Tabellen inkl. Row-Level-Security-Policies
 vercel.json                         Cron-Konfiguration für den Schiffsrecherche-Refresh
 ```
+
+## KI-Nutzung
+
+Die Anthropic-Nutzung ist bewusst aufs Minimum reduziert: Dokumenten-
+Extraktion (Sonnet, 4 Endpunkte: Reise, Ausflug, Reiseverlauf, Transfer) und
+Chat ohne Websuche (Haiku). Die Websuche-Recherche für Schiff/Kabine/Hafen/
+Route läuft standardmäßig **nicht** automatisch beim Hochladen oder Laden
+einer Reise — ihre Inhalte sind Weltwissen, das für alle Nutzer:innen
+identisch ist, also einmal redaktionell (Seed-Skripte in `scripts/`) statt
+pro Reise neu recherchiert wird. Fehlende Themen landen stattdessen in
+`research_gaps` und lassen sich im Admin-Bereich gezielt per Klick oder
+Skript nachfüllen.
+
+- `RESEARCH_ENABLED` (`src/lib/research-config.ts`): Hauptschalter, schaltet
+  die komplette Websuche-Recherche ab — auch für Admins.
+- `RESEARCH_AUTO` (dieselbe Datei, Default `false`): schaltet nur die
+  *automatische* Recherche beim Hochladen/Laden einer Reise um. Auf `true`
+  gesetzt lebt die alte Automatik wieder auf, begrenzt durch
+  `MAX_AUTO_ATTEMPTS` aus `src/lib/research-gaps.ts`, damit ein Thema, das
+  die Websuche partout nicht liefert, nicht bei jedem Seitenaufruf einen
+  neuen Sonnet-Lauf auslöst.
+
+Kostenlose Anreicherung (Wetter, Wikimedia-Fotos, Geocoding) läuft von
+beiden Schaltern unberührt weiter, weil sie ohne Anthropic-Aufruf auskommt.
 
 ## Nutzerkonten, Rollen & Freigaben
 
