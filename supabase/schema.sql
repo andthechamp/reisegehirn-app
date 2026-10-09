@@ -760,3 +760,47 @@ alter table trip_transfers enable row level security;
 
 create policy "trip_transfers: access via trip" on trip_transfers
   for all using (public.has_trip_access(trip_id)) with check (public.has_trip_access(trip_id));
+
+-- ------------------------------------------------------------
+-- Keepalive (Free-Tier-Pausierung verhindern)
+-- Supabase pausiert Free-Projekte nach 7 Tagen ohne Aktivität. Der Vercel
+-- Cron /api/cron/keepalive schreibt regelmäßig in diese Ein-Zeilen-Tabelle,
+-- damit das Projekt als aktiv gilt. Keine Policies: nur der Service-Role-
+-- Client (Cron) darf sie anfassen.
+create table keepalive (
+  id         int primary key default 1 check (id = 1),
+  last_ping  timestamptz not null default now(),
+  ping_count bigint not null default 0
+);
+
+alter table keepalive enable row level security;
+
+insert into keepalive (id) values (1);
+
+-- ------------------------------------------------------------
+-- GRANTS für die Data API (PostgREST / supabase-js)
+-- Seit dem 30.10.2026 vergibt Supabase für neue Tabellen in "public" keine
+-- Zugriffsrechte mehr automatisch. Ohne diese GRANTs liefert die API
+-- "permission denied", egal was die RLS-Policies erlauben (RLS filtert nur
+-- Zeilen, GRANT entscheidet, ob die Tabelle überhaupt erreichbar ist).
+-- Bei jeder neuen Tabelle den passenden Block hier ergänzen. "anon" bekommt
+-- bewusst nichts: alle Policies verlangen eine eingeloggte Person.
+
+-- Eingeloggte Nutzer*innen: voller Zugriff, eingegrenzt durch die Policies.
+grant select, insert, update, delete on
+  trips, trip_members, bookings, travelers, port_calls, port_excursions,
+  research_findings, user_memory, messages, trip_transfers,
+  ship_research, port_research, route_research, port_coordinates, place_photos
+to authenticated;
+
+-- profiles: nur lesen (Änderungen laufen über den Service-Role-Client).
+grant select on profiles to authenticated;
+
+-- Service-Role (Server, umgeht RLS): alle Tabellen, inkl. der reinen
+-- Betriebs-Tabellen allowed_signup_emails, research_gaps und keepalive.
+grant select, insert, update, delete on
+  profiles, trips, trip_members, bookings, travelers, port_calls,
+  port_excursions, research_findings, user_memory, messages, trip_transfers,
+  ship_research, port_research, route_research, port_coordinates, place_photos,
+  allowed_signup_emails, research_gaps, keepalive
+to service_role;
